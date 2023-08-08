@@ -4,7 +4,7 @@ build*
 
 # VCPKG
 vcpkg
-.vscode
+.vscode*
 
 # Testing DB
 dependencies/kobolib/data
