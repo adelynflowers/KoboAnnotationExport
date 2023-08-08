@@ -1,0 +1,9 @@
+# Build folders
+build*
+.cache*
+
+# VCPKG
+vcpkg
+
+# Testing DB
+dependencies/kobolib/data

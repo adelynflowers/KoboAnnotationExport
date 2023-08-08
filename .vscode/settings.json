@@ -1,0 +1,6 @@
+{
+    "cmake.configureSettings": {
+        "CMAKE_TOOLCHAIN_FILE": "/home/adelynflowers/dev/qt-quick-project/vcpkg/scripts/buildsystems/vcpkg.cmake"
+    },
+    "git.ignoreLimitWarning": true
+}
