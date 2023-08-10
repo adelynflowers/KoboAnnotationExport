@@ -97,9 +97,9 @@ void BookModel::findAttachedDB()
         {
             found = true;
             qDebug() << "Attached Kobo found with name " << d.displayName();
-            auto filePath = d.rootPath() + "/.kobo/KoboReader.sqlite";
-            auto url = QUrl(filePath);
-            qDebug() << "Opening DB at " << url;
+            auto dir = QDir(d.rootPath());
+            dir.cd(".kobo");
+            auto url = QUrl(dir.absoluteFilePath("KoboReader.sqlite"));
             openDB(url);
             return;
         }
