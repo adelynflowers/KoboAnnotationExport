@@ -7,10 +7,15 @@ BookModel::BookModel(QObject *parent)
     // initialize custom roles that map to annotations
     this->m_rolenames[TitleRole] = "title";
     this->m_rolenames[TextRole] = "text";
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &BookModel::searchDevices);
+    timer->start(1000);
+    this->timer = timer;
 }
 
 BookModel::~BookModel()
 {
+    delete timer;
 }
 
 int BookModel::rowCount(const QModelIndex &parent) const
@@ -54,12 +59,26 @@ QHash<int, QByteArray> BookModel::roleNames() const
     return this->m_rolenames;
 }
 
+QStorageInfo BookModel::findKoboDevice()
+{
+    QStorageInfo device;
+    auto devices = QStorageInfo::mountedVolumes();
+    auto searchTerm = QStringView(QString("kobo"));
+    for (auto d : devices)
+    {
+        if (d.displayName().contains(searchTerm, Qt::CaseInsensitive))
+        {
+            return d;
+        }
+    }
+    return device;
+}
+
 void BookModel::openDB(QUrl loc)
 {
     // initialize data with kobo DB annotations
     // TO-DO: How to convert this filename to something SQLite likes?
     // doesn't work with file:///
-    qDebug() << loc.path();
     auto dbLoc = loc.path().toStdString();
     try
     {
@@ -77,6 +96,7 @@ void BookModel::openDB(QUrl loc)
             data.append(qa);
         }
         this->m_data = data;
+        this->currentDevicePath = loc;
         layoutChanged();
     }
     catch (SQLite::Exception &ex)
@@ -85,25 +105,55 @@ void BookModel::openDB(QUrl loc)
     }
 }
 
-void BookModel::findAttachedDB()
+QUrl BookModel::getDeviceDBLoc(QStorageInfo device)
 {
-    auto devices = QStorageInfo::mountedVolumes();
-    QStorageInfo kobo;
-    auto searchTerm = QStringView(QString("kobo"));
-    auto found = false;
-    for (auto d : devices)
+    auto dir = QDir(device.rootPath());
+    dir.cd(".kobo");
+    auto url = QUrl(dir.absoluteFilePath("KoboReader.sqlite"));
+    return url;
+}
+
+bool BookModel::openAttachedDB()
+{
+    auto device = findKoboDevice();
+    if (device.isValid())
     {
-        if (d.displayName().contains(searchTerm, Qt::CaseInsensitive))
+        openDB(getDeviceDBLoc(device));
+    }
+    return false;
+}
+
+bool BookModel::isNewDevice(QUrl url)
+{
+    if (url != this->currentDevicePath)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void BookModel::blacklistDevice(QUrl url)
+{
+    this->blacklisted_devices[url] = true;
+}
+
+bool BookModel::isBlacklisted(QUrl url)
+{
+    return this->blacklisted_devices[url];
+}
+
+void BookModel::searchDevices()
+{
+    auto device = findKoboDevice();
+    if (device.isValid())
+    {
+        auto url = getDeviceDBLoc(device);
+        if (isNewDevice(url) && !isBlacklisted(url))
         {
-            found = true;
-            qDebug() << "Attached Kobo found with name " << d.displayName();
-            auto dir = QDir(d.rootPath());
-            dir.cd(".kobo");
-            auto url = QUrl(dir.absoluteFilePath("KoboReader.sqlite"));
-            openDB(url);
-            return;
+            emit deviceDetected(url);
         }
     }
-
-    qDebug() << "No attached devices met criteria";
 }
