@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Dialogs
-import BookModelLib
+import BookListLib
 
 ApplicationWindow {
     visible: true
@@ -48,14 +48,31 @@ ApplicationWindow {
             }
         }
     }
-    RowLayout {
-        //Content Row
+    ColumnLayout {
         anchors.fill: parent
-        BookListView {
-            id: bookList
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.margins: 50
+        // Misc Row
+        RowLayout {
+            Layout.fillWidth: true 
+            Layout.preferredHeight: 2
+            TextField {
+                Layout.fillWidth: true 
+                Layout.fillHeight: true 
+                placeholderText: qsTr("Type to begin searching")
+                onTextEdited: function() {
+                    console.log(text)
+                }
+            }
+        }
+        //Content Row
+        RowLayout {
+            Layout.fillWidth: true 
+            Layout.preferredHeight: 8
+            BookListView {
+                id: bookList
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.margins: 50
+            }
         }
     }
 }
