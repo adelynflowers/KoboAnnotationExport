@@ -26,6 +26,7 @@
 class KaeLib : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString currentDevice READ getCurrentDevice WRITE setCurrentDevice)
     QML_ELEMENT
 public:
     /**
@@ -48,17 +49,32 @@ public:
      *
      * Blacklisted devices will not trigger a signal
      * emission from searchDevices.
-     *
+     * @param path path to device db
      * @return Q_INVOKABLE
      */
-    Q_INVOKABLE void blacklistDevice(QUrl);
+    Q_INVOKABLE void blacklistDevice(QString path);
 
     /**
      * @brief Copies a QString to the clipboard.
      *
+     * @param text text to be copied
      * @return Q_INVOKABLE
      */
-    Q_INVOKABLE void copyToClipboard(QString);
+    Q_INVOKABLE void copyToClipboard(QString text);
+
+    /**
+     * @brief Get the currently opened device.
+     *
+     * @return QString
+     */
+    QString getCurrentDevice();
+
+    /**
+     * @brief Set the currently opened device.
+     *
+     * @param path
+     */
+    void setCurrentDevice(QString path);
 
 public slots:
     /**
@@ -68,10 +84,12 @@ public slots:
     void searchDevices();
 signals:
     /**
-     * @brief Emits root path of an attached
+     * @brief Emits root path to db of an attached
      * Kobo device.
+     *
+     * @param dbPath path to database file
      */
-    void deviceDetected(QUrl);
+    void deviceDetected(QString dbPath);
 
 private:
     /**
@@ -85,36 +103,43 @@ private:
      * @brief Get the database location of an
      * attached Kobo.
      *
+     * @param device kobo device
      * @return QUrl Path to kobo db file.
      */
-    QUrl getDeviceDBLoc(QStorageInfo);
+    QUrl getDeviceDBLoc(QStorageInfo device);
 
     /**
      * @brief Determines if a device path is the same
      * as currentDevicePath.
      *
+     * @param url QUrl device path
      * @return true if device path is different
      * @return false if device path is the same
      */
-    bool isNewDevice(QUrl);
+    bool isNewDevice(QString dbPath);
 
     /**
      * @brief Determines if a device path is blacklisted
      * by looking it up in blacklisted_devices.
      *
+     * @param url QUrl device path
      * @return true if device is blacklisted
      * @return false if it is not
      */
-    bool isBlacklisted(QUrl);
+    bool isBlacklisted(QString dbPath);
+
+    void initializeApplicationDB();
+
+    QString getApplicationDB();
 
     // timer for device searching
     std::unique_ptr<QTimer> timer;
 
     // List of blacklisted devices
-    QHash<QUrl, bool> blacklisted_devices;
+    QHash<QString, bool> blacklistedDevices;
 
     // Path of last opened device
-    QUrl currentDevicePath;
+    QString currentDevicePath;
 };
 
 #endif // KAELIB_H

@@ -14,7 +14,7 @@ void KaeLib::searchDevices()
     auto device = findKoboDevice();
     if (device.isValid())
     {
-        auto url = getDeviceDBLoc(device);
+        auto url = getDeviceDBLoc(device).path();
         if (isNewDevice(url) && !isBlacklisted(url))
         {
             emit deviceDetected(url);
@@ -32,28 +32,21 @@ QUrl KaeLib::getDeviceDBLoc(QStorageInfo device)
 }
 
 // Return device == last opened device
-bool KaeLib::isNewDevice(QUrl url)
+bool KaeLib::isNewDevice(QString path)
 {
-    if (url != this->currentDevicePath)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return path != currentDevicePath;
 }
 
 // Blacklist a device
-void KaeLib::blacklistDevice(QUrl url)
+void KaeLib::blacklistDevice(QString path)
 {
-    this->blacklisted_devices[url] = true;
+    this->blacklistedDevices[path] = true;
 }
 
 // Return if device is blacklisted
-bool KaeLib::isBlacklisted(QUrl url)
+bool KaeLib::isBlacklisted(QString path)
 {
-    return this->blacklisted_devices[url];
+    return this->blacklistedDevices[path];
 }
 
 // Copy text to clipboard
@@ -76,4 +69,16 @@ QStorageInfo KaeLib::findKoboDevice()
         }
     }
     return device;
+}
+
+// Get current device
+QString KaeLib::getCurrentDevice()
+{
+    return currentDevicePath;
+}
+
+// Set current device
+void KaeLib::setCurrentDevice(QString path)
+{
+    currentDevicePath = path;
 }

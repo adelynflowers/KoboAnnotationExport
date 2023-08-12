@@ -77,7 +77,47 @@ ApplicationWindow {
             }
         }
     }
-    KaeLib {id: kaeLib}
+    
+    KaeLib {
+        id: kaeLib
+        //TODO: Has to be a better way to do this 
+        //with a queue
+    }
+
+    MessageDialog {
+        id: detectionDialog
+        text: qsTr("Device detected")
+        informativeText: qsTr("A Kobo device has been detected, extract annotations?")
+        property string detectedPath;
+        buttons: MessageDialog.Yes | MessageDialog.No
+        onAccepted: {
+            let detectedPath = detectionDialog.detectedPath
+            let success = bookList.openDB(detectedPath);
+            if (success) {
+                    console.log("Successfully opened DB at ", detectedPath);
+                    kaeLib.currentDevice = detectedPath;
+            } else {
+                console.log("Failed to open DB at ", detectedPath, ". blacklisting");
+                //TODO: Better way to handle failure
+                kaeLib.blacklistDevice(detectedPath);
+            }
+        }
+        onRejected: {
+            // No is an explicit blacklist
+            console.log("Blacklisting device ", detectedPath);
+            kaeLib.blacklistDevice(detectedPath);
+        }
+        Connections {
+            target: kaeLib 
+            function onDeviceDetected(dbPath) {
+            if (!detectionDialog.visible) {
+                detectionDialog.detectedPath = dbPath;
+                detectionDialog.open();
+            }
+        }
+        }
+        
+    }
 }
     // For dark mode/light mode coloring
     // SystemPalette {

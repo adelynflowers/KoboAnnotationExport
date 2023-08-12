@@ -19,26 +19,10 @@ ListView {
     boundsBehavior: Flickable.StopAtBounds
     focus: true
     currentIndex: -1
-    property url fileName
-    property url detectedUrl
-    
-    onFileNameChanged: {
-        console.log("BookList file changed");
-        bookModel.openDB(fileName)
-    }
-    
-    MessageDialog {
-        id: detectionDialog
-        text: qsTr("A Kobo device has been detected, extract annotations?")
-        buttons: MessageDialog.Yes | MessageDialog.No
-        onButtonClicked: function (button, role) {
-            switch (button) {
-            case MessageDialog.Yes:
-                bookModel.openDB(bookContainer.detectedUrl);
-                break;
-            //TODO: Add blacklist
-            }
-        }
+
+    function openDB(filename) {
+        console.log("Opening DB", filename)
+        return bookModel.openDB(filename);
         
     }
 }
