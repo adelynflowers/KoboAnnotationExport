@@ -5,7 +5,7 @@ import BookModelLib
 
 Item {
     width: ListView.view.width
-    height: col.implicitHeight
+    height: col.implicitHeight + 20
     z: 2
     Button {
         text: qsTr("Copy")

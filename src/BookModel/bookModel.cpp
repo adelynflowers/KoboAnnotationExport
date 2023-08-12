@@ -1,6 +1,8 @@
 #include "bookModel.h"
 #define DB_LOC "/home/adelynflowers/dev/qt-quick-project/src/KoboLib/data/KoboReader.sqlite"
 
+// Initialize object with roles. Set off timer for
+// device searching.
 BookModel::BookModel(QObject *parent)
     : QAbstractListModel(parent)
 {
@@ -13,11 +15,13 @@ BookModel::BookModel(QObject *parent)
     this->timer = timer;
 }
 
+// Free the timer
 BookModel::~BookModel()
 {
     delete timer;
 }
 
+// Return the number of row in the model
 int BookModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
@@ -25,6 +29,7 @@ int BookModel::rowCount(const QModelIndex &parent) const
     return m_data.count();
 }
 
+// Get model data at an index
 QVariant BookModel::data(const QModelIndex &index, int role) const
 {
     // the index returns the requested row and column information.
@@ -54,11 +59,13 @@ QVariant BookModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+// Link between qml properties and role names
 QHash<int, QByteArray> BookModel::roleNames() const
 {
     return this->m_rolenames;
 }
 
+// Find a kobo device and return it
 QStorageInfo BookModel::findKoboDevice()
 {
     QStorageInfo device;
@@ -74,6 +81,8 @@ QStorageInfo BookModel::findKoboDevice()
     return device;
 }
 
+// Open a db with KoboDB and add its data
+// to the model
 void BookModel::openDB(QUrl loc)
 {
     // initialize data with kobo DB annotations
@@ -103,6 +112,7 @@ void BookModel::openDB(QUrl loc)
     }
 }
 
+// Get the database path from a kobo device
 QUrl BookModel::getDeviceDBLoc(QStorageInfo device)
 {
     auto dir = QDir(device.rootPath());
@@ -111,6 +121,7 @@ QUrl BookModel::getDeviceDBLoc(QStorageInfo device)
     return url;
 }
 
+// Find a kobo device and call openDB on it
 bool BookModel::openAttachedDB()
 {
     auto device = findKoboDevice();
@@ -121,6 +132,7 @@ bool BookModel::openAttachedDB()
     return false;
 }
 
+// Return device == last opened device
 bool BookModel::isNewDevice(QUrl url)
 {
     if (url != this->currentDevicePath)
@@ -133,16 +145,19 @@ bool BookModel::isNewDevice(QUrl url)
     }
 }
 
+// Blacklist a device
 void BookModel::blacklistDevice(QUrl url)
 {
     this->blacklisted_devices[url] = true;
 }
 
+// Return if device is blacklisted
 bool BookModel::isBlacklisted(QUrl url)
 {
     return this->blacklisted_devices[url];
 }
 
+// Emit signal if a kobo device is found
 void BookModel::searchDevices()
 {
     auto device = findKoboDevice();
@@ -156,7 +171,15 @@ void BookModel::searchDevices()
     }
 }
 
+// Copy text to clipboard
 void BookModel::copyToClipboard(QString text)
 {
     QGuiApplication::clipboard()->setText(text);
+}
+
+// Filter annotations based on search query
+void BookModel::searchBooks(QString text)
+{
+    // TO-DO: Setup sqlite3 memory db and query
+    return;
 }

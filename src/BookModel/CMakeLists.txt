@@ -9,13 +9,32 @@ target_link_libraries(
     KoboLib
 )
 
-qt_add_qml_module(BookModelLib
-    URI BookModelLib
+qt_add_qml_module(BookModelLib 
+    URI BookModelLib 
+    OUTPUT_DIRECTORY src/BookModelLib
     VERSION 1.0
+    SOURCES 
+    bookModel.cpp bookModel.h
+)
+
+qt_add_library(BookListLib STATIC)
+
+qt_add_qml_module(BookListLib
+    URI BookListLib
+    VERSION 1.0
+    OUTPUT_DIRECTORY src/BookListLib
     QML_FILES 
         BookListView.qml 
         BookModelDelegate.qml
-    SOURCES 
-        bookModel.cpp 
-        bookModel.h 
+    # SOURCES 
+    #     bookModel.cpp 
+    #     bookModel.h 
+)
+
+target_link_libraries(
+    BookListLib PRIVATE
+    Qt6::Quick 
+    Qt6::Core 
+    Qt6::Gui 
+    BookModelLib
 )
