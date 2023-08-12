@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Dialogs
 import BookListLib
+import KaeLib
 
 ApplicationWindow {
     visible: true
@@ -44,6 +45,7 @@ ApplicationWindow {
                     font.pixelSize: 24
                     Layout.fillWidth: true
                     Layout.fillHeight: true
+                    onClicked: kaeLib.hello()
                 }
             }
         }
@@ -75,6 +77,7 @@ ApplicationWindow {
             }
         }
     }
+    KaeLib {id: kaeLib}
 }
     // For dark mode/light mode coloring
     // SystemPalette {

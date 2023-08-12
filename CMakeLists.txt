@@ -48,6 +48,9 @@ add_subdirectory(src/KoboLib)
 ## Book model
 add_subdirectory(src/BookModel)
 
+## KaeLib
+add_subdirectory(src/KaeLib)
+
 # Link libraries
 target_link_libraries(kae
     PRIVATE 
@@ -55,6 +58,7 @@ target_link_libraries(kae
     Qt6::Qml
     KoboLib
     BookListLibplugin
+    KaeLibplugin
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
