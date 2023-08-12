@@ -7,6 +7,14 @@ Item {
     width: ListView.view.width
     height: col.implicitHeight
     z: 2
+    Button {
+        text: qsTr("Copy")
+        onClicked: function() {
+            parent.ListView.view.model.copyToClipboard(model.text);
+        }
+        anchors.top: parent.top 
+        anchors.right: parent.right
+    }
     ColumnLayout {
         id: col
         width: parent.width
@@ -25,10 +33,6 @@ Item {
             text: model.text
             wrapMode: Text.WordWrap
         }
-    }
-    MouseArea {
-        anchors.fill: parent 
-        onClicked: parent.ListView.view.currentIndex = index
     }
 }
 

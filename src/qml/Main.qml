@@ -1,57 +1,67 @@
 import QtQuick 
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Dialogs
+import BookModelLib
 
 ApplicationWindow {
     visible: true
     width: 1280
     height: 720
-    // RowLayout {
-    //     anchors.fill: parent
-    //     // Label {
-    //     //     text: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaAA"
-    //     //     Layout.fillWidth: true
-    //     //     wrapMode: Text.Wrap
-    //     // }
-    //     ListView {
-    //         id: listView
-    //         Layout.fillWidth: true
-    //         Layout.fillHeight: true 
-    //         model: ListModel {
-    //             ListElement {
-    //                 name: "Bill Smith"
-    //                 number: "555 3264"
-    //             }
-    //             ListElement {
-    //                 name: "John Brown"
-    //                 number: "555 8426"
-    //             }
-    //             ListElement {
-    //                 name: "Sam Wise"
-    //                 number: "555 0473"
-    //             }
-    //         }
-    //         delegate: 
-    //             Label {
-    //                 text: name + ": " + number
-    //                 width: ListView.view.width
-    //                 wrapMode: Text.Wrap
-    //             }
-            
-    //     }
-    // }
-    StackView {
-        id: stackView 
-        anchors.fill: parent 
-        initialItem: First {}
-        onCurrentItemChanged: {
-            currentItem.forceActiveFocus()
+    header: ToolBar {
+        height: parent.height * 0.1
+        RowLayout {
+            spacing: 6
+            anchors.fill: parent
+            ColumnLayout {
+                Layout.preferredWidth: 4
+                Layout.fillHeight: true
+                Label {
+                    text: "Kae"
+                    font.pixelSize: 24
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    verticalAlignment: Qt.AlignVCenter
+                }
+            }
+            RowLayout {
+                Layout.preferredWidth: 6
+                Layout.fillHeight: true
+                ToolButton {
+                    text: qsTr("Extract")
+                    font.pixelSize: 24
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
+                ToolButton {
+                    text: qsTr("Sync")
+                    font.pixelSize: 24
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
+                ToolButton {
+                    text: qsTr("Settings")
+                    font.pixelSize: 24
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
+            }
         }
     }
+    RowLayout {
+        //Content Row
+        anchors.fill: parent
+        BookListView {
+            id: bookList
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.margins: 50
+        }
+    }
+}
     // For dark mode/light mode coloring
     // SystemPalette {
     //     id: myPalette
     //     colorGroup: SystemPalette.Active
     // }
     // property color system_text_color: myPalette.text
-}

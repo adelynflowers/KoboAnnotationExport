@@ -155,3 +155,8 @@ void BookModel::searchDevices()
         }
     }
 }
+
+void BookModel::copyToClipboard(QString text)
+{
+    QGuiApplication::clipboard()->setText(text);
+}

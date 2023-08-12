@@ -36,11 +36,6 @@ qt_add_qml_module(kae
     URI MainView 
     QML_FILES 
         src/qml/Main.qml 
-        src/qml/First.qml
-        src/qml/Second.qml 
-        src/qml/Third.qml 
-        src/qml/ContactModel.qml
-        src/qml/InternetCode.qml
 )
 
 

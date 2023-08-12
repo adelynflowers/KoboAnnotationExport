@@ -55,4 +55,9 @@ ListView {
         bookModel.openAttachedDB();
     }
 
+    Component.onCompleted: {
+        // Load the application persistent DB
+        bookModel.openDB("file:///home/adelynflowers/dev/qt-quick-project/src/KoboLib/data/KoboReader.sqlite");
+    }
+
 }

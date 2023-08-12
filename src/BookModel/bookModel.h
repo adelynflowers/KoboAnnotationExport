@@ -4,6 +4,8 @@
 #include <QtCore>
 #include <QtQml/qqmlregistration.h>
 #include <koboDB.h>
+#include <QClipboard>
+#include <QGuiApplication>
 
 struct QAnnotation
 {
@@ -32,6 +34,7 @@ public:
     Q_INVOKABLE void openDB(QUrl);
     Q_INVOKABLE bool openAttachedDB();
     Q_INVOKABLE void blacklistDevice(QUrl);
+    Q_INVOKABLE void copyToClipboard(QString);
 
 public slots:
     void searchDevices();
