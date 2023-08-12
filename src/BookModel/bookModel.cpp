@@ -85,7 +85,6 @@ void BookModel::openDB(QUrl loc)
 
         auto kdb = KoboDB::openKoboDB(dbLoc);
         auto annotations = kdb.extractAnnotations();
-        QList<QAnnotation> data;
         layoutAboutToBeChanged();
         for (auto a : annotations)
         {
@@ -93,9 +92,8 @@ void BookModel::openDB(QUrl loc)
                 .title = QString::fromStdString(a.title),
                 .text = QString::fromStdString(a.text).trimmed(),
             };
-            data.append(qa);
+            this->m_data.append(qa);
         }
-        this->m_data = data;
         this->currentDevicePath = loc;
         layoutChanged();
     }
