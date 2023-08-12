@@ -109,10 +109,11 @@ public:
      * KoboLib will be used to open the database and extract the
      * annotations, adding them to the model.
      *
+     * @param dbLoc path to database
      * @return true if annotations were extracted successfully
      * @return false if failed to extract
      */
-    Q_INVOKABLE bool openDB(QUrl);
+    Q_INVOKABLE bool openDB(QString dbLoc);
 
 private:
     // Annotation list

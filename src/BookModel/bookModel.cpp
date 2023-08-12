@@ -57,12 +57,12 @@ QHash<int, QByteArray> BookModel::roleNames() const
 
 // Open a db with KoboDB and add its data
 // to the model
-bool BookModel::openDB(QUrl loc)
+bool BookModel::openDB(QString loc)
 {
     // initialize model with kobo DB annotations
     // TO-DO: How to convert this filename to something SQLite likes?
     // doesn't work with file:///
-    auto dbLoc = loc.path().toStdString();
+    auto dbLoc = loc.toStdString();
     try
     {
 
