@@ -26,13 +26,7 @@ ListView {
         console.log("BookList file changed");
         bookModel.openDB(fileName)
     }
-    Connections {
-        target: bookModel 
-        function onDeviceDetected(url) {
-            bookContainer.detectedUrl = url
-            detectionDialog.open()
-        }
-    }
+    
     MessageDialog {
         id: detectionDialog
         text: qsTr("A Kobo device has been detected, extract annotations?")
@@ -42,22 +36,9 @@ ListView {
             case MessageDialog.Yes:
                 bookModel.openDB(bookContainer.detectedUrl);
                 break;
-            case MessageDialog.No:
-                bookModel.blacklistDevice(bookContainer.detectedUrl);
-                break;
+            //TODO: Add blacklist
             }
         }
         
     }
-
-    function extract() {
-        console.log("Extract request received")
-        bookModel.openAttachedDB();
-    }
-
-    Component.onCompleted: {
-        // Load the application persistent DB
-        bookModel.openDB("file:///home/adelynflowers/dev/qt-quick-project/src/KoboLib/data/KoboReader.sqlite");
-    }
-
 }

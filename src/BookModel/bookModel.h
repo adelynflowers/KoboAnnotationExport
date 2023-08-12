@@ -65,11 +65,8 @@ public:
 
     /**
      * @brief Destroy the Book Model object
-     *
-     * Frees the timer member.
-     *
      */
-    ~BookModel();
+    ~BookModel() {}
 
     /**
      * @brief Returns the number of rows in the model.
@@ -112,104 +109,17 @@ public:
      * KoboLib will be used to open the database and extract the
      * annotations, adding them to the model.
      *
-     * @return Q_INVOKABLE
+     * @return true if annotations were extracted successfully
+     * @return false if failed to extract
      */
-    Q_INVOKABLE void openDB(QUrl);
-
-    /**
-     * @brief Searches for an attached Kobo device and
-     * calls openDB on its database.
-     *
-     * @return Q_INVOKABLE
-     */
-    Q_INVOKABLE bool openAttachedDB();
-
-    /**
-     * @brief Adds a device to the blacklist.
-     *
-     * Blacklisted devices will not trigger a signal
-     * emission from searchDevices.
-     *
-     * @return Q_INVOKABLE
-     */
-    Q_INVOKABLE void blacklistDevice(QUrl);
-
-    /**
-     * @brief Copies a QString to the clipboard.
-     *
-     * @return Q_INVOKABLE
-     */
-    Q_INVOKABLE void copyToClipboard(QString);
-
-    /**
-     * @brief Filters model data to the annotations
-     * matching the search string.
-     *
-     * @return Q_INVOKABLE
-     */
-    Q_INVOKABLE void searchBooks(QString);
-
-public slots:
-    /**
-     * @brief Emits deviceDetected if a suitable
-     * Kobo device is found.
-     */
-    void searchDevices();
-signals:
-    /**
-     * @brief Emits root path of an attached
-     * Kobo device.
-     */
-    void deviceDetected(QUrl);
+    Q_INVOKABLE bool openDB(QUrl);
 
 private:
-    /**
-     * @brief Searches for a mounted volume
-     * with "kobo" in the name.
-     *
-     * @return QStorageInfo kobo device
-     */
-    QStorageInfo findKoboDevice();
-    /**
-     * @brief Get the database location of an
-     * attached Kobo.
-     *
-     * @return QUrl Path to kobo db file.
-     */
-    QUrl getDeviceDBLoc(QStorageInfo);
-
-    /**
-     * @brief Determines if a device path is the same
-     * as currentDevicePath.
-     *
-     * @return true if device path is different
-     * @return false if device path is the same
-     */
-    bool isNewDevice(QUrl);
-
-    /**
-     * @brief Determines if a device path is blacklisted
-     * by looking it up in blacklisted_devices.
-     *
-     * @return true if device is blacklisted
-     * @return false if it is not
-     */
-    bool isBlacklisted(QUrl);
-
-    // List of blacklisted devices
-    QHash<QUrl, bool> blacklisted_devices;
-
     // Annotation list
-    QList<QAnnotation> m_data;
+    QList<QAnnotation> model;
 
     // Role names hash table
-    QHash<int, QByteArray> m_rolenames;
-
-    // Timer for triggering device searching
-    QTimer *timer;
-
-    // Path of last opened device
-    QUrl currentDevicePath;
+    QHash<int, QByteArray> rolenames;
 };
 
 #endif // BOOKMODEL_H
