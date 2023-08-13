@@ -17,6 +17,9 @@
 #include <QClipboard>
 #include <QGuiApplication>
 #include <memory>
+#include <SQLiteCpp/SQLiteCpp.h>
+
+#define APP_DB_NAME "kae.db"
 
 /**
  * @brief A class containing helper
@@ -91,6 +94,14 @@ signals:
      */
     void deviceDetected(QString dbPath);
 
+    /**
+     * @brief Emits the path to the application DB after
+     * initialization.
+     *
+     * @param dbPath path to application db file
+     */
+    void appReady(QString dbPath);
+
 private:
     /**
      * @brief Searches for a mounted volume
@@ -128,9 +139,24 @@ private:
      */
     bool isBlacklisted(QString dbPath);
 
-    void initializeApplicationDB();
-
+    /**
+     * @brief Get the Application DB path
+     *
+     * @return QString db path
+     */
     QString getApplicationDB();
+
+    /**
+     * @brief Get the app data folder
+     *
+     * @return path to folder
+     */
+    QString getApplicationFolder();
+
+    /**
+     * @brief Creates the DB if it does not exist.
+     */
+    void initializeApplicationDB();
 
     // timer for device searching
     std::unique_ptr<QTimer> timer;

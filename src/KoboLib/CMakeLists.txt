@@ -1,8 +1,5 @@
-# Packages
-find_package(unofficial-sqlite3 CONFIG REQUIRED)
-find_package(SQLiteCpp CONFIG REQUIRED)
-find_package(GTest CONFIG REQUIRED)
 
+find_package(GTest CONFIG REQUIRED)
 # Lib setup
 add_library(
     KoboLib STATIC src/koboDB.cpp

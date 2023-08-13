@@ -57,32 +57,115 @@ QHash<int, QByteArray> BookModel::roleNames() const
 
 // Open a db with KoboDB and add its data
 // to the model
-bool BookModel::openDB(QString loc)
+bool BookModel::openKoboDB(QString loc)
 {
     // initialize model with kobo DB annotations
-    // TO-DO: How to convert this filename to something SQLite likes?
-    // doesn't work with file:///
     auto dbLoc = loc.toStdString();
     try
     {
 
         auto kdb = KoboDB::openKoboDB(dbLoc);
         auto annotations = kdb.extractAnnotations();
-        layoutAboutToBeChanged();
-        for (auto a : annotations)
-        {
-            auto qa = QAnnotation{
-                .title = QString::fromStdString(a.title),
-                .text = QString::fromStdString(a.text).trimmed(),
-            };
-            model.append(qa);
-        }
-        layoutChanged();
+        // TODO: prevent copy of vector
+        writeToApplicationDB(annotations);
+        selectAll();
         return true;
     }
     catch (SQLite::Exception &ex)
     {
         std::cerr << "Failed to open DB " << dbLoc << ": " << ex.what() << std::endl;
         return false;
+    }
+}
+
+// Select * from app DB and load into
+// model
+void BookModel::executeSelectQuery(std::string query)
+{
+    if (!appDB)
+    {
+        return;
+    }
+
+    SQLite::Statement stmt(*appDB, query);
+    QList<QAnnotation> newModel;
+    while (stmt.executeStep())
+    {
+        // TODO: Figure out emplace back for QAnnotation
+        auto title = QString::fromStdString(stmt.getColumn(0).getString());
+        auto text = QString::fromStdString(stmt.getColumn(1).getString());
+        newModel.push_back(QAnnotation{.title = title, .text = text});
+    }
+    layoutAboutToBeChanged();
+    model = newModel;
+    layoutChanged();
+}
+
+void BookModel::selectAll()
+{
+    executeSelectQuery("SELECT title, bookmarkText FROM annotations;");
+}
+
+void BookModel::searchAnnotations(QString query)
+{
+    auto searchTerm = query.toStdString();
+    auto sqlQuery = "SELECT title, bookmarkText "
+                    "FROM annotations "
+                    "WHERE title LIKE '%" +
+                    searchTerm + "%'" +
+                    " OR bookmarkText LIKE '%" + searchTerm + "%';";
+    qDebug() << sqlQuery;
+    executeSelectQuery(sqlQuery);
+}
+
+// Open the application DB and assign it to appDB
+bool BookModel::openApplicationDB(QString loc)
+{
+    try
+    {
+        qDebug() << "Opening application DB located at " << loc;
+        appDB = std::make_unique<SQLite::Database>(loc.toStdString(), SQLite::OPEN_READWRITE);
+        return true;
+    }
+    catch (SQLite::Exception ex)
+    {
+        qDebug() << "Failed to open application DB:" << ex.what();
+        return false;
+    }
+}
+
+void BookModel::writeToApplicationDB(std::vector<KoboDB::Annotation> annotations)
+{
+    if (appDB)
+    {
+        qDebug() << "annotations reportedly exists: " << appDB->tableExists("annotations");
+        SQLite::Transaction transaction(*appDB);
+        SQLite::Statement query{
+            *appDB,
+            "INSERT OR IGNORE INTO annotations ("
+            "volumeId,bookmarkText,"
+            "bookmarkAnnotation,dateCreated,"
+            "dateModified,bookTitle,"
+            "title,attribution)"
+            " VALUES (?,?,?,?,?,?,?,?)"};
+        for (const auto &a : annotations)
+        {
+            query.bind(1, a.volumeId);
+            query.bind(2, a.text);
+            query.bind(3, a.annotation);
+            query.bind(4, a.dateCreated);
+            query.bind(5, a.dateModified);
+            query.bind(6, a.bookTitle);
+            query.bind(7, a.title);
+            query.bind(8, a.attribution);
+            query.exec();
+            query.reset();
+        }
+
+        transaction.commit();
+    }
+    else
+    {
+        qDebug() << "Error: application DB has no annotations table";
     }
 }

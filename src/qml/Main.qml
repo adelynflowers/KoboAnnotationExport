@@ -57,11 +57,12 @@ ApplicationWindow {
             Layout.fillWidth: true 
             Layout.preferredHeight: 2
             TextField {
+                id: annotationSearch
                 Layout.fillWidth: true 
                 Layout.fillHeight: true 
                 placeholderText: qsTr("Type to begin searching")
                 onTextEdited: function() {
-                    console.log(text)
+                    bookList.searchAnnotations(annotationSearch.text)
                 }
             }
         }
@@ -73,7 +74,14 @@ ApplicationWindow {
                 id: bookList
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.margins: 50
+                Layout.leftMargin: 5
+                Layout.rightMargin: 5
+                Connections {
+                    target: kaeLib 
+                    function onAppReady(filename) {
+                        bookList.openApplicationDB(filename);
+                    }
+                }
             }
         }
     }
@@ -92,7 +100,7 @@ ApplicationWindow {
         buttons: MessageDialog.Yes | MessageDialog.No
         onAccepted: {
             let detectedPath = detectionDialog.detectedPath
-            let success = bookList.openDB(detectedPath);
+            let success = bookList.openKoboDB(detectedPath);
             if (success) {
                     console.log("Successfully opened DB at ", detectedPath);
                     kaeLib.currentDevice = detectedPath;
@@ -119,9 +127,4 @@ ApplicationWindow {
         
     }
 }
-    // For dark mode/light mode coloring
-    // SystemPalette {
-    //     id: myPalette
-    //     colorGroup: SystemPalette.Active
-    // }
-    // property color system_text_color: myPalette.text
+    

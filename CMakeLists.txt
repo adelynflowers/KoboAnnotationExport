@@ -9,6 +9,8 @@ include(GoogleTest)
 list(APPEND CMAKE_PREFIX_PATH "/home/adelynflowers/Qt/6.5.2/gcc_64")
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core)
+find_package(unofficial-sqlite3 CONFIG REQUIRED)
+find_package(SQLiteCpp CONFIG REQUIRED)
 
 # Qt setup
 qt_standard_project_setup(REQUIRES 6.5)

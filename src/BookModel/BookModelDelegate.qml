@@ -4,35 +4,53 @@ import QtQuick.Layouts
 import BookModelLib
 
 Item {
-    width: ListView.view.width
-    height: col.implicitHeight + 20
-    z: 2
-    Button {
-        text: qsTr("Copy")
-        onClicked: function() {
-            parent.ListView.view.model.copyToClipboard(model.text);
-        }
-        anchors.top: parent.top 
-        anchors.right: parent.right
+    SystemPalette {
+        id: palette
+        colorGroup: SystemPalette.Active
     }
-    ColumnLayout {
+    width: ListView.view.width
+    height: col.implicitHeight
+    RowLayout {
         id: col
         width: parent.width
-        Label {
-            id: textItem
-            Layout.fillWidth: true
-            text: model.title
-            font.italic: true 
-            font.bold: true
-            wrapMode: Text.WordWrap
+        z: 2
+        ColumnLayout {
+            Layout.preferredWidth: 9
+            Layout.fillHeight: true
+            Label {
+                id: textItem2
+                Layout.fillWidth: true
+                Layout.leftMargin: 10
+                Layout.rightMargin: 50
+                text: model.text
+                wrapMode: Text.WordWrap
+            }
         }
-        Label {
-            id: textItem2
-            Layout.fillWidth: true
-            Layout.leftMargin: 10
-            text: model.text
-            wrapMode: Text.WordWrap
+        ColumnLayout {
+            Layout.fillHeight: true 
+            Layout.preferredWidth: 1
+            Button {
+                //TODO: Make global copy to clipboard function
+                text: qsTr("Copy")
+                z: 2
+                Layout.alignment: Qt.AlignRight
+            }
+            Label {
+                id: textItem
+                Layout.fillWidth: true
+                text: model.title
+                font.italic: true 
+                wrapMode: Text.WordWrap
+                Layout.alignment: Qt.AlignRight
+                horizontalAlignment: Text.AlignRight
+                color: palette.placeholderText
+            }
         }
+    }
+    Rectangle {
+        anchors.fill: parent
+        z: 1
+        color: palette.base
     }
 }
 

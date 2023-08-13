@@ -11,7 +11,7 @@ target_link_libraries(
 
 qt_add_qml_module(BookModelLib 
     URI BookModelLib 
-    OUTPUT_DIRECTORY src/BookModelLib
+    OUTPUT_DIRECTORY BookModelLib
     VERSION 1.0
     SOURCES 
     bookModel.cpp bookModel.h
@@ -22,7 +22,7 @@ qt_add_library(BookListLib STATIC)
 qt_add_qml_module(BookListLib
     URI BookListLib
     VERSION 1.0
-    OUTPUT_DIRECTORY src/BookListLib
+    OUTPUT_DIRECTORY BookListLib
     QML_FILES 
         BookListView.qml 
         BookModelDelegate.qml

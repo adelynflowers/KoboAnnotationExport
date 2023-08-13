@@ -6,6 +6,8 @@ KaeLib::KaeLib()
     timer.reset(new QTimer(this));
     connect(&(*timer), &QTimer::timeout, this, &KaeLib::searchDevices);
     timer->start(1000);
+
+    QTimer::singleShot(500, this, &KaeLib::initializeApplicationDB);
 }
 
 // Emit signal if a kobo device is found
@@ -81,4 +83,51 @@ QString KaeLib::getCurrentDevice()
 void KaeLib::setCurrentDevice(QString path)
 {
     currentDevicePath = path;
+}
+
+QString KaeLib::getApplicationFolder()
+{
+    return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+}
+// Returns the path to application DB
+QString KaeLib::getApplicationDB()
+{
+    auto parentFolder = QDir(getApplicationFolder());
+    auto dbPath = parentFolder.absoluteFilePath(APP_DB_NAME);
+    return dbPath;
+}
+
+// Initializes the DB if it doesn't exist
+void KaeLib::initializeApplicationDB()
+{
+    QDir appDir(getApplicationFolder());
+    if (!appDir.exists())
+    {
+        qDebug() << "App data dir does not exist, creating";
+        appDir.mkdir(getApplicationFolder());
+    }
+
+    auto dbLoc = getApplicationDB();
+    if (!appDir.exists(APP_DB_NAME))
+    {
+        qDebug() << "Creating app db for the first time at " << dbLoc;
+        SQLite::Database db(dbLoc.toStdString(), SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
+        const char *createAnnotationsTable = "CREATE TABLE annotations"
+                                             "("
+                                             "volumeId TEXT,"
+                                             "bookmarkText TEXT UNIQUE,"
+                                             "bookmarkAnnotation TEXT,"
+                                             "dateCreated TEXT,"
+                                             "dateModified TEXT,"
+                                             "bookTitle TEXT,"
+                                             "title TEXT,"
+                                             "attribution TEXT"
+                                             ")";
+        SQLite::Transaction transaction(db);
+        db.exec(createAnnotationsTable);
+        transaction.commit();
+    }
+    qDebug() << "emitting app db ready";
+    emit appReady(dbLoc);
+    qDebug() << "emitted";
 }

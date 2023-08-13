@@ -16,6 +16,7 @@
 #include <koboDB.h>
 #include <QClipboard>
 #include <QGuiApplication>
+#include <memory>
 
 /**
  * @brief A Qt-friendly container for annotation information.
@@ -25,6 +26,7 @@
  */
 struct QAnnotation
 {
+public:
     QString title; // book title
     QString text;  // annotation text
 };
@@ -113,14 +115,63 @@ public:
      * @return true if annotations were extracted successfully
      * @return false if failed to extract
      */
-    Q_INVOKABLE bool openDB(QString dbLoc);
+    Q_INVOKABLE bool openKoboDB(QString dbLoc);
+
+    /**
+     * @brief Opens the application DB and assigns it
+     * to appDB.
+     *
+     * @param dbLoc path to database
+     * @return true if opened successfully
+     * @return false if not opened
+     */
+    Q_INVOKABLE bool openApplicationDB(QString dbLoc);
+
+    /**
+     * @brief Queries the application db
+     * for all entries and adds them to the
+     * model.
+     *
+     */
+    Q_INVOKABLE void selectAll();
+
+    /**
+     * @brief Filters the annotations to
+     * a subset that match the given query.
+     *
+     * @param query
+     * @return Q_INVOKABLE
+     */
+    Q_INVOKABLE void searchAnnotations(QString query);
 
 private:
+    /**
+     * @brief Writes a list of annotations from a Kobo DB to
+     * the application DB.
+     *
+     * @param annotations vector of KoboDB Annotations
+     */
+    void writeToApplicationDB(std::vector<KoboDB::Annotation> annotations);
+
+    /**
+     * @brief Executes a select query
+     * and updates the model with the results.
+     *
+     * Enforces the order that variables are declared
+     * in the QAnnotation definition.
+     *
+     * @param query query to run
+     */
+    void executeSelectQuery(std::string query);
+
     // Annotation list
     QList<QAnnotation> model;
 
     // Role names hash table
     QHash<int, QByteArray> rolenames;
+
+    // Application DB
+    std::unique_ptr<SQLite::Database> appDB;
 };
 
 #endif // BOOKMODEL_H
