@@ -34,7 +34,6 @@ ListView {
     }
 
     function searchAnnotations(query) {
-        console.log("Searching annotations for ", query);
         bookModel.searchAnnotations(query);
     }
     SystemPalette {
