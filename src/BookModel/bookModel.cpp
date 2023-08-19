@@ -9,6 +9,15 @@ BookModel::BookModel(QObject *parent)
     // initialize custom roles that map to annotations
     rolenames[TitleRole] = "title";
     rolenames[TextRole] = "text";
+    rolenames[SubModelRole] = "subModel";
+}
+
+BookModel::~BookModel()
+{
+    for (auto sub : experimentalModel)
+    {
+        delete sub;
+    }
 }
 
 // Return the number of row in the model
@@ -16,7 +25,7 @@ int BookModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     // return our model count
-    return model.count();
+    return experimentalModel.count();
 }
 
 // Get model data at an index
@@ -27,7 +36,7 @@ QVariant BookModel::data(const QModelIndex &index, int role) const
     int row = index.row();
 
     // boundary check for the row
-    if (row < 0 || row >= model.count())
+    if (row < 0 || row >= experimentalModel.count())
     {
         return QVariant();
     }
@@ -40,9 +49,9 @@ QVariant BookModel::data(const QModelIndex &index, int role) const
     case TitleRole:
         // Return the color name for the particular row
         // Qt automatically converts it to the QVariant type
-        return model.value(row).title;
-    case TextRole:
-        return model.value(row).text;
+        return experimentalModel.at(row)->getTitle();
+    case SubModelRole:
+        return QVariant::fromValue<QObject *>(experimentalModel.at(row));
     }
 
     // The view asked for other data, just return an empty QVariant
@@ -80,30 +89,66 @@ bool BookModel::openKoboDB(QString loc)
 
 // Select * from app DB and load into
 // model
+// void BookModel::executeOldSelectQuery(std::string query)
+// {
+//     if (!appDB)
+//     {
+//         return;
+//     }
+
+//     SQLite::Statement stmt(*appDB, query);
+//     QList<QAnnotation> newModel;
+//     while (stmt.executeStep())
+//     {
+//         // TODO: Figure out emplace back for QAnnotation
+//         auto title = QString::fromStdString(stmt.getColumn(0).getString());
+//         auto text = QString::fromStdString(stmt.getColumn(1).getString());
+//         newModel.push_back(QAnnotation{.title = title, .text = text});
+//     }
+//     layoutAboutToBeChanged();
+//     model = newModel;
+//     layoutChanged();
+// }
+
+// Select * from app DB and load into
+// model
 void BookModel::executeSelectQuery(std::string query)
 {
+    qDebug() << "Executing select query";
     if (!appDB)
     {
         return;
     }
 
     SQLite::Statement stmt(*appDB, query);
-    QList<QAnnotation> newModel;
+
+    for (auto m : experimentalModel)
+    {
+        delete m;
+    }
+    experimentalModel.clear();
+    QString currentTitle = "";
     while (stmt.executeStep())
     {
+
         // TODO: Figure out emplace back for QAnnotation
         auto title = QString::fromStdString(stmt.getColumn(0).getString());
+        if (title != currentTitle)
+        {
+            currentTitle = title;
+            auto sub = new SubModel(currentTitle);
+            experimentalModel.push_back(sub);
+        }
+        layoutAboutToBeChanged();
         auto text = QString::fromStdString(stmt.getColumn(1).getString());
-        newModel.push_back(QAnnotation{.title = title, .text = text});
+        experimentalModel.back()->addAnnotation(text);
+        layoutChanged();
     }
-    layoutAboutToBeChanged();
-    model = newModel;
-    layoutChanged();
 }
 
 void BookModel::selectAll()
 {
-    executeSelectQuery("SELECT title, bookmarkText FROM annotations;");
+    executeSelectQuery("SELECT title, bookmarkText FROM annotations ORDER BY title;");
 }
 
 void BookModel::searchAnnotations(QString query)
@@ -113,7 +158,8 @@ void BookModel::searchAnnotations(QString query)
                     "FROM annotations "
                     "WHERE title LIKE '%" +
                     searchTerm + "%'" +
-                    " OR bookmarkText LIKE '%" + searchTerm + "%';";
+                    " OR bookmarkText LIKE '%" + searchTerm + "%'" +
+                    " ORDER BY title;";
     qDebug() << sqlQuery;
     executeSelectQuery(sqlQuery);
 }

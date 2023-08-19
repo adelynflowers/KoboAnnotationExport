@@ -17,6 +17,7 @@
 #include <QClipboard>
 #include <QGuiApplication>
 #include <memory>
+#include <subModel.h>
 
 /**
  * @brief A Qt-friendly container for annotation information.
@@ -50,7 +51,8 @@ public:
     enum RoleNames
     {
         TitleRole = Qt::UserRole,
-        TextRole = Qt::UserRole + 1
+        TextRole = Qt::UserRole + 1,
+        SubModelRole
     };
 
     /**
@@ -68,7 +70,7 @@ public:
     /**
      * @brief Destroy the Book Model object
      */
-    ~BookModel() {}
+    ~BookModel();
 
     /**
      * @brief Returns the number of rows in the model.
@@ -166,6 +168,8 @@ private:
 
     // Annotation list
     QList<QAnnotation> model;
+
+    QList<SubModel *> experimentalModel;
 
     // Role names hash table
     QHash<int, QByteArray> rolenames;
