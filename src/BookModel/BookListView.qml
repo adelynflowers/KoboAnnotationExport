@@ -20,6 +20,15 @@ ListView {
     focus: true
     currentIndex: -1
 
+    section {
+        property: "title"
+        criteria: ViewSection.FullString
+        delegate: Label {
+            text: section 
+            font.pixelSize: 24
+        }
+    }
+
     function openKoboDB(filename) {
         console.log("Opening DB", filename)
         return bookModel.openKoboDB(filename);
@@ -45,4 +54,5 @@ ListView {
         z: -1
         color: palette.alternateBase
     }
+
 }
