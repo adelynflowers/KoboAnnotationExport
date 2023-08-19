@@ -4,12 +4,15 @@ import QtQuick.Controls
 import QtQuick.Dialogs
 import BookModelLib
 
+
+
 ListView {
     id: bookContainer
     spacing: 5
-    model: BookModel {
+    BookModel {
         id: bookModel
     }
+    model: bookModel.getProxyModel()
     delegate: BookModelDelegate {}
     highlightMoveVelocity: 5000
     clip: true 

@@ -17,6 +17,7 @@
 #include <QClipboard>
 #include <QGuiApplication>
 #include <memory>
+#include <QSortFilterProxyModel>
 
 /**
  * @brief A Qt-friendly container for annotation information.
@@ -144,6 +145,11 @@ public:
      */
     Q_INVOKABLE void searchAnnotations(QString query);
 
+    Q_INVOKABLE QSortFilterProxyModel *getProxyModel()
+    {
+        return &proxyModel;
+    }
+
 private:
     /**
      * @brief Writes a list of annotations from a Kobo DB to
@@ -172,6 +178,9 @@ private:
 
     // Application DB
     std::unique_ptr<SQLite::Database> appDB;
+
+    // Proxy model
+    QSortFilterProxyModel proxyModel;
 };
 
 #endif // BOOKMODEL_H

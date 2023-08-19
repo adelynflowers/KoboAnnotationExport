@@ -1,5 +1,6 @@
 #include "bookModel.h"
 #define DB_LOC "/home/adelynflowers/dev/qt-quick-project/src/KoboLib/data/KoboReader.sqlite"
+#include <QRegularExpression>
 
 // Initialize object with roles. Set off timer for
 // device searching.
@@ -9,6 +10,10 @@ BookModel::BookModel(QObject *parent)
     // initialize custom roles that map to annotations
     rolenames[TitleRole] = "title";
     rolenames[TextRole] = "text";
+
+    // put model behind proxy model
+    proxyModel.setSourceModel(this);
+    proxyModel.setFilterRole(TextRole);
 }
 
 BookModel::~BookModel()
@@ -84,29 +89,6 @@ bool BookModel::openKoboDB(QString loc)
 
 // Select * from app DB and load into
 // model
-// void BookModel::executeOldSelectQuery(std::string query)
-// {
-//     if (!appDB)
-//     {
-//         return;
-//     }
-
-//     SQLite::Statement stmt(*appDB, query);
-//     QList<QAnnotation> newModel;
-//     while (stmt.executeStep())
-//     {
-//         // TODO: Figure out emplace back for QAnnotation
-//         auto title = QString::fromStdString(stmt.getColumn(0).getString());
-//         auto text = QString::fromStdString(stmt.getColumn(1).getString());
-//         newModel.push_back(QAnnotation{.title = title, .text = text});
-//     }
-//     layoutAboutToBeChanged();
-//     model = newModel;
-//     layoutChanged();
-// }
-
-// Select * from app DB and load into
-// model
 void BookModel::executeSelectQuery(std::string query)
 {
     qDebug() << "Executing select query";
@@ -138,15 +120,7 @@ void BookModel::selectAll()
 
 void BookModel::searchAnnotations(QString query)
 {
-    auto searchTerm = query.toStdString();
-    auto sqlQuery = "SELECT title, bookmarkText "
-                    "FROM annotations "
-                    "WHERE title LIKE '%" +
-                    searchTerm + "%'" +
-                    " OR bookmarkText LIKE '%" + searchTerm + "%'" +
-                    " ORDER BY title;";
-    qDebug() << sqlQuery;
-    executeSelectQuery(sqlQuery);
+    proxyModel.setFilterRegularExpression(QRegularExpression(query, QRegularExpression::CaseInsensitiveOption));
 }
 
 // Open the application DB and assign it to appDB
