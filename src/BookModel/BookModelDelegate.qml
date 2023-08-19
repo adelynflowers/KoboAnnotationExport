@@ -31,8 +31,10 @@ Item {
             Layout.fillHeight: true 
             Layout.preferredWidth: 2
             Button {
-                text: qsTr("Copy")
+                text: "\uF0C5"
+                font.family: "fontello"
                 Layout.alignment: Qt.AlignRight
+                flat: true
                 z: 2
                 onClicked: kaeLib.copyToClipboard(model.text)
             }
