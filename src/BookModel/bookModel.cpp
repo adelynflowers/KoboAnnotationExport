@@ -14,6 +14,7 @@ BookModel::BookModel(QObject *parent)
     // put model behind proxy model
     proxyModel.setSourceModel(this);
     proxyModel.setFilterRole(TextRole);
+    proxyModel.setSortRole(TitleRole);
 }
 
 BookModel::~BookModel()
@@ -109,6 +110,7 @@ void BookModel::executeSelectQuery(std::string query)
         layoutAboutToBeChanged();
         auto text = QString::fromStdString(stmt.getColumn(1).getString());
         model.push_back(QAnnotation{.title = title, .text = text});
+        proxyModel.sort(0, Qt::AscendingOrder);
         layoutChanged();
     }
 }
