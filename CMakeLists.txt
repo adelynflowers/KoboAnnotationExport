@@ -38,7 +38,6 @@ qt_add_qml_module(kae
     URI MainView 
     QML_FILES 
         src/qml/Main.qml 
-        src/qml/TreeTest.qml
 )
 
 
@@ -54,11 +53,6 @@ add_subdirectory(src/BookModel)
 ## KaeLib
 add_subdirectory(src/KaeLib)
 
-## Tree model
-add_subdirectory(src/TreeModel)
-
-## Nested List Model
-add_subdirectory(src/DoubleList)
 
 # Link libraries
 target_link_libraries(kae

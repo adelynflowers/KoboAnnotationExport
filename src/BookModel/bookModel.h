@@ -17,7 +17,6 @@
 #include <QClipboard>
 #include <QGuiApplication>
 #include <memory>
-#include <subModel.h>
 
 /**
  * @brief A Qt-friendly container for annotation information.
@@ -52,7 +51,6 @@ public:
     {
         TitleRole = Qt::UserRole,
         TextRole = Qt::UserRole + 1,
-        SubModelRole
     };
 
     /**
@@ -168,8 +166,6 @@ private:
 
     // Annotation list
     QList<QAnnotation> model;
-
-    QList<SubModel *> experimentalModel;
 
     // Role names hash table
     QHash<int, QByteArray> rolenames;

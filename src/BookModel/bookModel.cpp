@@ -9,15 +9,10 @@ BookModel::BookModel(QObject *parent)
     // initialize custom roles that map to annotations
     rolenames[TitleRole] = "title";
     rolenames[TextRole] = "text";
-    rolenames[SubModelRole] = "subModel";
 }
 
 BookModel::~BookModel()
 {
-    for (auto sub : experimentalModel)
-    {
-        delete sub;
-    }
 }
 
 // Return the number of row in the model
@@ -25,7 +20,7 @@ int BookModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     // return our model count
-    return experimentalModel.count();
+    return model.count();
 }
 
 // Get model data at an index
@@ -36,7 +31,7 @@ QVariant BookModel::data(const QModelIndex &index, int role) const
     int row = index.row();
 
     // boundary check for the row
-    if (row < 0 || row >= experimentalModel.count())
+    if (row < 0 || row >= model.count())
     {
         return QVariant();
     }
@@ -49,9 +44,9 @@ QVariant BookModel::data(const QModelIndex &index, int role) const
     case TitleRole:
         // Return the color name for the particular row
         // Qt automatically converts it to the QVariant type
-        return experimentalModel.at(row)->getTitle();
-    case SubModelRole:
-        return QVariant::fromValue<QObject *>(experimentalModel.at(row));
+        return model.at(row).title;
+    case TextRole:
+        return model.at(row).text;
     }
 
     // The view asked for other data, just return an empty QVariant
@@ -122,26 +117,16 @@ void BookModel::executeSelectQuery(std::string query)
 
     SQLite::Statement stmt(*appDB, query);
 
-    for (auto m : experimentalModel)
-    {
-        delete m;
-    }
-    experimentalModel.clear();
+    model.clear();
     QString currentTitle = "";
     while (stmt.executeStep())
     {
 
         // TODO: Figure out emplace back for QAnnotation
         auto title = QString::fromStdString(stmt.getColumn(0).getString());
-        if (title != currentTitle)
-        {
-            currentTitle = title;
-            auto sub = new SubModel(currentTitle);
-            experimentalModel.push_back(sub);
-        }
         layoutAboutToBeChanged();
         auto text = QString::fromStdString(stmt.getColumn(1).getString());
-        experimentalModel.back()->addAnnotation(text);
+        model.push_back(QAnnotation{.title = title, .text = text});
         layoutChanged();
     }
 }

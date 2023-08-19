@@ -2,9 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Dialogs
-//import BookListLib
-import KaeLib
-import TreeModelLib
+import BookListLib
 
 ApplicationWindow {
     visible: true
@@ -71,32 +69,20 @@ ApplicationWindow {
         RowLayout {
             Layout.fillWidth: true 
             Layout.preferredHeight: 8
-            TreeView {
-                Layout.fillWidth: true 
-                Layout.fillHeight: true 
-                model: AnnotationTreeModel {}
-                delegate: TreeViewDelegate {}
+            BookListView {
+                id: bookList
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.leftMargin: 5
+                Layout.rightMargin: 5
+                Connections {
+                    target: kaeLib 
+                    function onAppReady(filename) {
+                        bookList.openApplicationDB(filename);
+                    }
+                }
             }
-            // BookListView {
-            //     id: bookList
-            //     Layout.fillWidth: true
-            //     Layout.fillHeight: true
-            //     Layout.leftMargin: 5
-            //     Layout.rightMargin: 5
-            //     Connections {
-            //         target: kaeLib 
-            //         function onAppReady(filename) {
-            //             bookList.openApplicationDB(filename);
-            //         }
-            //     }
-            // }
         }
-    }
-    
-    KaeLib {
-        id: kaeLib
-        //TODO: Has to be a better way to do this 
-        //with a queue
     }
 
     MessageDialog {
