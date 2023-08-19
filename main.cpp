@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQuick>
+#include <QFontDatabase>
 #include <kaeLib.h>
 
 int main(int argc, char *argv[])
@@ -9,6 +10,10 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     KaeLib kaeLib;
+    // TODO: add font file to here and cmake
+    QFontDatabase fontDatabase;
+    if (fontDatabase.addApplicationFont("fonts/fontello.ttf") == -1)
+        qWarning() << "Failed to load fontello.ttf";
     engine.rootContext()->setContextProperty("kaeLib", &kaeLib);
     QObject::connect(
         &engine, &QQmlApplicationEngine::objectCreationFailed,
