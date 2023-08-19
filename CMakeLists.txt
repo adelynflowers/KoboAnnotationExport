@@ -49,7 +49,7 @@ qt_add_qml_module(kae
 add_subdirectory(src/KoboLib)
 
 ## Book model
-#add_subdirectory(src/BookModel)
+add_subdirectory(src/BookModel)
 
 ## KaeLib
 add_subdirectory(src/KaeLib)
@@ -66,10 +66,8 @@ target_link_libraries(kae
     Qt6::Quick 
     Qt6::Qml
     KoboLib
-    #BookListLibplugin
-    KaeLibplugin
-    TreeModelLibplugin
-    NestedListModelplugin
+    BookListLibplugin
+    KaeLib
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

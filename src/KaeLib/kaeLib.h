@@ -30,7 +30,6 @@ class KaeLib : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString currentDevice READ getCurrentDevice WRITE setCurrentDevice)
-    QML_ELEMENT
 public:
     /**
      * @brief Construct a new Kae Lib object.
@@ -41,6 +40,8 @@ public:
      *
      */
     KaeLib();
+
+    ~KaeLib();
 
     Q_INVOKABLE void hello()
     {

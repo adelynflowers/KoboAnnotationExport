@@ -10,6 +10,10 @@ KaeLib::KaeLib()
     QTimer::singleShot(500, this, &KaeLib::initializeApplicationDB);
 }
 
+KaeLib::~KaeLib()
+{
+}
+
 // Emit signal if a kobo device is found
 void KaeLib::searchDevices()
 {
