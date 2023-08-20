@@ -8,7 +8,7 @@ import BookModelLib
 
 ListView {
     id: bookContainer
-    spacing: 5
+    spacing: 0
     BookModel {
         id: bookModel
     }
@@ -19,24 +19,36 @@ ListView {
     boundsBehavior: Flickable.StopAtBounds
     focus: true
     currentIndex: -1
+    property var collapsed: ({})
 
     section {
         property: "title"
         criteria: ViewSection.FullString
         delegate: Label {
-            text: section 
-            font.pixelSize: 24
+            signal clicked()
+            text: (
+                ListView.view.isExpanded(section) ? "\uE800 " : "\uE801 " 
+             ) + section
+            font.pixelSize: 18
+            font.family: "fontello"
+            onClicked: ListView.view.toggleSection(section)
+            MouseArea {
+                anchors.fill: parent 
+                onClicked: {
+                    parent.clicked()
+                }
+                cursorShape: Qt.PointingHandCursor
+
+            }
         }
     }
 
     function openKoboDB(filename) {
-        console.log("Opening DB", filename)
         return bookModel.openKoboDB(filename);
         
     }
 
     function openApplicationDB(filename) {
-        console.log("Opening app DB, ", filename)
         if (bookModel.openApplicationDB(filename)) {
             bookModel.selectAll();
         }
@@ -55,4 +67,23 @@ ListView {
         color: palette.alternateBase
     }
 
+    function isExpanded(section) {
+        return !(section in collapsed)
+    }
+    function expandSection(section) {
+        delete collapsed[section]
+        collapsedChanged()
+    } 
+    function collapseSection(section) {
+        collapsed[section] = true 
+        collapsedChanged()
+    }
+    function toggleSection(section) {
+        if (isExpanded(section)) {
+            collapseSection(section)
+        }
+        else {
+            expandSection(section)
+        }
+    }
 }

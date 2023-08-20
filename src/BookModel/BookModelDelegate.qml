@@ -8,9 +8,13 @@ Item {
         id: palette
         colorGroup: SystemPalette.Active
     }
+    property bool expanded: ListView.view.isExpanded(title)
     width: ListView.view.width
-    height: col.implicitHeight
-
+    height: expanded ? col.implicitHeight : 0
+    visible: expanded ? true : false
+    Behavior on height {
+        NumberAnimation{duration: 200}
+    }
     RowLayout {
         id: col
         width: parent.width
@@ -42,6 +46,7 @@ Item {
                 id: textItem
                 Layout.fillWidth: true
                 horizontalAlignment: Text.AlignRight
+                Layout.rightMargin: 2
                 text: model.title
                 font.italic: true 
                 wrapMode: Text.WordWrap
@@ -53,6 +58,8 @@ Item {
         anchors.fill: parent
         z: 1
         color: palette.base
+        border.width: 1
+        border.color: palette.alternateBase
     }
 }
 
