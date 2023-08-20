@@ -46,25 +46,21 @@ ApplicationWindow {
                     Layout.fillHeight: true
                     onClicked: kaeLib.hello()
                 }
+                TextField {
+                    id: annotationSearch
+                    Layout.fillWidth: true 
+                    Layout.fillHeight: false
+                    clip: true
+                    placeholderText: qsTr("Type to begin searching")
+                    onTextEdited: function() {
+                        bookList.searchAnnotations(annotationSearch.text)
+                    }
+                }
             }
         }
     }
     ColumnLayout {
         anchors.fill: parent
-        // Misc Row
-        RowLayout {
-            Layout.fillWidth: true 
-            Layout.preferredHeight: 2
-            TextField {
-                id: annotationSearch
-                Layout.fillWidth: true 
-                Layout.fillHeight: true 
-                placeholderText: qsTr("Type to begin searching")
-                onTextEdited: function() {
-                    bookList.searchAnnotations(annotationSearch.text)
-                }
-            }
-        }
         //Content Row
         RowLayout {
             Layout.fillWidth: true 
@@ -78,8 +74,15 @@ ApplicationWindow {
                 Connections {
                     target: kaeLib 
                     function onAppReady(filename) {
+                        bookListLoad.running = true
                         bookList.openApplicationDB(filename);
+                        bookListLoad.running = false
                     }
+                }
+                BusyIndicator {
+                    id: bookListLoad
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
         }
@@ -93,7 +96,9 @@ ApplicationWindow {
         buttons: MessageDialog.Yes | MessageDialog.No
         onAccepted: {
             let detectedPath = detectionDialog.detectedPath
+            bookListLoad.running = true 
             let success = bookList.openKoboDB(detectedPath);
+            bookListLoad.running = false
             if (success) {
                     console.log("Successfully opened DB at ", detectedPath);
                     kaeLib.currentDevice = detectedPath;
