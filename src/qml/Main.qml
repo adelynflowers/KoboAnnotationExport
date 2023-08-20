@@ -46,14 +46,27 @@ ApplicationWindow {
                     Layout.fillHeight: true
                     onClicked: kaeLib.hello()
                 }
-                TextField {
-                    id: annotationSearch
+                RowLayout {
                     Layout.fillWidth: true 
-                    Layout.fillHeight: false
-                    clip: true
-                    placeholderText: qsTr("Type to begin searching")
-                    onTextEdited: function() {
-                        bookList.searchAnnotations(annotationSearch.text)
+                    Layout.fillHeight: true
+                    TextField {
+                        id: annotationSearch
+                        Layout.fillWidth: true 
+                        Layout.fillHeight: false
+                        Layout.leftMargin: 0
+                        leftPadding: 20
+                        clip: true
+                        placeholderText: qsTr("Type to begin searching")
+                        onTextEdited: function() {
+                            bookList.searchAnnotations(annotationSearch.text)
+                        }
+                        Label {
+                            text: "\uE802"
+                            font.family: "fontello"
+                            anchors.left: parent.left
+                            anchors.leftMargin: 3
+                            anchors.verticalCenter: parent.verticalCenter
+                        }
                     }
                 }
             }
