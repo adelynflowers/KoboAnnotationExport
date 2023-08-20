@@ -1,6 +1,8 @@
 # Build folders
 build*
 .cache*
+CMakeCache.txt
+CMakeFiles
 
 # VCPKG
 vcpkg
