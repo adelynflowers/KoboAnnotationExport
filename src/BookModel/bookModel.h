@@ -30,6 +30,7 @@ struct QAnnotation
 public:
     QString title; // book title
     QString text;  // annotation text
+    QString date;  // last modified date
 };
 
 /**
@@ -51,7 +52,8 @@ public:
     enum RoleNames
     {
         TitleRole = Qt::UserRole,
-        TextRole = Qt::UserRole + 1,
+        TextRole,
+        DateRole
     };
 
     /**

@@ -1,6 +1,7 @@
 #include "bookModel.h"
 #define DB_LOC "/home/adelynflowers/dev/qt-quick-project/src/KoboLib/data/KoboReader.sqlite"
 #include <QRegularExpression>
+#include <QDate>
 
 // Initialize object with roles. Set off timer for
 // device searching.
@@ -10,6 +11,7 @@ BookModel::BookModel(QObject *parent)
     // initialize custom roles that map to annotations
     rolenames[TitleRole] = "title";
     rolenames[TextRole] = "text";
+    rolenames[DateRole] = "date";
 
     // put model behind proxy model
     proxyModel.setSourceModel(this);
@@ -53,10 +55,11 @@ QVariant BookModel::data(const QModelIndex &index, int role) const
         return model.at(row).title;
     case TextRole:
         return model.at(row).text;
+    case DateRole:
+        return model.at(row).date;
+    default:
+        return QVariant();
     }
-
-    // The view asked for other data, just return an empty QVariant
-    return QVariant();
 }
 
 // Link between qml properties and role names
@@ -109,7 +112,9 @@ void BookModel::executeSelectQuery(std::string query)
         auto title = QString::fromStdString(stmt.getColumn(0).getString());
         layoutAboutToBeChanged();
         auto text = QString::fromStdString(stmt.getColumn(1).getString());
-        model.push_back(QAnnotation{.title = title, .text = text});
+        auto lastModifiedStr = QString::fromStdString(stmt.getColumn(2).getString());
+        auto lastModified = QDate::fromString(lastModifiedStr, Qt::ISODate).toString("MMM d, yy");
+        model.push_back(QAnnotation{.title = title, .text = text, .date = lastModified});
         proxyModel.sort(0, Qt::AscendingOrder);
         layoutChanged();
     }
@@ -117,7 +122,7 @@ void BookModel::executeSelectQuery(std::string query)
 
 void BookModel::selectAll()
 {
-    executeSelectQuery("SELECT title, bookmarkText FROM annotations ORDER BY title;");
+    executeSelectQuery("SELECT title, bookmarkText, dateModified FROM annotations ORDER BY title;");
 }
 
 void BookModel::searchAnnotations(QString query)

@@ -34,7 +34,7 @@ ListView {
             font.family: "fontello"
             horizontalAlignment: Text.AlignLeft 
             verticalAlignment: Text.AlignBottom
-            //TODO: Figure out bottom margin
+            //TODO: figure out bottom margin
             onClicked: ListView.view.toggleSection(section)
             MouseArea {
                 anchors.fill: parent 

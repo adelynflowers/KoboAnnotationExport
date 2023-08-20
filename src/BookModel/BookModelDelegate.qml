@@ -47,6 +47,22 @@ Item {
                 wrapMode: Text.WordWrap
             }
         }
+        ColumnLayout {
+            Layout.preferredWidth: 1
+            Layout.fillHeight: true 
+            Label {
+                Layout.topMargin: 10
+                Layout.rightMargin: 5
+                Layout.fillWidth: true 
+                Layout.fillHeight: true 
+                verticalAlignment: Text.AlignTop
+                horizontalAlignment: Text.AlignRight
+                text: model.date
+                font.italic: true 
+                wrapMode: Text.WordWrap
+                color: palette.placeholderText
+            }
+        }
     }
     Rectangle {
         anchors.fill: parent
