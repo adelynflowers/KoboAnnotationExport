@@ -10,8 +10,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     KaeLib kaeLib;
-    // TODO: add font file to here and cmake
-    if (QFontDatabase::addApplicationFont("fonts/fontello.ttf") == -1)
+    if (QFontDatabase::addApplicationFont(":/fonts/fontello.ttf") == -1)
         qWarning() << "Failed to load fontello.ttf";
     engine.rootContext()->setContextProperty("kaeLib", &kaeLib);
     QObject::connect(
