@@ -66,9 +66,11 @@ QStorageInfo KaeLib::findKoboDevice()
 {
     QStorageInfo device;
     auto devices = QStorageInfo::mountedVolumes();
-    auto searchTerm = QStringView(QString("kobo"));
+    auto searchTerm = QString("kobo");
     for (auto d : devices)
     {
+        qDebug() << d.displayName();
+        qDebug() << d.displayName().contains(searchTerm, Qt::CaseInsensitive);
         if (d.displayName().contains(searchTerm, Qt::CaseInsensitive))
         {
             return d;
