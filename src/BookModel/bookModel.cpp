@@ -15,8 +15,8 @@ BookModel::BookModel(QObject *parent)
 
     // put model behind proxy model
     proxyModel.setSourceModel(this);
-    proxyModel.setFilterRole(TextRole);
-    proxyModel.setSortRole(TitleRole);
+    // proxyModel.setFilterRole(TextRole);
+    // proxyModel.setSortRole(TitleRole);
 }
 
 BookModel::~BookModel()

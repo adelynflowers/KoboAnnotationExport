@@ -15,6 +15,7 @@ qt_add_qml_module(BookModelLib
     VERSION 1.0
     SOURCES 
     bookModel.cpp bookModel.h
+    proxyModel.cpp proxyModel.h
 )
 
 qt_add_library(BookListLib STATIC)

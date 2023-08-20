@@ -14,10 +14,8 @@
 #include <QtCore>
 #include <QtQml/qqmlregistration.h>
 #include <koboDB.h>
-#include <QClipboard>
-#include <QGuiApplication>
 #include <memory>
-#include <QSortFilterProxyModel>
+#include <proxyModel.h>
 
 /**
  * @brief A Qt-friendly container for annotation information.
@@ -182,7 +180,7 @@ private:
     std::unique_ptr<SQLite::Database> appDB;
 
     // Proxy model
-    QSortFilterProxyModel proxyModel;
+    BookProxyModel proxyModel;
 };
 
 #endif // BOOKMODEL_H
