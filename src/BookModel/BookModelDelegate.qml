@@ -10,7 +10,7 @@ Item {
     }
     property bool expanded: ListView.view.isExpanded(title)
     width: ListView.view.width
-    height: expanded ? col.implicitHeight : 0
+    height: expanded ? col.implicitHeight + 10 : 0
     visible: expanded ? true : false
     Behavior on height {
         NumberAnimation{duration: 200}
@@ -20,45 +20,44 @@ Item {
         width: parent.width
         z: 2
         ColumnLayout {
+            Layout.fillHeight: true 
+            Layout.preferredWidth: 1
+            Button {
+                text: "\uF0C5"
+                font.family: "fontello"
+                flat: true
+                Layout.fillHeight: false
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.topMargin: 10
+                z: 2
+                onClicked: kaeLib.copyToClipboard(model.text)
+            }
+        }
+        ColumnLayout {
             Layout.preferredWidth: 8 
             Layout.fillHeight: true
             Label {
                 id: textItem2
                 Layout.fillWidth: true
-                Layout.leftMargin: 10
+                Layout.topMargin: 10
+                Layout.leftMargin: 20
                 Layout.rightMargin: 50
+                horizontalAlignment: Text.AlignLeft
                 text: model.text
                 wrapMode: Text.WordWrap
-            }
-        }
-        ColumnLayout {
-            Layout.fillHeight: true 
-            Layout.preferredWidth: 2
-            Button {
-                text: "\uF0C5"
-                font.family: "fontello"
-                Layout.alignment: Qt.AlignRight
-                flat: true
-                z: 2
-                onClicked: kaeLib.copyToClipboard(model.text)
-            }
-            Label {
-                id: textItem
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignRight
-                Layout.rightMargin: 2
-                text: model.title
-                font.italic: true 
-                wrapMode: Text.WordWrap
-                color: palette.placeholderText
             }
         }
     }
     Rectangle {
         anchors.fill: parent
+        anchors.rightMargin: -1
+        anchors.topMargin: 0
+        anchors.leftMargin: -1
         z: 1
-        color: palette.base
+        opacity: 0.3
+        color: palette.window
         border.width: 1
+        radius: 2
         border.color: palette.alternateBase
     }
 }

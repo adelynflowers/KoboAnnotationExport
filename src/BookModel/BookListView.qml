@@ -25,12 +25,16 @@ ListView {
         property: "title"
         criteria: ViewSection.FullString
         delegate: Label {
+            height: implicitHeight + 20
             signal clicked()
             text: (
                 ListView.view.isExpanded(section) ? "\uE800 " : "\uE801 " 
              ) + section
-            font.pixelSize: 18
+            font.pixelSize: 24
             font.family: "fontello"
+            horizontalAlignment: Text.AlignLeft 
+            verticalAlignment: Text.AlignBottom
+            //TODO: Figure out bottom margin
             onClicked: ListView.view.toggleSection(section)
             MouseArea {
                 anchors.fill: parent 
@@ -61,11 +65,11 @@ ListView {
         id: palette
         colorGroup: SystemPalette.Active
     }
-    Rectangle {
-        anchors.fill: parent
-        z: -1
-        color: palette.alternateBase
-    }
+    // Rectangle {
+    //     anchors.fill: parent
+    //     z: -1
+    //     color: palette.alternateBase
+    // }
 
     function isExpanded(section) {
         return !(section in collapsed)
