@@ -1,7 +1,7 @@
 import QtQuick 
+import Qt.labs.platform
 import QtQuick.Layouts
 import QtQuick.Controls
-import QtQuick.Dialogs
 import BookListLib
 
 ApplicationWindow {
@@ -94,7 +94,7 @@ ApplicationWindow {
         informativeText: qsTr("A Kobo device has been detected, extract annotations?")
         property string detectedPath;
         buttons: MessageDialog.Yes | MessageDialog.No
-        onAccepted: {
+        onYesClicked: {
             let detectedPath = detectionDialog.detectedPath
             bookListLoad.running = true 
             let success = bookList.openKoboDB(detectedPath);
@@ -108,7 +108,7 @@ ApplicationWindow {
                 kaeLib.blacklistDevice(detectedPath);
             }
         }
-        onRejected: {
+        onNoClicked: {
             // No is an explicit blacklist
             console.log("Blacklisting device ", detectedPath);
             kaeLib.blacklistDevice(detectedPath);
