@@ -146,3 +146,8 @@ void KaeLib::initializeApplicationDB()
     emit appReady(dbLoc);
     qDebug() << "emitted";
 }
+
+void KaeLib::showToast(QString message)
+{
+    emit toastReceived(message);
+}

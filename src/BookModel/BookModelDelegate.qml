@@ -30,7 +30,10 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left 
         anchors.leftMargin: 0
-        onClicked: kaeLib.copyToClipboard(model.text)
+        onClicked: {
+            kaeLib.copyToClipboard(model.text)
+            kaeLib.showToast("Copied to clipboard")
+        }
         hoverEnabled: true
         width: implicitWidth + 10
         height: implicitHeight + 10

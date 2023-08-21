@@ -43,11 +43,6 @@ public:
 
     ~KaeLib();
 
-    Q_INVOKABLE void hello()
-    {
-        qDebug() << "Hello world!";
-    }
-
     /**
      * @brief Adds a device to the blacklist.
      *
@@ -80,6 +75,8 @@ public:
      */
     void setCurrentDevice(QString path);
 
+    Q_INVOKABLE void showToast(QString message);
+
 public slots:
     /**
      * @brief Emits deviceDetected if a suitable
@@ -102,6 +99,8 @@ signals:
      * @param dbPath path to application db file
      */
     void appReady(QString dbPath);
+
+    void toastReceived(QString message);
 
 private:
     /**

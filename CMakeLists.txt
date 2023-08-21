@@ -70,6 +70,8 @@ qt_add_qml_module(kae
     QML_FILES 
         src/qml/Main.qml 
         src/qml/KaePalette.qml
+        src/qml/Toast.qml 
+        src/qml/ToastManager.qml
 )
 
 

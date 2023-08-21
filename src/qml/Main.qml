@@ -10,6 +10,17 @@ ApplicationWindow {
     width: 1280
     height: 720
     palette: KaePalette{}
+    ToastManager {
+        id: toast
+        width: 150
+        height: childrenRect.height
+        Connections {
+            target: kaeLib 
+            function onToastReceived(message) {
+                toast.show(message, 1000);
+            }
+        }
+    }
     header: ToolBar {
         height: parent.height * 0.1
         RowLayout {
@@ -29,30 +40,12 @@ ApplicationWindow {
             RowLayout {
                 Layout.preferredWidth: 6
                 Layout.fillHeight: true
-                ToolButton {
-                    text: qsTr("Extract")
-                    font.pixelSize: 24
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                }
-                ToolButton {
-                    text: qsTr("Sync")
-                    font.pixelSize: 24
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                }
-                ToolButton {
-                    text: qsTr("Settings")
-                    font.pixelSize: 24
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    onClicked: kaeLib.hello()
-                }
                 Switch {
                     text: qsTr("Grouped")
                     checked: bookList.sectionsEnabled
                     onToggled: {
                         bookList.toggleSectionsVisibility()
+                        kaeLib.showToast("Toggled groups")
                     }
 
                 }
@@ -66,6 +59,12 @@ ApplicationWindow {
                         Layout.leftMargin: 0
                         leftPadding: 20
                         clip: true
+                        color: palette.text
+                        background: Rectangle {
+                            radius: 50
+                            color: annotationSearch.enabled ? "transparent" : palette.button
+                            border.color: annotationSearch.activeFocus ? palette.highlight : palette.alternateBase
+                        }
                         placeholderText: qsTr("Type to begin searching")
                         onTextEdited: function() {
                             bookList.searchAnnotations(annotationSearch.text)
@@ -74,7 +73,7 @@ ApplicationWindow {
                             text: "\uE802"
                             font.family: "fontello"
                             anchors.left: parent.left
-                            anchors.leftMargin: 3
+                            anchors.leftMargin: 5
                             anchors.verticalCenter: parent.verticalCenter
                         }
                     }
