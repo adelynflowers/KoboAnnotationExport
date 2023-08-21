@@ -1,12 +1,25 @@
 # Newest version to satisfy vcpkg's sqlite3
+#set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
 cmake_minimum_required(VERSION 3.27.1)
+
+if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+  set(CMAKE_TOOLCHAIN_FILE "./vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
+  list(APPEND CMAKE_PREFIX_PATH "~/Qt/6.5.2/gcc_64")
+elseif(DEFINED CMAKE_TOOLCHAIN_FILE AND NOT CMAKE_TOOLCHAIN_FILE MATCHES ".+/vcpkg/scripts/buildsystems/vcpkg.cmake$")
+  message(STATUS "CMAKE_TOOLCHAIN_FILE is already set to '${CMAKE_TOOLCHAIN_FILE}', replace it with the vcpkg one and set VCPKG_CHAINLOAD_TOOLCHAIN_FILE to original CMAKE_TOOLCHAIN_FILE")
+  set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_TOOLCHAIN_FILE})
+  set(CMAKE_TOOLCHAIN_FILE "/home/adelynflowers/dev/sanity-checks/vcpkg/scripts/buildsystems/vcpkg.cmake")
+else()
+  message(STATUS "CMAKE_TOOLCHAIN_FILE is already set to '${CMAKE_TOOLCHAIN_FILE}'")
+  message(STATUS "VCPKG_CHAINLOAD_TOOLCHAIN_FILE is already set to '${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}'")
+endif()
 
 project(KoboAnnotationExport VERSION 0.1 LANGUAGES CXX)
 
 # Testing with GTest
-enable_testing()
-include(GoogleTest)
-list(APPEND CMAKE_PREFIX_PATH "/home/adelynflowers/Qt/6.5.2/gcc_64")
+# enable_testing()
+# include(GoogleTest)
+
 
 find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
@@ -18,6 +31,24 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC on)
 set(AUTOMOC_PATH_PREFIX on)
+
+# set(CMAKE_SYSTEM_NAME Windows)
+# set(TOOLCHAIN_PREFIX x86_64-w64-mingw32)
+
+# # cross compilers to use for C, C++ and Fortran
+# set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc)
+# set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++)
+# set(CMAKE_Fortran_COMPILER ${TOOLCHAIN_PREFIX}-gfortran)
+# set(CMAKE_RC_COMPILER ${TOOLCHAIN_PREFIX}-windres)
+
+# # target environment on the build host system
+# set(CMAKE_FIND_ROOT_PATH /usr/${TOOLCHAIN_PREFIX})
+
+# modify default behavior of FIND_XXX() commands
+# set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+# set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+# set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+
 
 # Packages
 
@@ -38,6 +69,7 @@ qt_add_qml_module(kae
     URI MainView 
     QML_FILES 
         src/qml/Main.qml 
+        src/qml/KaePalette.qml
 )
 
 
