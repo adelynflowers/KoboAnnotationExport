@@ -6,62 +6,129 @@ import BookModelLib
 Item {
     property bool expanded: ListView.view.isExpanded(title)
     width: ListView.view.width
-    height: expanded ? col.implicitHeight + 10 : 0
+    height: expanded ? textItem2.implicitHeight + 40 : 0
     visible: expanded ? true : false
     Behavior on height {
         NumberAnimation{duration: 200}
     }
-    RowLayout {
-        id: col
-        width: parent.width
-        z: 2
-        ColumnLayout {
-            Layout.fillHeight: true 
-            Layout.preferredWidth: 1
-            Button {
-                text: "\uF0C5"
-                font.family: "fontello"
-                flat: true
-                Layout.fillHeight: false
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.topMargin: 10
-                z: 2
-                onClicked: kaeLib.copyToClipboard(model.text)
-            }
-        }
-        ColumnLayout {
-            Layout.preferredWidth: 8 
-            Layout.fillHeight: true
-            TextArea {
-                selectByMouse: true 
-                readOnly: true
-                id: textItem2
-                Layout.fillWidth: true
-                Layout.topMargin: 10
-                Layout.leftMargin: 20
-                Layout.rightMargin: 50
-                horizontalAlignment: Text.AlignLeft
-                text: model.text
-                wrapMode: Text.WordWrap
-            }
-        }
-        ColumnLayout {
-            Layout.preferredWidth: 1
-            Layout.fillHeight: true 
-            Label {
-                Layout.topMargin: 10
-                Layout.rightMargin: 5
-                Layout.fillWidth: true 
-                Layout.fillHeight: true 
-                verticalAlignment: Text.AlignTop
-                horizontalAlignment: Text.AlignRight
-                text: model.date
-                font.italic: true 
-                wrapMode: Text.WordWrap
-                color: palette.placeholderText
-            }
-        }
+    TextArea {
+        selectByMouse: true 
+        readOnly: true
+        id: textItem2
+        anchors.fill: parent
+        anchors.leftMargin: 30
+        anchors.rightMargin: 30
+        horizontalAlignment: Text.AlignLeft
+        verticalAlignment: Text.AlignVCenter
+        text: model.text
+        wrapMode: Text.WordWrap
     }
+    Button {
+        id: copyButton
+        text: "\uF0C5"
+        font.family: "fontello"
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: parent.left 
+        anchors.leftMargin: 0
+        onClicked: kaeLib.copyToClipboard(model.text)
+        hoverEnabled: true
+        width: implicitWidth + 10
+        height: implicitHeight + 10
+        //visible: hovered ? 1: 0
+        background: Rectangle {
+            anchors.fill: parent
+            radius: 50
+            color: "transparent"
+            border.color: "white"
+            border.width: 2
+            opacity: parent.hovered ? 1 : 0
+            Rectangle {
+                radius: parent.radius
+                anchors.fill: parent 
+                color: "white"
+                opacity: copyButton.pressed ? 0.3 : 0
+            }
+        }
+        
+    }
+    TextArea {
+        selectByMouse: true 
+        readOnly: true
+        anchors.right: parent.right 
+        anchors.top: parent.top 
+        anchors.topMargin: 1
+        anchors.rightMargin: 3
+        verticalAlignment: Text.AlignTop
+        horizontalAlignment: Text.AlignRight
+        text: model.date
+        font.italic: true 
+        wrapMode: Text.WordWrap
+    }
+    TextArea {
+        selectByMouse: true 
+        readOnly: true
+        anchors.right: parent.right 
+        anchors.bottom: parent.bottom
+        anchors.rightMargin: 3
+        verticalAlignment: Text.AlignTop
+        horizontalAlignment: Text.AlignRight
+        text: model.title
+        font.italic: true 
+        wrapMode: Text.WordWrap
+        visible: !parent.ListView.view.sectionsEnabled
+    }
+
+    // RowLayout {
+    //     id: col
+    //     width: parent.width
+    //     z: 2
+    //     ColumnLayout {
+    //         Layout.fillHeight: true 
+    //         Layout.preferredWidth: 1
+    //         Button {
+    //             text: "\uF0C5"
+    //             font.family: "fontello"
+    //             flat: true
+    //             Layout.fillHeight: false
+    //             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+    //             Layout.topMargin: 10
+    //             z: 2
+    //             onClicked: kaeLib.copyToClipboard(model.text)
+    //         }
+    //     }
+    //     ColumnLayout {
+    //         Layout.preferredWidth: 8 
+    //         Layout.fillHeight: true
+    //         TextArea {
+    //             selectByMouse: true 
+    //             readOnly: true
+    //             id: textItem2
+    //             Layout.fillWidth: true
+    //             Layout.topMargin: 10
+    //             Layout.leftMargin: 20
+    //             Layout.rightMargin: 50
+    //             horizontalAlignment: Text.AlignLeft
+    //             text: model.text
+    //             wrapMode: Text.WordWrap
+    //         }
+    //     }
+    //     ColumnLayout {
+    //         Layout.preferredWidth: 1
+    //         Layout.fillHeight: true 
+    //         Label {
+    //             Layout.topMargin: 10
+    //             Layout.rightMargin: 5
+    //             Layout.fillWidth: true 
+    //             Layout.fillHeight: true 
+    //             verticalAlignment: Text.AlignTop
+    //             horizontalAlignment: Text.AlignRight
+    //             text: model.date
+    //             font.italic: true 
+    //             wrapMode: Text.WordWrap
+    //             color: palette.placeholderText
+    //         }
+    //     }
+    // }
     Rectangle {
         anchors.fill: parent
         anchors.rightMargin: -1

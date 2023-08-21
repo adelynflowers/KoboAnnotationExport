@@ -8,5 +8,6 @@ Palette {
     highlight: "#5AD2F4"
     alternateBase: "#646881"
     text: "white"
+    placeholderText: "#63595C"
 
 }

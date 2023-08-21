@@ -95,6 +95,7 @@ bool BookModel::openKoboDB(QString loc)
 // model
 void BookModel::executeSelectQuery(std::string query)
 {
+    // TODO: Do this on BG thread
     qDebug() << "Executing select query";
     if (!appDB)
     {
