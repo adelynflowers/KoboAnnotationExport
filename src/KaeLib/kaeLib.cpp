@@ -20,20 +20,26 @@ void KaeLib::searchDevices()
     auto device = findKoboDevice();
     if (device.isValid())
     {
-        auto url = getDeviceDBLoc(device).path();
+        auto url = getDeviceDBLoc(device);
         if (isNewDevice(url) && !isBlacklisted(url))
         {
+            qDebug() << "emitting db path " << url;
             emit deviceDetected(url);
         }
     }
 }
 
 // Get the database path from a kobo device
-QUrl KaeLib::getDeviceDBLoc(QStorageInfo device)
+QString KaeLib::getDeviceDBLoc(QStorageInfo device)
 {
+    qDebug() << "root path is " << device.rootPath();
     auto dir = QDir(device.rootPath());
+    qDebug() << "dir-ified it becomes " << dir;
     dir.cd(".kobo");
-    auto url = QUrl(dir.absoluteFilePath("KoboReader.sqlite"));
+    qDebug() << "after cd: " << dir;
+    auto url = dir.absoluteFilePath("KoboReader.sqlite");
+    qDebug() << "absolute path: " << dir.absoluteFilePath("KoboReader.sqlite");
+    qDebug() << "relative path: " << dir.relativeFilePath("KoboReader.sqlite");
     return url;
 }
 
@@ -64,15 +70,20 @@ void KaeLib::copyToClipboard(QString text)
 // Find a kobo device and return it
 QStorageInfo KaeLib::findKoboDevice()
 {
+    qDebug() << "*****************";
+    qDebug() << "Starting kobo device search";
     QStorageInfo device;
     auto devices = QStorageInfo::mountedVolumes();
     auto searchTerm = QString("kobo");
     for (auto d : devices)
     {
+        qDebug() << "Device found: " << d.displayName();
         if (d.displayName().contains(searchTerm, Qt::CaseInsensitive))
         {
+            qDebug() << "Device accepted!";
             return d;
         }
+        qDebug() << "Device rejected";
     }
     return device;
 }

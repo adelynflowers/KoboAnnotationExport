@@ -4,10 +4,6 @@ import QtQuick.Layouts
 import BookModelLib
 
 Item {
-    SystemPalette {
-        id: palette
-        colorGroup: SystemPalette.Active
-    }
     property bool expanded: ListView.view.isExpanded(title)
     width: ListView.view.width
     height: expanded ? col.implicitHeight + 10 : 0
@@ -36,7 +32,9 @@ Item {
         ColumnLayout {
             Layout.preferredWidth: 8 
             Layout.fillHeight: true
-            Label {
+            TextArea {
+                selectByMouse: true 
+                readOnly: true
                 id: textItem2
                 Layout.fillWidth: true
                 Layout.topMargin: 10

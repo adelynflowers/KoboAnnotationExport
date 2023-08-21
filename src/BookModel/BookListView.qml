@@ -20,20 +20,24 @@ ListView {
     focus: true
     currentIndex: -1
     property var collapsed: ({})
+    property bool sectionsEnabled: true
 
     section {
         property: "title"
         criteria: ViewSection.FullString
         delegate: Label {
-            height: implicitHeight + 20
+            height: ListView.view.sectionsEnabled ? implicitHeight + 20 : 0
             signal clicked()
-            text: (
+            text: ListView.view.sectionsEnabled ? (
                 ListView.view.isExpanded(section) ? "\uE800 " : "\uE801 " 
-             ) + section
+             ) + section : ""
             font.pixelSize: 24
             font.family: "fontello"
             horizontalAlignment: Text.AlignLeft 
             verticalAlignment: Text.AlignBottom
+            Behavior on height {
+                NumberAnimation{duration: 200}
+            }
             //TODO: figure out bottom margin
             onClicked: ListView.view.toggleSection(section)
             MouseArea {
@@ -89,5 +93,8 @@ ListView {
         else {
             expandSection(section)
         }
+    }
+    function toggleSectionsVisibility() {
+        sectionsEnabled = !sectionsEnabled;
     }
 }

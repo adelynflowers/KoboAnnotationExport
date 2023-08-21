@@ -1,13 +1,15 @@
 import QtQuick 
-import Qt.labs.platform
+import QtQuick.Dialogs
 import QtQuick.Layouts
 import QtQuick.Controls
 import BookListLib
+
 
 ApplicationWindow {
     visible: true
     width: 1280
     height: 720
+    palette: KaePalette{}
     header: ToolBar {
         height: parent.height * 0.1
         RowLayout {
@@ -45,6 +47,14 @@ ApplicationWindow {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     onClicked: kaeLib.hello()
+                }
+                Switch {
+                    text: qsTr("Grouped")
+                    checked: bookList.sectionsEnabled
+                    onToggled: {
+                        bookList.toggleSectionsVisibility()
+                    }
+
                 }
                 RowLayout {
                     Layout.fillWidth: true 
@@ -107,7 +117,7 @@ ApplicationWindow {
         informativeText: qsTr("A Kobo device has been detected, extract annotations?")
         property string detectedPath;
         buttons: MessageDialog.Yes | MessageDialog.No
-        onYesClicked: {
+        onAccepted: {
             let detectedPath = detectionDialog.detectedPath
             bookListLoad.running = true 
             let success = bookList.openKoboDB(detectedPath);
@@ -121,7 +131,7 @@ ApplicationWindow {
                 kaeLib.blacklistDevice(detectedPath);
             }
         }
-        onNoClicked: {
+        onRejected: {
             // No is an explicit blacklist
             console.log("Blacklisting device ", detectedPath);
             kaeLib.blacklistDevice(detectedPath);

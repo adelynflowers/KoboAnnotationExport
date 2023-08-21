@@ -118,7 +118,7 @@ private:
      * @param device kobo device
      * @return QUrl Path to kobo db file.
      */
-    QUrl getDeviceDBLoc(QStorageInfo device);
+    QString getDeviceDBLoc(QStorageInfo device);
 
     /**
      * @brief Determines if a device path is the same
