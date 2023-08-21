@@ -129,6 +129,7 @@ void KaeLib::initializeApplicationDB()
         SQLite::Database db(dbLoc.toStdString(), SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
         const char *createAnnotationsTable = "CREATE TABLE annotations"
                                              "("
+                                             "annotationId ROWID"
                                              "volumeId TEXT,"
                                              "bookmarkText TEXT UNIQUE,"
                                              "bookmarkAnnotation TEXT,"
@@ -136,7 +137,9 @@ void KaeLib::initializeApplicationDB()
                                              "dateModified TEXT,"
                                              "bookTitle TEXT,"
                                              "title TEXT,"
-                                             "attribution TEXT"
+                                             "attribution TEXT,"
+                                             "kaeNotes TEXT,"
+                                             "kaeColor TINYINT"
                                              ")";
         SQLite::Transaction transaction(db);
         db.exec(createAnnotationsTable);
