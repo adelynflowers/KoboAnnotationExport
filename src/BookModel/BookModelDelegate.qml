@@ -22,6 +22,11 @@ Item {
         verticalAlignment: Text.AlignVCenter
         text: model.text
         wrapMode: Text.WordWrap
+        MouseArea {
+            id: annotationMouseArea
+            anchors.fill: parent 
+            hoverEnabled: true
+        }
     }
     Button {
         id: copyButton
@@ -38,7 +43,9 @@ Item {
         width: implicitWidth + 10
         height: implicitHeight + 10
         //visible: hovered ? 1: 0
+        opacity: (annotationMouseArea.containsMouse || copyMouseArea.containsMouse) ? 1 : 0
         background: Rectangle {
+            id: copyMouseArea
             anchors.fill: parent
             radius: 50
             color: "transparent"
@@ -52,9 +59,39 @@ Item {
                 opacity: copyButton.pressed ? 0.3 : 0
             }
         }
+        Behavior on opacity {
+            NumberAnimation {duration: 200}
+        }
         
     }
+    Row {
+        spacing: 5
+        anchors.verticalCenter: dateText.verticalCenter
+        anchors.right: dateText.left
+        Repeater {
+            model: ["red", "blue", "green"]
+            Rectangle {
+                height: 15
+                width: 15
+                radius: 500
+                color: modelData
+                opacity: (annotationMouseArea.containsMouse || subMouseArea.containsMouse) ? 1 : 0
+                border.color: subMouseArea.containsMouse ? "white" : "transparent"
+                Behavior on opacity {
+                    NumberAnimation{duration: 200}
+                }
+                MouseArea {
+                    id: subMouseArea
+                    anchors.fill: parent 
+                    hoverEnabled: true
+                }
+            }
+           
+
+        }
+    }
     TextArea {
+        id: dateText
         selectByMouse: true 
         readOnly: true
         anchors.right: parent.right 
