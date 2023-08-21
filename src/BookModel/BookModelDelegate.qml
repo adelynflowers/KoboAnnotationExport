@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import BookModelLib
 
 Item {
+    id: delegateRoot
     property bool expanded: ListView.view.isExpanded(title)
     width: ListView.view.width
     height: expanded ? textItem2.implicitHeight + 40 : 0
@@ -28,39 +29,74 @@ Item {
             hoverEnabled: true
         }
     }
-    Button {
-        id: copyButton
-        text: "\uF0C5"
-        font.family: "fontello"
+    Column {
         anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left 
         anchors.leftMargin: 0
-        onClicked: {
-            kaeLib.copyToClipboard(model.text)
-            kaeLib.showToast("Copied to clipboard")
-        }
-        hoverEnabled: true
-        width: implicitWidth + 10
-        height: implicitHeight + 10
-        //visible: hovered ? 1: 0
-        opacity: (annotationMouseArea.containsMouse || copyMouseArea.containsMouse) ? 1 : 0
-        background: Rectangle {
-            id: copyMouseArea
-            anchors.fill: parent
-            radius: 50
-            color: "transparent"
-            border.color: "white"
-            border.width: 2
-            opacity: parent.hovered ? 1 : 0
-            Rectangle {
-                radius: parent.radius
-                anchors.fill: parent 
-                color: "white"
-                opacity: copyButton.pressed ? 0.3 : 0
+        Button {
+            id: copyButton
+            text: "\uF0C5"
+            font.family: "fontello"
+            onClicked: {
+                kaeLib.copyToClipboard(model.text)
+                kaeLib.showToast("Copied to clipboard")
             }
+            hoverEnabled: true
+            width: implicitWidth + 10
+            height: implicitHeight + 10
+            opacity: (annotationMouseArea.containsMouse || copyMouseArea.containsMouse) ? 1 : 0
+            background: Rectangle {
+                anchors.fill: parent
+                radius: 50
+                color: "transparent"
+                border.color: "white"
+                border.width: 2
+                opacity: copyMouseArea.containsMouse ? 1 : 0
+                Rectangle {
+                    radius: parent.radius
+                    anchors.fill: parent 
+                    color: "white"
+                    opacity: copyButton.pressed ? 0.3 : 0
+                }
+                MouseArea {
+                    id: copyMouseArea
+                    hoverEnabled: true      
+                    anchors.fill: parent
+
+                }
+            }
+            Behavior on opacity {
+                NumberAnimation {duration: 200}
+            }
+            
         }
-        Behavior on opacity {
-            NumberAnimation {duration: 200}
+        Button {
+            id: notesButton
+            text: "\uF0F6"
+            font.family: "fontello"
+            width: implicitWidth + 10
+            height: implicitHeight + 10
+            onClicked: popup.open()
+            background: Rectangle {
+                anchors.fill: parent
+                radius: 50
+                color: "transparent"
+                border.color: "white"
+                border.width: 2
+                opacity: notesMouseArea.containsMouse ? 1 : 0
+                Rectangle {
+                    radius: parent.radius
+                    anchors.fill: parent 
+                    color: "white"
+                    opacity: notesButton.pressed ? 0.3 : 0
+                }
+                MouseArea {
+                    id: notesMouseArea
+                    hoverEnabled: true      
+                    anchors.fill: parent
+
+                }
+            }
         }
         
     }
@@ -105,6 +141,7 @@ Item {
         wrapMode: Text.WordWrap
     }
     TextArea {
+        id: sectionLabel
         selectByMouse: true 
         readOnly: true
         anchors.right: parent.right 
@@ -118,57 +155,24 @@ Item {
         visible: !parent.ListView.view.sectionsEnabled
     }
 
-    // RowLayout {
-    //     id: col
-    //     width: parent.width
-    //     z: 2
-    //     ColumnLayout {
-    //         Layout.fillHeight: true 
-    //         Layout.preferredWidth: 1
-    //         Button {
-    //             text: "\uF0C5"
-    //             font.family: "fontello"
-    //             flat: true
-    //             Layout.fillHeight: false
-    //             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-    //             Layout.topMargin: 10
-    //             z: 2
-    //             onClicked: kaeLib.copyToClipboard(model.text)
-    //         }
-    //     }
-    //     ColumnLayout {
-    //         Layout.preferredWidth: 8 
-    //         Layout.fillHeight: true
-    //         TextArea {
-    //             selectByMouse: true 
-    //             readOnly: true
-    //             id: textItem2
-    //             Layout.fillWidth: true
-    //             Layout.topMargin: 10
-    //             Layout.leftMargin: 20
-    //             Layout.rightMargin: 50
-    //             horizontalAlignment: Text.AlignLeft
-    //             text: model.text
-    //             wrapMode: Text.WordWrap
-    //         }
-    //     }
-    //     ColumnLayout {
-    //         Layout.preferredWidth: 1
-    //         Layout.fillHeight: true 
-    //         Label {
-    //             Layout.topMargin: 10
-    //             Layout.rightMargin: 5
-    //             Layout.fillWidth: true 
-    //             Layout.fillHeight: true 
-    //             verticalAlignment: Text.AlignTop
-    //             horizontalAlignment: Text.AlignRight
-    //             text: model.date
-    //             font.italic: true 
-    //             wrapMode: Text.WordWrap
-    //             color: palette.placeholderText
-    //         }
-    //     }
-    // }
+    Popup {
+        id: popup
+        padding: 10 
+        anchors.centerIn: Overlay.overlay 
+        focus: true
+        contentItem: Column {
+            spacing: 5 
+            Repeater {
+                model: ["hello", "hello!", "hi"]
+                Label {
+                    text: modelData 
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
+        }
+    }
+
     Rectangle {
         anchors.fill: parent
         anchors.rightMargin: -1
