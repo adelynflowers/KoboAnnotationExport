@@ -5,7 +5,10 @@ import BookModelLib
 
 Item {
     id: delegateRoot
+    property var delegateIndex: index
+    property var highlightWeights: ([2,3,5])
     property bool expanded: ListView.view.isExpanded(title)
+    property var highlightColors: (["red", "green", "blue"])
     width: ListView.view.width
     height: expanded ? textItem2.implicitHeight + 40 : 0
     visible: expanded ? true : false
@@ -76,7 +79,10 @@ Item {
             font.family: "fontello"
             width: implicitWidth + 10
             height: implicitHeight + 10
-            onClicked: popup.open()
+            onClicked: {
+                console.log(index)
+                kaeLib.showToast(index)
+            }
             background: Rectangle {
                 anchors.fill: parent
                 radius: 50
@@ -105,13 +111,17 @@ Item {
         anchors.verticalCenter: dateText.verticalCenter
         anchors.right: dateText.left
         Repeater {
-            model: ["red", "blue", "green"]
+            model: delegateRoot.highlightColors
             Rectangle {
                 height: 15
                 width: 15
                 radius: 500
                 color: modelData
-                opacity: (annotationMouseArea.containsMouse || subMouseArea.containsMouse) ? 1 : 0
+                property bool colorChosen: (highlightColor % delegateRoot.highlightWeights[index]) == 0
+                opacity: (
+                    annotationMouseArea.containsMouse || 
+                    subMouseArea.containsMouse || 
+                    colorChosen) ? 1 : 0
                 border.color: subMouseArea.containsMouse ? "white" : "transparent"
                 Behavior on opacity {
                     NumberAnimation{duration: 200}
@@ -120,6 +130,14 @@ Item {
                     id: subMouseArea
                     anchors.fill: parent 
                     hoverEnabled: true
+                    onClicked: {
+                        let weight = delegateRoot.highlightWeights[index];
+                        if (!parent.colorChosen) {
+                            delegateRoot.ListView.view.addColor(delegateRoot.delegateIndex, weight);
+                        } else {
+                            delegateRoot.ListView.view.removeColor(delegateRoot.delegateIndex, weight);
+                        } 
+                    }
                 }
             }
            

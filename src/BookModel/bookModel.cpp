@@ -3,6 +3,15 @@
 #include <QRegularExpression>
 #include <QDate>
 
+QAnnotation::QAnnotation(int &row, QString &title, QString &text, QString &date, int &color, QString &notes) : rowIndex{row},
+                                                                                                               title{title},
+                                                                                                               text{text},
+                                                                                                               date{date},
+                                                                                                               color{color},
+                                                                                                               notes{notes}
+{
+}
+
 // Initialize object with roles. Set off timer for
 // device searching.
 BookModel::BookModel(QObject *parent)
@@ -12,6 +21,7 @@ BookModel::BookModel(QObject *parent)
     rolenames[TitleRole] = "title";
     rolenames[TextRole] = "text";
     rolenames[DateRole] = "date";
+    rolenames[ColorRole] = "highlightColor";
 
     // put model behind proxy model
     proxyModel.setSourceModel(this);
@@ -21,6 +31,7 @@ BookModel::BookModel(QObject *parent)
 
 BookModel::~BookModel()
 {
+    updateRows();
 }
 
 // Return the number of row in the model
@@ -57,6 +68,8 @@ QVariant BookModel::data(const QModelIndex &index, int role) const
         return model.at(row).text;
     case DateRole:
         return model.at(row).date;
+    case ColorRole:
+        return model.at(row).color;
     default:
         return QVariant();
     }
@@ -106,24 +119,28 @@ void BookModel::executeSelectQuery(std::string query)
 
     model.clear();
     QString currentTitle = "";
+    layoutAboutToBeChanged();
     while (stmt.executeStep())
     {
 
         // TODO: Figure out emplace back for QAnnotation
         auto title = QString::fromStdString(stmt.getColumn(0).getString());
-        layoutAboutToBeChanged();
+        // layoutAboutToBeChanged();
         auto text = QString::fromStdString(stmt.getColumn(1).getString());
         auto lastModifiedStr = QString::fromStdString(stmt.getColumn(2).getString());
         auto lastModified = QDate::fromString(lastModifiedStr, Qt::ISODate).toString("MMM d, yy");
-        model.push_back(QAnnotation{.title = title, .text = text, .date = lastModified});
-        proxyModel.sort(0, Qt::AscendingOrder);
-        layoutChanged();
+        auto color = stmt.getColumn(3).getInt();
+        auto rowId = stmt.getColumn(4).getInt();
+        auto notes = QString::fromStdString(stmt.getColumn(5).getString());
+        model.emplaceBack(rowId, title, text, lastModified, color, notes);
     }
+    proxyModel.sort(0, Qt::AscendingOrder);
+    layoutChanged();
 }
 
 void BookModel::selectAll()
 {
-    executeSelectQuery("SELECT title, bookmarkText, dateModified FROM annotations ORDER BY title;");
+    executeSelectQuery("SELECT title, bookmarkText, dateModified, kaeColor, annotationId, kaeNotes FROM annotations ORDER BY title, dateModified;");
 }
 
 void BookModel::searchAnnotations(QString query)
@@ -181,4 +198,22 @@ void BookModel::writeToApplicationDB(std::vector<KoboDB::Annotation> annotations
     {
         qDebug() << "Error: application DB has no annotations table";
     }
+}
+
+void BookModel::updateRows()
+{
+    SQLite::Transaction transaction(*appDB);
+    SQLite::Statement query{*appDB,
+                            "UPDATE annotations SET kaeColor = ?, kaeNotes = ? WHERE annotations.annotationId = ?"};
+    for (auto i = changedAnnotations.cbegin(), end = changedAnnotations.cend(); i != end; ++i)
+    {
+        auto annotation = model[i.key()];
+        qDebug() << "updating row " << annotation.rowIndex;
+        query.bind(1, annotation.color);
+        query.bind(2, annotation.notes.toStdString());
+        query.bind(3, annotation.rowIndex);
+        query.exec();
+        query.reset();
+    }
+    transaction.commit();
 }

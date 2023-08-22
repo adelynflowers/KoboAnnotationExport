@@ -32,14 +32,9 @@ void KaeLib::searchDevices()
 // Get the database path from a kobo device
 QString KaeLib::getDeviceDBLoc(QStorageInfo device)
 {
-    qDebug() << "root path is " << device.rootPath();
     auto dir = QDir(device.rootPath());
-    qDebug() << "dir-ified it becomes " << dir;
     dir.cd(".kobo");
-    qDebug() << "after cd: " << dir;
     auto url = dir.absoluteFilePath("KoboReader.sqlite");
-    qDebug() << "absolute path: " << dir.absoluteFilePath("KoboReader.sqlite");
-    qDebug() << "relative path: " << dir.relativeFilePath("KoboReader.sqlite");
     return url;
 }
 
@@ -70,20 +65,15 @@ void KaeLib::copyToClipboard(QString text)
 // Find a kobo device and return it
 QStorageInfo KaeLib::findKoboDevice()
 {
-    qDebug() << "*****************";
-    qDebug() << "Starting kobo device search";
     QStorageInfo device;
     auto devices = QStorageInfo::mountedVolumes();
     auto searchTerm = QString("kobo");
     for (auto d : devices)
     {
-        qDebug() << "Device found: " << d.displayName();
         if (d.displayName().contains(searchTerm, Qt::CaseInsensitive))
         {
-            qDebug() << "Device accepted!";
             return d;
         }
-        qDebug() << "Device rejected";
     }
     return device;
 }
@@ -129,7 +119,7 @@ void KaeLib::initializeApplicationDB()
         SQLite::Database db(dbLoc.toStdString(), SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
         const char *createAnnotationsTable = "CREATE TABLE annotations"
                                              "("
-                                             "annotationId ROWID"
+                                             "annotationId INTEGER PRIMARY KEY,"
                                              "volumeId TEXT,"
                                              "bookmarkText TEXT UNIQUE,"
                                              "bookmarkAnnotation TEXT,"
@@ -138,8 +128,8 @@ void KaeLib::initializeApplicationDB()
                                              "bookTitle TEXT,"
                                              "title TEXT,"
                                              "attribution TEXT,"
-                                             "kaeNotes TEXT,"
-                                             "kaeColor TINYINT"
+                                             "kaeNotes TEXT DEFAULT '',"
+                                             "kaeColor INT DEFAULT 1"
                                              ")";
         SQLite::Transaction transaction(db);
         db.exec(createAnnotationsTable);

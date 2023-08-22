@@ -97,4 +97,11 @@ ListView {
     function toggleSectionsVisibility() {
         sectionsEnabled = !sectionsEnabled;
     }
+
+    function addColor(index, color) {
+        bookModel.addAnnotationColor(index, color);
+    }
+    function removeColor(index, color) {
+        bookModel.removeAnnotationColor(index, color);
+    }
 }

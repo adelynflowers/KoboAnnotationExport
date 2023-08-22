@@ -26,9 +26,13 @@
 struct QAnnotation
 {
 public:
+    int rowIndex;
     QString title; // book title
     QString text;  // annotation text
     QString date;  // last modified date
+    int color;
+    QString notes;
+    QAnnotation(int &index, QString &title, QString &text, QString &date, int &color, QString &notes);
 };
 
 /**
@@ -51,7 +55,8 @@ public:
     {
         TitleRole = Qt::UserRole,
         TextRole,
-        DateRole
+        DateRole,
+        ColorRole
     };
 
     /**
@@ -150,6 +155,39 @@ public:
         return &proxyModel;
     }
 
+    Q_INVOKABLE void toggleAnnotationColor(int row, short color)
+    {
+        layoutAboutToBeChanged();
+        auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
+        if (model[modelIdx].color == color)
+        {
+            model[modelIdx].color = -1;
+        }
+        else
+        {
+            model[modelIdx].color = color;
+        }
+        layoutChanged();
+    }
+
+    Q_INVOKABLE void addAnnotationColor(int row, short color)
+    {
+        layoutAboutToBeChanged();
+        auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
+        model[modelIdx].color *= color;
+        changedAnnotations[modelIdx] = true;
+        layoutChanged();
+    }
+
+    Q_INVOKABLE void removeAnnotationColor(int row, short color)
+    {
+        layoutAboutToBeChanged();
+        auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
+        model[modelIdx].color /= color;
+        changedAnnotations[modelIdx] = true;
+        layoutChanged();
+    }
+
 private:
     /**
      * @brief Writes a list of annotations from a Kobo DB to
@@ -170,6 +208,7 @@ private:
      */
     void executeSelectQuery(std::string query);
 
+    void updateRows();
     // Annotation list
     QList<QAnnotation> model;
 
@@ -181,6 +220,8 @@ private:
 
     // Proxy model
     BookProxyModel proxyModel;
+
+    QHash<int, bool> changedAnnotations;
 };
 
 #endif // BOOKMODEL_H
