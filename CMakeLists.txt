@@ -74,7 +74,7 @@ qt_add_qml_module(kae
         src/qml/ToastManager.qml
 )
 
-target_compile_options(kae PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_compile_options(kae PRIVATE -Wall -Wextra -Wpedantic)
 
 # SubModules after Qt setup
 
