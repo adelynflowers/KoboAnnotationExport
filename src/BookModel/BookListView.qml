@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Controls
+import QtQuick.Controls.Basic
 import QtQuick.Dialogs
 import BookModelLib
 
@@ -65,15 +65,6 @@ ListView {
     function searchAnnotations(query) {
         bookModel.searchAnnotations(query);
     }
-    SystemPalette {
-        id: palette
-        colorGroup: SystemPalette.Active
-    }
-    // Rectangle {
-    //     anchors.fill: parent
-    //     z: -1
-    //     color: palette.alternateBase
-    // }
 
     function isExpanded(section) {
         return !(section in collapsed)

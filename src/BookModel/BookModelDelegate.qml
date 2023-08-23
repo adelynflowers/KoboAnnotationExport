@@ -1,5 +1,5 @@
 import QtQuick 
-import QtQuick.Controls
+import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import BookModelLib
 
@@ -10,7 +10,7 @@ Item {
     property bool expanded: ListView.view.isExpanded(title)
     property var highlightColors: (["red", "green", "blue"])
     width: ListView.view.width
-    height: expanded ? textItem2.implicitHeight + 40 : 0
+    height: expanded ? textItem2.implicitHeight + 60 : 0
     visible: expanded ? true : false
     Behavior on height {
         NumberAnimation{duration: 200}
@@ -40,6 +40,15 @@ Item {
             id: copyButton
             text: "\uF0C5"
             font.family: "fontello"
+            contentItem: Text {
+                text: parent.text
+                font: parent.font
+                opacity: enabled ? 1.0 : 0.3
+                color: parent.pressed ? palette.buttonText : palette.windowText
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+            }
             onClicked: {
                 kaeLib.copyToClipboard(model.text)
                 kaeLib.showToast("Copied to clipboard")
@@ -50,16 +59,16 @@ Item {
             opacity: (annotationMouseArea.containsMouse || copyMouseArea.containsMouse) ? 1 : 0
             background: Rectangle {
                 anchors.fill: parent
-                radius: 50
+                radius: 500
                 color: "transparent"
-                border.color: "white"
+                border.color: palette.button
                 border.width: 2
                 opacity: copyMouseArea.containsMouse ? 1 : 0
                 Rectangle {
                     radius: parent.radius
                     anchors.fill: parent 
-                    color: "white"
-                    opacity: copyButton.pressed ? 0.3 : 0
+                    color: palette.button
+                    opacity: copyButton.pressed ? 1 : 0
                 }
                 MouseArea {
                     id: copyMouseArea
@@ -75,8 +84,16 @@ Item {
         }
         Button {
             id: notesButton
-            text: "\uF0F6"
             font.family: "fontello"
+            contentItem: Text {
+                text: "\uF0F6"
+                font.family: "fontello"
+                opacity: enabled ? 1.0 : 0.3
+                color: parent.pressed ? palette.buttonText : palette.windowText
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+            }
             width: implicitWidth + 10
             height: implicitHeight + 10
             onClicked: {
@@ -85,16 +102,16 @@ Item {
             }
             background: Rectangle {
                 anchors.fill: parent
-                radius: 50
+                radius: 500
                 color: "transparent"
-                border.color: "white"
+                border.color: palette.button
                 border.width: 2
                 opacity: notesMouseArea.containsMouse ? 1 : 0
                 Rectangle {
                     radius: parent.radius
                     anchors.fill: parent 
-                    color: "white"
-                    opacity: notesButton.pressed ? 0.3 : 0
+                    color: palette.button
+                    opacity: notesButton.pressed ? 1 : 0
                 }
                 MouseArea {
                     id: notesMouseArea
@@ -122,7 +139,7 @@ Item {
                     annotationMouseArea.containsMouse || 
                     subMouseArea.containsMouse || 
                     colorChosen) ? 1 : 0
-                border.color: subMouseArea.containsMouse ? "white" : "transparent"
+                border.color: subMouseArea.containsMouse ? palette.windowText : "transparent"
                 Behavior on opacity {
                     NumberAnimation{duration: 200}
                 }
@@ -198,7 +215,7 @@ Item {
         anchors.leftMargin: -1
         z: 1
         opacity: 0.3
-        color: palette.window
+        color: "transparent"
         border.width: 1
         radius: 2
         border.color: palette.alternateBase
