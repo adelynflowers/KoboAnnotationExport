@@ -126,7 +126,7 @@ void BookModel::executeSelectQuery(std::string query)
         // TODO: Figure out emplace back for QAnnotation
         auto title = QString::fromStdString(stmt.getColumn(0).getString());
         // layoutAboutToBeChanged();
-        auto text = QString::fromStdString(stmt.getColumn(1).getString());
+        auto text = QString::fromStdString(stmt.getColumn(1).getString()).trimmed();
         auto lastModifiedStr = QString::fromStdString(stmt.getColumn(2).getString());
         auto lastModified = QDate::fromString(lastModifiedStr, Qt::ISODate).toString("MMM d, yy");
         auto color = stmt.getColumn(3).getInt();
