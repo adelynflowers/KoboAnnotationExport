@@ -10,15 +10,14 @@ Item {
     property bool expanded: ListView.view.isExpanded(title)
     property var highlightColors: (["#50723C", "#773344", "#F1C40F"])
     width: ListView.view.width
-    height: expanded ? textItem2.implicitHeight + 60 : 0
+    height: expanded ? annotationElement.implicitHeight + 60 : 0
     visible: expanded ? true : false
     Behavior on height {
         NumberAnimation{duration: 200}
     }
     TextArea {
-        selectByMouse: true 
         readOnly: true
-        id: textItem2
+        id: annotationElement
         anchors.fill: parent
         anchors.leftMargin: 30
         anchors.rightMargin: 30
@@ -26,11 +25,7 @@ Item {
         verticalAlignment: Text.AlignVCenter
         text: model.text
         wrapMode: Text.WordWrap
-        MouseArea {
-            id: annotationMouseArea
-            anchors.fill: parent 
-            hoverEnabled: true
-        }
+        hoverEnabled: true
     }
     Column {
         anchors.verticalCenter: parent.verticalCenter
@@ -54,9 +49,9 @@ Item {
                 kaeLib.showToast("Copied to clipboard")
             }
             hoverEnabled: true
-            width: implicitWidth + 10
-            height: implicitHeight + 10
-            opacity: (annotationMouseArea.containsMouse || copyMouseArea.containsMouse) ? 1 : 0
+            width: implicitWidth + 5
+            height: implicitHeight + 5
+            opacity: (annotationElement.hovered || copyMouseArea.containsMouse) ? 1 : 0
             background: Rectangle {
                 anchors.fill: parent
                 radius: 500
@@ -94,8 +89,8 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
             }
-            width: implicitWidth + 10
-            height: implicitHeight + 10
+            width: implicitWidth + 5
+            height: implicitHeight + 5
             onClicked: {
                 console.log(index)
                 kaeLib.showToast(index)
@@ -130,13 +125,14 @@ Item {
         Repeater {
             model: delegateRoot.highlightColors
             Rectangle {
+                //TODO: Figure out opacity animation
                 height: 15
                 width: 15
                 radius: 500
                 color: modelData
                 property bool colorChosen: (highlightColor % delegateRoot.highlightWeights[index]) == 0
                 opacity: (
-                    annotationMouseArea.containsMouse || 
+                    annotationElement.hovered || 
                     subMouseArea.containsMouse || 
                     colorChosen) ? 1 : 0
                 border.color: subMouseArea.containsMouse ? palette.windowText : "transparent"
