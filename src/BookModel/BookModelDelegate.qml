@@ -8,7 +8,7 @@ Item {
     property var delegateIndex: index
     property var highlightWeights: ([2,3,5])
     property bool expanded: ListView.view.isExpanded(title)
-    property var highlightColors: (["red", "green", "blue"])
+    property var highlightColors: (["#50723C", "#773344", "#F1C40F"])
     width: ListView.view.width
     height: expanded ? textItem2.implicitHeight + 60 : 0
     visible: expanded ? true : false
