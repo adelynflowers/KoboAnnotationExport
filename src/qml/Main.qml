@@ -10,7 +10,7 @@ ApplicationWindow {
     visible: true
     width: 1280
     height: 720
-    palette: KaePalette{}
+    palette: KaeDarkPalette{}
     ToastManager {
         id: toast
         width: 150
@@ -58,7 +58,7 @@ ApplicationWindow {
                         y: parent.height / 2 - height / 2
                         radius: 13
                         color: control.checked ? palette.highlight : palette.buttonText
-                        border.color: "#cccccc"
+                        border.color: color
 
                         Rectangle {
                             x: control.checked ? parent.width - width : 0
@@ -91,6 +91,7 @@ ApplicationWindow {
                         Layout.fillWidth: true 
                         Layout.fillHeight: false
                         Layout.leftMargin: 0
+                        Layout.rightMargin: 20
                         leftPadding: 20
                         clip: true
                         color: palette.buttonText

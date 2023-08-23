@@ -1,14 +1,14 @@
 import QtQuick 
 
 Palette {
-    window: "white"
-    windowText: "black"
-    button: "#953AC2" // Used for toolbar by default
-    toolTipText: "white"
-    buttonText: "white"
-    highlight: "#F0A6CA"
-    alternateBase: "black"
-    text: "black"
+    window: "#404040"
+    windowText: "white"
+    button: "#F0A6CA" // Used for toolbar by default
+    toolTipText: "#404040"
+    buttonText: "#404040"
+    highlight: "#562470"
+    alternateBase: "white"
+    text: "white"
     placeholderText: "#F0E6EF"
     // looking for background
     base: alternateBase
@@ -21,7 +21,7 @@ Palette {
     mid: alternateBase 
     midlight: alternateBase
     shadow: alternateBase 
-    toolTipBase: "white"
+    toolTipBase: "#404040"
 
 
 

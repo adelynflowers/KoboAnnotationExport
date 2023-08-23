@@ -72,6 +72,7 @@ qt_add_qml_module(kae
         src/qml/KaePalette.qml
         src/qml/Toast.qml 
         src/qml/ToastManager.qml
+        src/qml/KaeDarkPalette.qml
 )
 
 target_compile_options(kae PRIVATE -Wall -Wextra -Wpedantic)
