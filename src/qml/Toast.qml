@@ -62,7 +62,7 @@ Rectangle {
 
     Text {
         id: message
-        color: palette.toolTipText
+        color: palette.buttonText
         wrapMode: Text.Wrap
         horizontalAlignment: Text.AlignHCenter
         anchors {
