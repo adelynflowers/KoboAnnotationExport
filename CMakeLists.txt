@@ -1,21 +1,23 @@
 # Newest version to satisfy vcpkg's sqlite3
 #set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
-cmake_minimum_required(VERSION 3.27.1)
+cmake_minimum_required(VERSION 3.24.2)
 
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-  set(CMAKE_TOOLCHAIN_FILE "./vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
-  list(APPEND CMAKE_PREFIX_PATH "~/Qt/6.5.2/gcc_64")
+  set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
+  # list(APPEND CMAKE_PREFIX_PATH "~/Qt/6.5.2/gcc_64")
+  list(APPEND CMAKE_PREFIX_PATH "/home/adelynflowers/Qt/6.5.2/wasm_multithread")
 elseif(DEFINED CMAKE_TOOLCHAIN_FILE AND NOT CMAKE_TOOLCHAIN_FILE MATCHES ".+/vcpkg/scripts/buildsystems/vcpkg.cmake$")
   message(STATUS "CMAKE_TOOLCHAIN_FILE is already set to '${CMAKE_TOOLCHAIN_FILE}', replace it with the vcpkg one and set VCPKG_CHAINLOAD_TOOLCHAIN_FILE to original CMAKE_TOOLCHAIN_FILE")
   set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_TOOLCHAIN_FILE})
-  set(CMAKE_TOOLCHAIN_FILE "/home/adelynflowers/dev/sanity-checks/vcpkg/scripts/buildsystems/vcpkg.cmake")
+  set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
 else()
   message(STATUS "CMAKE_TOOLCHAIN_FILE is already set to '${CMAKE_TOOLCHAIN_FILE}'")
   message(STATUS "VCPKG_CHAINLOAD_TOOLCHAIN_FILE is already set to '${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}'")
 endif()
 
+set(CMAKE_EXE_LINKER_FLAGS "-fnoexceptions" CACHE INTERNAL "")
 project(KoboAnnotationExport VERSION 0.1 LANGUAGES CXX)
-
+set(CMAKE_EXE_LINKER_FLAGS "-fnoexceptions" CACHE INTERNAL "" FORCE)
 # Testing with GTest
 # enable_testing()
 # include(GoogleTest)
@@ -74,8 +76,6 @@ qt_add_qml_module(kae
         src/qml/ToastManager.qml
         src/qml/KaeDarkPalette.qml
 )
-
-target_compile_options(kae PRIVATE -Wall -Wextra -Wpedantic)
 
 # SubModules after Qt setup
 

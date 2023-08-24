@@ -105,6 +105,8 @@ QString KaeLib::getApplicationDB()
 // Initializes the DB if it doesn't exist
 void KaeLib::initializeApplicationDB()
 {
+    emit appReady("wasm_test.db");
+    return;
     QDir appDir(getApplicationFolder());
     if (!appDir.exists())
     {

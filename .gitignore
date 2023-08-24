@@ -1,5 +1,8 @@
 # Build folders
-build*
+build
+build-wasm
+build-w64
+.vcpkg
 .cache*
 CMakeCache.txt
 CMakeFiles

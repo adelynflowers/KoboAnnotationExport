@@ -119,10 +119,67 @@ ApplicationWindow {
     }
     ColumnLayout {
         anchors.fill: parent
+        RowLayout {
+            Layout.fillWidth: true 
+            Layout.preferredHeight:1
+            Item {
+                // Spacer
+                Layout.fillWidth: true 
+                Layout.fillHeight: false
+            }
+            Button {
+                id: sortButton
+                Layout.fillHeight: false
+                Layout.fillWidth: false
+                flat: true
+                text: "\uF161"
+                font.family: "fontello"
+                onClicked: sortMenu.open()
+                Menu {
+                    id: sortMenu
+                    y: sortButton.height
+                    rightMargin: sortButton.width / 2
+
+                    MenuItem {
+                        text: "New..."
+                    }
+                    MenuItem {
+                        text: "Open..."
+                    }
+                    MenuItem {
+                        text: "Save"
+                    }
+                }
+            }
+            Button {
+                id: filterButton
+                Layout.fillHeight: false
+                Layout.fillWidth: false
+                flat: true
+                text: "\uF0B0"
+                font.family: "fontello"
+                onClicked: filterMenu.open()
+                Menu {
+                    id: filterMenu
+                    y: filterButton.height
+                    rightMargin: filterButton.width / 2
+
+                    MenuItem {
+                        text: "New..."
+                    }
+                    MenuItem {
+                        text: "Open..."
+                    }
+                    MenuItem {
+                        text: "Save"
+                    }
+                }
+            }
+        }
         //Content Row
         RowLayout {
             Layout.fillWidth: true 
-            Layout.preferredHeight: 8
+            Layout.preferredHeight: 9
             BookListView {
                 id: bookList
                 Layout.fillWidth: true
