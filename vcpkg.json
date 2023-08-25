@@ -2,5 +2,7 @@
     "dependencies": [
         "sqlite3",
         "sqlitecpp"
-    ]
+    ],
+    "name": "kae",
+    "version": "1.0.0"
 }
