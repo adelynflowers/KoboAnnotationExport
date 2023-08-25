@@ -15,14 +15,12 @@ else()
   message(STATUS "VCPKG_CHAINLOAD_TOOLCHAIN_FILE is already set to '${VCPKG_CHAINLOAD_TOOLCHAIN_FILE}'")
 endif()
 
-set(CMAKE_EXE_LINKER_FLAGS "-fnoexceptions" CACHE INTERNAL "")
 project(KoboAnnotationExport VERSION 0.1 LANGUAGES CXX)
-set(CMAKE_EXE_LINKER_FLAGS "-fnoexceptions" CACHE INTERNAL "" FORCE)
 # Testing with GTest
 # enable_testing()
 # include(GoogleTest)
 
-
+# Packages
 find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 find_package(SQLiteCpp CONFIG REQUIRED)
@@ -34,37 +32,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC on)
 set(AUTOMOC_PATH_PREFIX on)
 
-# set(CMAKE_SYSTEM_NAME Windows)
-# set(TOOLCHAIN_PREFIX x86_64-w64-mingw32)
 
-# # cross compilers to use for C, C++ and Fortran
-# set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}-gcc)
-# set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}-g++)
-# set(CMAKE_Fortran_COMPILER ${TOOLCHAIN_PREFIX}-gfortran)
-# set(CMAKE_RC_COMPILER ${TOOLCHAIN_PREFIX}-windres)
-
-# # target environment on the build host system
-# set(CMAKE_FIND_ROOT_PATH /usr/${TOOLCHAIN_PREFIX})
-
-# modify default behavior of FIND_XXX() commands
-# set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-# set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-# set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-
-
-# Packages
 
 # Qt executable setup
 qt_add_executable(kae
     main.cpp
 )
-
-# qt_add_qml_module(kae 
-#     VERSION 1.0
-#     URI FirstScreen 
-#     QML_FILES src/FirstScreen/qml/Main.qml 
-#     SOURCES src/FirstScreen/headers/newClass.h
-# )
 
 qt_add_qml_module(kae 
     VERSION 1.0
