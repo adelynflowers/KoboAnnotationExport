@@ -1,10 +1,8 @@
-#include "bookModel.h"
-
-#define DB_LOC "/home/adelynflowers/dev/qt-quick-project/src/KoboLib/data/KoboReader.sqlite"
-
+#include "headers/bookModel.h"
 #include <QRegularExpression>
 #include <QDate>
 
+// Member initialization constructor
 QAnnotation::QAnnotation(int &row, QString &title, QString &text, QDate &date, int &color, QString &notes) : rowIndex{
         row},
                                                                                                              title{title},
@@ -30,6 +28,7 @@ BookModel::BookModel(QObject *parent)
     // proxyModel.setSortRole(TitleRole);
 }
 
+// Push state changes to DB
 BookModel::~BookModel() {
     updateRows();
 }
@@ -127,11 +126,13 @@ void BookModel::executeSelectQuery(std::string query) {
     layoutChanged();
 }
 
+// Selects all rows from app DB and pushes to model
 void BookModel::selectAll() {
     executeSelectQuery(
             "SELECT title, bookmarkText, dateModified, kaeColor, annotationId, kaeNotes FROM annotations ORDER BY title, dateModified;");
 }
 
+// Filters annotations on a query string
 void BookModel::searchAnnotations(QString query) {
     proxyModel.setFilterRegularExpression(QRegularExpression(query, QRegularExpression::CaseInsensitiveOption));
 }
@@ -149,6 +150,7 @@ bool BookModel::openApplicationDB(QString loc) {
     }
 }
 
+// Write a list of annotations to the app db
 void BookModel::writeToApplicationDB(std::vector<KoboDB::Annotation> annotations) {
     if (appDB) {
         qDebug() << "annotations reportedly exists: " << appDB->tableExists("annotations");
@@ -180,6 +182,7 @@ void BookModel::writeToApplicationDB(std::vector<KoboDB::Annotation> annotations
     }
 }
 
+// Update changed rows in the app db
 void BookModel::updateRows() {
     SQLite::Transaction transaction(*appDB);
     SQLite::Statement query{*appDB,
@@ -196,6 +199,7 @@ void BookModel::updateRows() {
     transaction.commit();
 }
 
+// Sort rows by date
 void BookModel::sortByDate(bool descending) {
     Qt::SortOrder order;
     if (!descending)
@@ -207,6 +211,26 @@ void BookModel::sortByDate(bool descending) {
     layoutChanged();
 }
 
+// Toggle the filter on a color
 void BookModel::toggleFilterOnColor(int weight) {
     proxyModel.toggleColorFilter(weight);
+}
+
+
+// Add a color to an annotation
+void BookModel::addAnnotationColor(int row, short color) {
+    layoutAboutToBeChanged();
+    auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
+    model[modelIdx].color *= color;
+    changedAnnotations[modelIdx] = true;
+    layoutChanged();
+}
+
+// Remove a color from an annotation
+void BookModel::removeAnnotationColor(int row, short color) {
+    layoutAboutToBeChanged();
+    auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
+    model[modelIdx].color /= color;
+    changedAnnotations[modelIdx] = true;
+    layoutChanged();
 }

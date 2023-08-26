@@ -13,9 +13,9 @@
 
 #include <QtCore>
 #include <QtQml/qqmlregistration.h>
-#include <koboDB.h>
+#include "koboDB.h"
 #include <memory>
-#include <proxyModel.h>
+#include "proxyModel.h"
 
 /**
  * @brief A Qt-friendly container for annotation information.
@@ -50,7 +50,10 @@ Q_OBJECT
 
     QML_ELEMENT
 public:
-    // Roles allow QML to access data like properties
+
+    /**
+     * Role names for QML access
+     */
     enum RoleNames {
         TitleRole = Qt::UserRole,
         TextRole,
@@ -65,10 +68,9 @@ public:
      * ticks at intervals of 1s and is connected to the
      * searchDevices slot.
      *
-     * TODO: Change timer to smart pointer
      * @param parent parent, used by Qt
      */
-    explicit BookModel(QObject *parent = 0);
+    explicit BookModel(QObject *parent = nullptr);
 
     /**
      * @brief Destroy the Book Model object
@@ -149,39 +151,39 @@ public:
      */
     Q_INVOKABLE void searchAnnotations(QString query);
 
+    /**
+     * @brief Gets the proxy model which is the front-end for
+     * the class.
+     * @return the proxy model
+     */
     Q_INVOKABLE QSortFilterProxyModel *getProxyModel() {
         return &proxyModel;
     }
 
-    Q_INVOKABLE void toggleAnnotationColor(int row, short color) {
-        layoutAboutToBeChanged();
-        auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
-        if (model[modelIdx].color == color) {
-            model[modelIdx].color = -1;
-        } else {
-            model[modelIdx].color = color;
-        }
-        layoutChanged();
-    }
+    /**
+     * @brief Adds a highlight color to an annotation
+     * @param row row number in proxy model
+     * @param color color weight
+     */
+    Q_INVOKABLE void addAnnotationColor(int row, short color);
 
-    Q_INVOKABLE void addAnnotationColor(int row, short color) {
-        layoutAboutToBeChanged();
-        auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
-        model[modelIdx].color *= color;
-        changedAnnotations[modelIdx] = true;
-        layoutChanged();
-    }
+    /**
+     * @brief Removes a highlight color from an annotation
+     * @param row row number in proxy model
+     * @param color color weight
+     */
+    Q_INVOKABLE void removeAnnotationColor(int row, short color);
 
-    Q_INVOKABLE void removeAnnotationColor(int row, short color) {
-        layoutAboutToBeChanged();
-        auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
-        model[modelIdx].color /= color;
-        changedAnnotations[modelIdx] = true;
-        layoutChanged();
-    }
-
+    /**
+     * Sorts the model strictly by date
+     * @param descending true if descending order
+     */
     Q_INVOKABLE void sortByDate(bool descending);
 
+    /**
+     * @brief Toggles the filter on a highlight color
+     * @param weight color weight
+     */
     Q_INVOKABLE void toggleFilterOnColor(int weight);
 
 private:
@@ -204,6 +206,9 @@ private:
      */
     void executeSelectQuery(std::string query);
 
+    /**
+     * @brief Pushes changes made in UI to appDB
+     */
     void updateRows();
 
     // Annotation list
@@ -218,6 +223,7 @@ private:
     // Proxy model
     BookProxyModel proxyModel;
 
+    // Map of annotations that have state changes
     QHash<int, bool> changedAnnotations;
 };
 

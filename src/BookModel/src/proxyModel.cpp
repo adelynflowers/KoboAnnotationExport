@@ -1,11 +1,14 @@
-#include <proxyModel.h>
-#include <bookModel.h>
+#include "headers/proxyModel.h"
+#include "headers/bookModel.h"
 
+// Default ctor
 BookProxyModel::BookProxyModel(QObject *parent) : QSortFilterProxyModel(parent) {
 }
 
+// Default destructor
 BookProxyModel::~BookProxyModel() = default;
 
+// Used for sorting, based on internal flags set with customSort
 bool BookProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const {
     auto lTitle{sourceModel()->data(left, BookModel::RoleNames::TitleRole).toString()};
     auto rTitle{sourceModel()->data(right, BookModel::RoleNames::TitleRole).toString()};
@@ -23,6 +26,7 @@ bool BookProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right)
     }
 }
 
+// Used for filtering, based on colorDivisor set by toggleColorFilter
 bool BookProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) const {
     auto idx = sourceModel()->index(row, 0, parent);
     bool textCond =
@@ -32,6 +36,7 @@ bool BookProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) const 
     return textCond && colorCond;
 }
 
+// Sorts the model with fields optionally enabled
 void BookProxyModel::customSort(bool useDate, bool useTitle, Qt::SortOrder order) {
     this->dateEnabled = useDate;
     this->titleEnabled = useTitle;
@@ -39,6 +44,7 @@ void BookProxyModel::customSort(bool useDate, bool useTitle, Qt::SortOrder order
     layoutChanged();
 }
 
+// Updates model filter by toggling filter on highlight color
 void BookProxyModel::toggleColorFilter(int weight) {
     layoutAboutToBeChanged();
     if (colorDivisor % weight == 0) {

@@ -3,24 +3,41 @@ import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import BookModelLib
 
+/*
+Delegate item for BookList. Displays the annotation, date and optionally
+the book title if section headers are disabled. Allows assigning of color
+labels to annotations, as well as notes. Annotation can be highlighted and
+copied with system keyboard shortcuts, or by using the copy button located
+in the top-left corner of the delegate.
+ */
 Item {
     id: delegateRoot
 
+    // Base model index, useful for nested models
     property var delegateIndex: index
+    // True if this delegate is part of an expanded section
     property bool expanded: ListView.view.isExpanded(title)
+    // The highlight colors as dictated by the parent view
     property var highlightColors: ListView.view.getHighlightColors()
+    // The highlight weights as dictated by the parent view
     property var highlightWeights: ListView.view.getHighlightWeights()
 
+    // 0 height if part of a collapsed section, otherwise some spacing around
+    // the annotations height to add the other elements
     height: expanded ? annotationElement.implicitHeight + 60 : 0
-    visible: expanded ? true : false
+    // Invisible if collapsed
+    visible: expanded
+    // Inherit width from view
     width: ListView.view.width
 
+    // Smoothing for section collapsing
     Behavior on height {
         NumberAnimation {
             duration: 200
         }
     }
 
+    // Annotation element
     TextArea {
         id: annotationElement
 
@@ -34,99 +51,26 @@ Item {
         verticalAlignment: Text.AlignVCenter
         wrapMode: Text.WordWrap
     }
+
+    // Column containing the copy button and notes button
     Column {
         anchors.left: parent.left
         anchors.leftMargin: 0
         anchors.verticalCenter: parent.verticalCenter
 
-        Button {
-            id: copyButton
-
-            font.family: "fontello"
-            height: implicitHeight + 5
-            hoverEnabled: true
-            opacity: (annotationElement.hovered || copyMouseArea.containsMouse) ? 1 : 0
+        // Button for copying the annotation text
+        RoundHoverButton {
+            opacity: (annotationElement.hovered || buttonHovered) ? 1 : 0
             text: "\uF0C5"
-            width: implicitWidth + 5
-
-            background: Rectangle {
-                anchors.fill: parent
-                border.color: palette.button
-                border.width: 2
-                color: "transparent"
-                opacity: copyMouseArea.containsMouse ? 1 : 0
-                radius: 500
-
-                Rectangle {
-                    anchors.fill: parent
-                    color: palette.button
-                    opacity: copyButton.pressed ? 1 : 0
-                    radius: parent.radius
-                }
-                MouseArea {
-                    id: copyMouseArea
-
-                    anchors.fill: parent
-                    hoverEnabled: true
-                }
-            }
-            contentItem: Text {
-                color: parent.pressed ? palette.buttonText : palette.windowText
-                elide: Text.ElideRight
-                font: parent.font
-                horizontalAlignment: Text.AlignHCenter
-                opacity: enabled ? 1.0 : 0.3
-                text: parent.text
-                verticalAlignment: Text.AlignVCenter
-            }
-            Behavior on opacity {
-                NumberAnimation {
-                    duration: 200
-                }
-            }
 
             onClicked: {
                 kaeLib.copyToClipboard(model.text);
                 kaeLib.showToast("Copied to clipboard");
             }
         }
-        Button {
-            id: notesButton
-
-            font.family: "fontello"
-            height: implicitHeight + 5
-            width: implicitWidth + 5
-
-            background: Rectangle {
-                anchors.fill: parent
-                border.color: palette.button
-                border.width: 2
-                color: "transparent"
-                opacity: notesMouseArea.containsMouse ? 1 : 0
-                radius: 500
-
-                Rectangle {
-                    anchors.fill: parent
-                    color: palette.button
-                    opacity: notesButton.pressed ? 1 : 0
-                    radius: parent.radius
-                }
-                MouseArea {
-                    id: notesMouseArea
-
-                    anchors.fill: parent
-                    hoverEnabled: true
-                }
-            }
-            contentItem: Text {
-                color: parent.pressed ? palette.buttonText : palette.windowText
-                elide: Text.ElideRight
-                font.family: "fontello"
-                horizontalAlignment: Text.AlignHCenter
-                opacity: enabled ? 1.0 : 0.3
-                text: "\uF0F6"
-                verticalAlignment: Text.AlignVCenter
-            }
+        // Button for displaying the notes UI
+        RoundHoverButton {
+            text: "\uF0F6"
 
             onClicked: {
                 console.log(index);
@@ -134,11 +78,15 @@ Item {
             }
         }
     }
+
+    // Row containing the highlight selectors
     Row {
         anchors.right: dateText.left
         anchors.verticalCenter: dateText.verticalCenter
         spacing: 5
 
+        // Repeats small colored circles that apply the selected highlight
+        // color on click
         Repeater {
             model: delegateRoot.highlightColors
 
@@ -177,6 +125,8 @@ Item {
             }
         }
     }
+
+    // Contains the date text
     TextArea {
         id: dateText
 
@@ -192,6 +142,9 @@ Item {
         verticalAlignment: Text.AlignTop
         wrapMode: Text.WordWrap
     }
+
+    // Contains the book title. Only visible when section
+    // headers are disabled
     TextArea {
         id: sectionLabel
 
@@ -207,6 +160,9 @@ Item {
         visible: !parent.ListView.view.sectionsEnabled
         wrapMode: Text.WordWrap
     }
+
+    // WIP popup opened via the notes button, containing notes
+    // for the current annotation.
     Popup {
         id: popup
 
@@ -228,6 +184,8 @@ Item {
             }
         }
     }
+
+    // Background element
     Rectangle {
         anchors.fill: parent
         anchors.leftMargin: -1
