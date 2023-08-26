@@ -4,103 +4,124 @@ import QtQuick.Controls.Basic
 import QtQuick.Dialogs
 import BookModelLib
 
-
-
 ListView {
     id: bookContainer
-    spacing: 0
-    BookModel {
-        id: bookModel
-    }
-    model: bookModel.getProxyModel()
-    delegate: BookModelDelegate {}
-    highlightMoveVelocity: 5000
-    clip: true
-    boundsBehavior: Flickable.StopAtBounds
-    focus: true
-    currentIndex: -1
+
     property var collapsed: ({})
+    property variant highlightColors: (["#50723c", "#773344", "#f1c40f"])
+    property variant highlightWeights: ([2, 3, 5])
+    property var notColors: (["red", "green", "blue"])
     property bool sectionsEnabled: true
 
-    section {
-        property: "title"
-        criteria: ViewSection.FullString
-        delegate: Label {
-            height: ListView.view.sectionsEnabled ? implicitHeight + 20 : 0
-            signal clicked()
-            text: ListView.view.sectionsEnabled ? (
-                ListView.view.isExpanded(section) ? "\uE800 " : "\uE801 "
-             ) + section : ""
-            font.pixelSize: 24
-            font.family: "fontello"
-            horizontalAlignment: Text.AlignLeft
-            verticalAlignment: Text.AlignBottom
-            Behavior on height {
-                NumberAnimation{duration: 200}
-            }
-            //TODO: figure out bottom margin
-            onClicked: ListView.view.toggleSection(section)
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    parent.clicked()
-                }
-                cursorShape: Qt.PointingHandCursor
-
-            }
-        }
+    function addColor(index, color) {
+        bookModel.addAnnotationColor(index, color);
     }
-
-    function openKoboDB(filename) {
-        return bookModel.openKoboDB(filename);
-
+    function collapseSection(section) {
+        collapsed[section] = true;
+        collapsedChanged();
     }
-
+    function expandSection(section) {
+        delete collapsed[section];
+        collapsedChanged();
+    }
+    function getHighlightColors() {
+        return ["#50723C", "#773344", "#F1C40F"];
+    }
+    function getHighlightWeights() {
+        return [2, 3, 5];
+    }
+    function isExpanded(section) {
+        return !(section in collapsed);
+    }
     function openApplicationDB(filename) {
         if (bookModel.openApplicationDB(filename)) {
             bookModel.selectAll();
         }
     }
-
+    function openKoboDB(filename) {
+        return bookModel.openKoboDB(filename);
+    }
+    function removeColor(index, color) {
+        bookModel.removeAnnotationColor(index, color);
+    }
     function searchAnnotations(query) {
         bookModel.searchAnnotations(query);
     }
-
-    function isExpanded(section) {
-        return !(section in collapsed)
+    function sortByDate(descending) {
+        bookModel.sortByDate(descending);
     }
-    function expandSection(section) {
-        delete collapsed[section]
-        collapsedChanged()
-    }
-    function collapseSection(section) {
-        collapsed[section] = true
-        collapsedChanged()
+    function toggleFilterOnColor(filterColor) {
+        console.log("color is", filterColor);
+        console.log("options are", highlightColors);
+        console.log(filterColor, highlightColors[0], filterColor == highlightColors[0]);
+        let filterIdx = -1;
+        for (let i = 0; i < highlightColors.length; i++) {
+            if (filterColor == highlightColors[i]) {
+                filterIdx = i;
+                break;
+            }
+        }
+        console.log("idx of color is", filterIdx);
+        let weight = highlightWeights[filterIdx];
+        bookModel.toggleFilterOnColor(weight);
     }
     function toggleSection(section) {
         if (isExpanded(section)) {
-            collapseSection(section)
-        }
-        else {
-            expandSection(section)
+            collapseSection(section);
+        } else {
+            expandSection(section);
         }
     }
     function toggleSectionsVisibility() {
         sectionsEnabled = !sectionsEnabled;
     }
 
-    function addColor(index, color) {
-        bookModel.addAnnotationColor(index, color);
-    }
-    function removeColor(index, color) {
-        bookModel.removeAnnotationColor(index, color);
+    boundsBehavior: Flickable.StopAtBounds
+    clip: true
+    currentIndex: -1
+    focus: true
+    highlightMoveVelocity: 5000
+    model: bookModel.getProxyModel()
+    section.property: "title"
+    spacing: 0
+
+    delegate: BookModelDelegate {
     }
 
-    function sortByDate(descending) {
-        bookModel.sortByDate(descending);
-    }
+    BookModel {
+        id: bookModel
 
-    function getHighlightColors() {
-        return (["#50723C", "#773344", "#F1C40F"]);
+    }
+    section {
+        criteria: ViewSection.FullString
+
+        delegate: Label {
+            signal clicked
+
+            font.family: "fontello"
+            font.pixelSize: 24
+            height: ListView.view.sectionsEnabled ? implicitHeight + 20 : 0
+            horizontalAlignment: Text.AlignLeft
+            text: ListView.view.sectionsEnabled ? (ListView.view.isExpanded(section) ? "\uE800 " : "\uE801 ") + section : ""
+            verticalAlignment: Text.AlignBottom
+
+            Behavior on height {
+                NumberAnimation {
+                    duration: 200
+                }
+            }
+
+            //TODO: figure out bottom margin
+            onClicked: ListView.view.toggleSection(section)
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+
+                onClicked: {
+                    parent.clicked();
+                }
+            }
+        }
     }
 }

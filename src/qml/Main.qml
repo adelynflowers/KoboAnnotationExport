@@ -149,23 +149,29 @@ ApplicationWindow {
                 Layout.fillWidth: true
             }
             Repeater {
-                Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.fillWidth: true
                 model: bookList.getHighlightColors()
+
                 Rectangle {
                     property bool selected: false
-                    width: 15
-                    height: 15
-                    color: modelData
-                    radius: 50
-                    opacity: (subMouseArea.containsMouse || selected) ? 1 : 0.3
+
                     border.color: (subMouseArea.containsMouse || selected) ? palette.windowText : "transparent"
+                    color: modelData
+                    height: 15
+                    opacity: (subMouseArea.containsMouse || selected) ? 1 : 0.3
+                    radius: 50
+                    width: 15
+
                     MouseArea {
-                        anchors.fill: parent
                         id: subMouseArea
+
+                        anchors.fill: parent
                         hoverEnabled: true
+
                         onClicked: {
-                            parent.selected = !selected
+                            parent.selected = !selected;
+                            bookList.toggleFilterOnColor(parent.color);
                         }
                     }
                 }

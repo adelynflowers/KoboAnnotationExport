@@ -23,8 +23,7 @@
  * An object representing one annotation, which has a book
  * title and annotated text.
  */
-struct QAnnotation
-{
+struct QAnnotation {
 public:
     int rowIndex;
     QString title; // book title
@@ -32,6 +31,7 @@ public:
     QDate date;  // last modified date
     int color;
     QString notes;
+
     QAnnotation(int &index, QString &title, QString &text, QDate &date, int &color, QString &notes);
 };
 
@@ -45,14 +45,13 @@ public:
  * adds its content to the view rather than replacing it.
  *
  */
-class BookModel : public QAbstractListModel
-{
-    Q_OBJECT
+class BookModel : public QAbstractListModel {
+Q_OBJECT
+
     QML_ELEMENT
 public:
     // Roles allow QML to access data like properties
-    enum RoleNames
-    {
+    enum RoleNames {
         TitleRole = Qt::UserRole,
         TextRole,
         DateRole,
@@ -150,28 +149,22 @@ public:
      */
     Q_INVOKABLE void searchAnnotations(QString query);
 
-    Q_INVOKABLE QSortFilterProxyModel *getProxyModel()
-    {
+    Q_INVOKABLE QSortFilterProxyModel *getProxyModel() {
         return &proxyModel;
     }
 
-    Q_INVOKABLE void toggleAnnotationColor(int row, short color)
-    {
+    Q_INVOKABLE void toggleAnnotationColor(int row, short color) {
         layoutAboutToBeChanged();
         auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
-        if (model[modelIdx].color == color)
-        {
+        if (model[modelIdx].color == color) {
             model[modelIdx].color = -1;
-        }
-        else
-        {
+        } else {
             model[modelIdx].color = color;
         }
         layoutChanged();
     }
 
-    Q_INVOKABLE void addAnnotationColor(int row, short color)
-    {
+    Q_INVOKABLE void addAnnotationColor(int row, short color) {
         layoutAboutToBeChanged();
         auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
         model[modelIdx].color *= color;
@@ -179,8 +172,7 @@ public:
         layoutChanged();
     }
 
-    Q_INVOKABLE void removeAnnotationColor(int row, short color)
-    {
+    Q_INVOKABLE void removeAnnotationColor(int row, short color) {
         layoutAboutToBeChanged();
         auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
         model[modelIdx].color /= color;
@@ -189,6 +181,8 @@ public:
     }
 
     Q_INVOKABLE void sortByDate(bool descending);
+
+    Q_INVOKABLE void toggleFilterOnColor(int weight);
 
 private:
     /**
@@ -211,6 +205,7 @@ private:
     void executeSelectQuery(std::string query);
 
     void updateRows();
+
     // Annotation list
     QList<QAnnotation> model;
 

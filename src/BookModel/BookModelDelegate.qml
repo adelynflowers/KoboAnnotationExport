@@ -1,222 +1,244 @@
-import QtQuick 
+import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import BookModelLib
 
 Item {
     id: delegateRoot
+
     property var delegateIndex: index
-    property var highlightWeights: ([2,3,5])
     property bool expanded: ListView.view.isExpanded(title)
     property var highlightColors: ListView.view.getHighlightColors()
-    width: ListView.view.width
+    property var highlightWeights: ListView.view.getHighlightWeights()
+
     height: expanded ? annotationElement.implicitHeight + 60 : 0
     visible: expanded ? true : false
+    width: ListView.view.width
+
     Behavior on height {
-        NumberAnimation{duration: 200}
+        NumberAnimation {
+            duration: 200
+        }
     }
+
     TextArea {
-        readOnly: true
         id: annotationElement
+
         anchors.fill: parent
         anchors.leftMargin: 30
         anchors.rightMargin: 30
         horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
-        text: model.text
-        wrapMode: Text.WordWrap
         hoverEnabled: true
+        readOnly: true
+        text: model.text
+        verticalAlignment: Text.AlignVCenter
+        wrapMode: Text.WordWrap
     }
     Column {
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.left: parent.left 
+        anchors.left: parent.left
         anchors.leftMargin: 0
+        anchors.verticalCenter: parent.verticalCenter
+
         Button {
             id: copyButton
-            text: "\uF0C5"
+
             font.family: "fontello"
-            contentItem: Text {
-                text: parent.text
-                font: parent.font
-                opacity: enabled ? 1.0 : 0.3
-                color: parent.pressed ? palette.buttonText : palette.windowText
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                elide: Text.ElideRight
-            }
-            onClicked: {
-                kaeLib.copyToClipboard(model.text)
-                kaeLib.showToast("Copied to clipboard")
-            }
-            hoverEnabled: true
-            width: implicitWidth + 5
             height: implicitHeight + 5
+            hoverEnabled: true
             opacity: (annotationElement.hovered || copyMouseArea.containsMouse) ? 1 : 0
+            text: "\uF0C5"
+            width: implicitWidth + 5
+
             background: Rectangle {
                 anchors.fill: parent
-                radius: 500
-                color: "transparent"
                 border.color: palette.button
                 border.width: 2
+                color: "transparent"
                 opacity: copyMouseArea.containsMouse ? 1 : 0
+                radius: 500
+
                 Rectangle {
-                    radius: parent.radius
-                    anchors.fill: parent 
+                    anchors.fill: parent
                     color: palette.button
                     opacity: copyButton.pressed ? 1 : 0
+                    radius: parent.radius
                 }
                 MouseArea {
                     id: copyMouseArea
-                    hoverEnabled: true      
-                    anchors.fill: parent
 
+                    anchors.fill: parent
+                    hoverEnabled: true
                 }
             }
-            Behavior on opacity {
-                NumberAnimation {duration: 200}
+            contentItem: Text {
+                color: parent.pressed ? palette.buttonText : palette.windowText
+                elide: Text.ElideRight
+                font: parent.font
+                horizontalAlignment: Text.AlignHCenter
+                opacity: enabled ? 1.0 : 0.3
+                text: parent.text
+                verticalAlignment: Text.AlignVCenter
             }
-            
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: 200
+                }
+            }
+
+            onClicked: {
+                kaeLib.copyToClipboard(model.text);
+                kaeLib.showToast("Copied to clipboard");
+            }
         }
         Button {
             id: notesButton
+
             font.family: "fontello"
-            contentItem: Text {
-                text: "\uF0F6"
-                font.family: "fontello"
-                opacity: enabled ? 1.0 : 0.3
-                color: parent.pressed ? palette.buttonText : palette.windowText
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                elide: Text.ElideRight
-            }
-            width: implicitWidth + 5
             height: implicitHeight + 5
-            onClicked: {
-                console.log(index)
-                kaeLib.showToast(index)
-            }
+            width: implicitWidth + 5
+
             background: Rectangle {
                 anchors.fill: parent
-                radius: 500
-                color: "transparent"
                 border.color: palette.button
                 border.width: 2
+                color: "transparent"
                 opacity: notesMouseArea.containsMouse ? 1 : 0
+                radius: 500
+
                 Rectangle {
-                    radius: parent.radius
-                    anchors.fill: parent 
+                    anchors.fill: parent
                     color: palette.button
                     opacity: notesButton.pressed ? 1 : 0
+                    radius: parent.radius
                 }
                 MouseArea {
                     id: notesMouseArea
-                    hoverEnabled: true      
-                    anchors.fill: parent
 
+                    anchors.fill: parent
+                    hoverEnabled: true
                 }
             }
+            contentItem: Text {
+                color: parent.pressed ? palette.buttonText : palette.windowText
+                elide: Text.ElideRight
+                font.family: "fontello"
+                horizontalAlignment: Text.AlignHCenter
+                opacity: enabled ? 1.0 : 0.3
+                text: "\uF0F6"
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            onClicked: {
+                console.log(index);
+                kaeLib.showToast(index);
+            }
         }
-        
     }
     Row {
-        spacing: 5
-        anchors.verticalCenter: dateText.verticalCenter
         anchors.right: dateText.left
+        anchors.verticalCenter: dateText.verticalCenter
+        spacing: 5
+
         Repeater {
             model: delegateRoot.highlightColors
+
             Rectangle {
+                property bool colorChosen: (highlightColor % delegateRoot.highlightWeights[index]) == 0
+
+                border.color: subMouseArea.containsMouse ? palette.windowText : "transparent"
+                color: modelData
                 //TODO: Figure out opacity animation
                 height: 15
-                width: 15
+                opacity: (annotationElement.hovered || subMouseArea.containsMouse || colorChosen) ? 1 : 0
                 radius: 500
-                color: modelData
-                property bool colorChosen: (highlightColor % delegateRoot.highlightWeights[index]) == 0
-                opacity: (
-                    annotationElement.hovered || 
-                    subMouseArea.containsMouse || 
-                    colorChosen) ? 1 : 0
-                border.color: subMouseArea.containsMouse ? palette.windowText : "transparent"
+                width: 15
+
                 Behavior on opacity {
-                    NumberAnimation{duration: 200}
+                    NumberAnimation {
+                        duration: 200
+                    }
                 }
+
                 MouseArea {
                     id: subMouseArea
-                    anchors.fill: parent 
+
+                    anchors.fill: parent
                     hoverEnabled: true
+
                     onClicked: {
                         let weight = delegateRoot.highlightWeights[index];
                         if (!parent.colorChosen) {
                             delegateRoot.ListView.view.addColor(delegateRoot.delegateIndex, weight);
                         } else {
                             delegateRoot.ListView.view.removeColor(delegateRoot.delegateIndex, weight);
-                        } 
+                        }
                     }
                 }
             }
-           
-
         }
     }
     TextArea {
         id: dateText
-        selectByMouse: true 
-        readOnly: true
-        anchors.right: parent.right 
-        anchors.top: parent.top 
-        anchors.topMargin: 1
+
+        anchors.right: parent.right
         anchors.rightMargin: 3
-        verticalAlignment: Text.AlignTop
+        anchors.top: parent.top
+        anchors.topMargin: 1
+        font.italic: true
         horizontalAlignment: Text.AlignRight
+        readOnly: true
+        selectByMouse: true
         text: Qt.formatDate(model.date, "MMM dd, yyyy")
-        font.italic: true 
+        verticalAlignment: Text.AlignTop
         wrapMode: Text.WordWrap
     }
     TextArea {
         id: sectionLabel
-        selectByMouse: true 
-        readOnly: true
-        anchors.right: parent.right 
-        anchors.bottom: parent.bottom
-        anchors.rightMargin: 3
-        verticalAlignment: Text.AlignTop
-        horizontalAlignment: Text.AlignRight
-        text: model.title
-        font.italic: true 
-        wrapMode: Text.WordWrap
-        visible: !parent.ListView.view.sectionsEnabled
-    }
 
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.rightMargin: 3
+        font.italic: true
+        horizontalAlignment: Text.AlignRight
+        readOnly: true
+        selectByMouse: true
+        text: model.title
+        verticalAlignment: Text.AlignTop
+        visible: !parent.ListView.view.sectionsEnabled
+        wrapMode: Text.WordWrap
+    }
     Popup {
         id: popup
-        padding: 10 
-        anchors.centerIn: Overlay.overlay 
+
+        anchors.centerIn: Overlay.overlay
         focus: true
+        padding: 10
+
         contentItem: Column {
-            spacing: 5 
+            spacing: 5
+
             Repeater {
                 model: ["hello", "hello!", "hi"]
+
                 Label {
-                    text: modelData 
                     horizontalAlignment: Text.AlignLeft
+                    text: modelData
                     verticalAlignment: Text.AlignVCenter
                 }
             }
         }
     }
-
     Rectangle {
         anchors.fill: parent
+        anchors.leftMargin: -1
         anchors.rightMargin: -1
         anchors.topMargin: 0
-        anchors.leftMargin: -1
-        z: 1
-        opacity: 0.3
-        color: "transparent"
-        border.width: 1
-        radius: 2
         border.color: palette.alternateBase
+        border.width: 1
+        color: "transparent"
+        opacity: 0.3
+        radius: 2
+        z: 1
     }
 }
-
-
 
