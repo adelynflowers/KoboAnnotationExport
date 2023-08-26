@@ -30,7 +30,6 @@ bool BookProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) const 
             sourceModel()->data(idx, BookModel::RoleNames::TextRole).toString().contains(filterRegularExpression()) ||
             sourceModel()->data(idx, BookModel::RoleNames::TitleRole).toString().contains(filterRegularExpression());
     bool colorCond = sourceModel()->data(idx, BookModel::RoleNames::ColorRole).toInt() % colorDivisor == 0;
-    qDebug() << "filtering row with " << textCond << " && " << colorCond;
     return textCond && colorCond;
 }
 
@@ -43,13 +42,11 @@ void BookProxyModel::customSort(bool useDate, bool useTitle, Qt::SortOrder order
 
 void BookProxyModel::toggleColorFilter(int weight) {
     layoutAboutToBeChanged();
-    qDebug() << "toggling filter for weight " << weight << ", current divisor is " << colorDivisor;
     if (colorDivisor % weight == 0) {
         colorDivisor /= weight;
     } else {
         colorDivisor *= weight;
     }
-    qDebug() << "divisor changed to " << colorDivisor;
     invalidateRowsFilter();
     layoutChanged();
 }
