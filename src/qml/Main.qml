@@ -148,6 +148,28 @@ ApplicationWindow {
                 // Spacer
                 Layout.fillWidth: true
             }
+            Repeater {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                model: bookList.getHighlightColors()
+                Rectangle {
+                    property bool selected: false
+                    width: 15
+                    height: 15
+                    color: modelData
+                    radius: 50
+                    opacity: (subMouseArea.containsMouse || selected) ? 1 : 0.3
+                    border.color: (subMouseArea.containsMouse || selected) ? palette.windowText : "transparent"
+                    MouseArea {
+                        anchors.fill: parent
+                        id: subMouseArea
+                        hoverEnabled: true
+                        onClicked: {
+                            parent.selected = !selected
+                        }
+                    }
+                }
+            }
             Button {
                 id: sortButton
 
@@ -166,42 +188,16 @@ ApplicationWindow {
                     y: sortButton.height
 
                     MenuItem {
-                        text: "\uF161 Date (desc)"
                         font.family: "fontello"
+                        text: "\uF161 Date (desc)"
+
                         onClicked: bookList.sortByDate(true)
                     }
                     MenuItem {
-                        text: "\uF160 Date (asc)"
                         font.family: "fontello"
+                        text: "\uF160 Date (asc)"
+
                         onClicked: bookList.sortByDate(false)
-                    }
-                }
-            }
-            Button {
-                id: filterButton
-
-                Layout.fillHeight: false
-                Layout.fillWidth: false
-                flat: true
-                font.family: "fontello"
-                text: "\uF0B0"
-
-                onClicked: filterMenu.open()
-
-                Menu {
-                    id: filterMenu
-
-                    rightMargin: filterButton.width / 2
-                    y: filterButton.height
-
-                    MenuItem {
-                        text: "New..."
-                    }
-                    MenuItem {
-                        text: "Open..."
-                    }
-                    MenuItem {
-                        text: "Save"
                     }
                 }
             }
