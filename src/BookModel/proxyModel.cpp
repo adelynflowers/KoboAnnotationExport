@@ -4,8 +4,7 @@
 BookProxyModel::BookProxyModel(QObject *parent) : QSortFilterProxyModel(parent) {
 }
 
-BookProxyModel::~BookProxyModel() {
-}
+BookProxyModel::~BookProxyModel() = default;
 
 bool BookProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const {
     auto lTitle{sourceModel()->data(left, BookModel::RoleNames::TitleRole).toString()};

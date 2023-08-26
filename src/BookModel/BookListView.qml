@@ -51,9 +51,6 @@ ListView {
         bookModel.sortByDate(descending);
     }
     function toggleFilterOnColor(filterColor) {
-        console.log("color is", filterColor);
-        console.log("options are", highlightColors);
-        console.log(filterColor, highlightColors[0], filterColor == highlightColors[0]);
         let filterIdx = -1;
         for (let i = 0; i < highlightColors.length; i++) {
             if (filterColor == highlightColors[i]) {
@@ -61,7 +58,6 @@ ListView {
                 break;
             }
         }
-        console.log("idx of color is", filterIdx);
         let weight = highlightWeights[filterIdx];
         bookModel.toggleFilterOnColor(weight);
     }
