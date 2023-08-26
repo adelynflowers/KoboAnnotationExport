@@ -3,7 +3,7 @@
 #include <QRegularExpression>
 #include <QDate>
 
-QAnnotation::QAnnotation(int &row, QString &title, QString &text, QString &date, int &color, QString &notes) : rowIndex{row},
+QAnnotation::QAnnotation(int &row, QString &title, QString &text, QDate &date, int &color, QString &notes) : rowIndex{row},
                                                                                                                title{title},
                                                                                                                text{text},
                                                                                                                date{date},
@@ -128,13 +128,13 @@ void BookModel::executeSelectQuery(std::string query)
         // layoutAboutToBeChanged();
         auto text = QString::fromStdString(stmt.getColumn(1).getString()).trimmed();
         auto lastModifiedStr = QString::fromStdString(stmt.getColumn(2).getString());
-        auto lastModified = QDate::fromString(lastModifiedStr, Qt::ISODate).toString("MMM d, yy");
+        auto lastModified = QDate::fromString(lastModifiedStr, Qt::ISODate);
         auto color = stmt.getColumn(3).getInt();
         auto rowId = stmt.getColumn(4).getInt();
         auto notes = QString::fromStdString(stmt.getColumn(5).getString());
         model.emplaceBack(rowId, title, text, lastModified, color, notes);
     }
-    proxyModel.sort(0, Qt::AscendingOrder);
+    proxyModel.customSort(true, true, Qt::AscendingOrder);
     layoutChanged();
 }
 
@@ -216,4 +216,15 @@ void BookModel::updateRows()
         query.reset();
     }
     transaction.commit();
+}
+
+void BookModel::sortByDate(bool descending) {
+    Qt::SortOrder order;
+    if (!descending)
+        order = Qt::SortOrder::AscendingOrder;
+    else
+        order = Qt::SortOrder::DescendingOrder;
+    layoutAboutToBeChanged();
+    proxyModel.customSort(true, false, order);
+    layoutChanged();
 }

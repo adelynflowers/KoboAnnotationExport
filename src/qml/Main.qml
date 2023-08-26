@@ -1,150 +1,179 @@
-import QtQuick 
+import QtQuick
 import QtQuick.Dialogs
 import QtQuick.Layouts
 //import QtQuick.Controls
 import QtQuick.Controls.Basic
 import BookListLib
 
-
 ApplicationWindow {
+    height: 720
     visible: true
     width: 1280
-    height: 720
-    palette: KaeDarkPalette{}
-    ToastManager {
-        id: toast
-        width: 150
-        height: childrenRect.height
-        Connections {
-            target: kaeLib 
-            function onToastReceived(message) {
-                toast.show(message, 1000);
-            }
-        }
-    }
+
     header: ToolBar {
         height: parent.height * 0.1
+
         RowLayout {
-            spacing: 6
             anchors.fill: parent
+            spacing: 6
+
             ColumnLayout {
-                Layout.preferredWidth: 4
                 Layout.fillHeight: true
+                Layout.preferredWidth: 4
+
                 Label {
-                    text: "Kae"
-                    font.pixelSize: 24
-                    color: palette.buttonText
-                    Layout.leftMargin: 10
-                    Layout.fillWidth: true
                     Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 10
+                    color: palette.buttonText
+                    font.pixelSize: 24
+                    text: "Kae"
                     verticalAlignment: Qt.AlignVCenter
                 }
             }
             RowLayout {
-                Layout.preferredWidth: 6
                 Layout.fillHeight: true
+                Layout.preferredWidth: 6
+
                 Switch {
                     id: control
-                    text: qsTr("Grouped")
+
                     checked: bookList.sectionsEnabled
-                    onToggled: {
-                        bookList.toggleSectionsVisibility()
-                        kaeLib.showToast("Toggled groups")
+                    text: qsTr("Grouped")
+
+                    contentItem: Text {
+                        color: palette.buttonText
+                        font: control.font
+                        leftPadding: control.indicator.width + control.spacing
+                        opacity: enabled ? 1.0 : 0.3
+                        text: control.text
+                        verticalAlignment: Text.AlignVCenter
                     }
                     indicator: Rectangle {
-                        implicitWidth: 48
+                        border.color: color
+                        color: control.checked ? palette.highlight : palette.buttonText
                         implicitHeight: 13
+                        implicitWidth: 48
+                        radius: 13
                         x: control.leftPadding
                         y: parent.height / 2 - height / 2
-                        radius: 13
-                        color: control.checked ? palette.highlight : palette.buttonText
-                        border.color: color
 
                         Rectangle {
-                            x: control.checked ? parent.width - width : 0
                             anchors.verticalCenter: parent.verticalCenter
-                            width: 26
+                            border.color: "#999999"
+                            color: control.down ? "#cccccc" : "#ffffff"
                             height: 26
                             radius: 13
-                            color: control.down ? "#cccccc" : "#ffffff"
-                            border.color: "#999999"
+                            width: 26
+                            x: control.checked ? parent.width - width : 0
+
                             Behavior on x {
-                                NumberAnimation {duration:100}
+                                NumberAnimation {
+                                    duration: 100
+                                }
                             }
                         }
                     }
 
-                    contentItem: Text {
-                        text: control.text
-                        font: control.font
-                        opacity: enabled ? 1.0 : 0.3
-                        color: palette.buttonText
-                        verticalAlignment: Text.AlignVCenter
-                        leftPadding: control.indicator.width + control.spacing
+                    onToggled: {
+                        bookList.toggleSectionsVisibility();
+                        kaeLib.showToast("Toggled groups");
                     }
                 }
                 RowLayout {
-                    Layout.fillWidth: true 
                     Layout.fillHeight: true
+                    Layout.fillWidth: true
+
                     TextField {
                         id: annotationSearch
-                        Layout.fillWidth: true 
+
                         Layout.fillHeight: false
+                        Layout.fillWidth: true
                         Layout.leftMargin: 0
                         Layout.rightMargin: 20
-                        leftPadding: 20
                         clip: true
                         color: palette.buttonText
-                        background: Rectangle {
-                            radius: 50
-                            color: annotationSearch.enabled ? "transparent" : palette.button
-                            border.color: annotationSearch.activeFocus ? palette.highlight : palette.alternateBase
-                        }
+                        leftPadding: 20
                         placeholderText: qsTr("Type to begin searching")
-                        onTextEdited: function() {
-                            bookList.searchAnnotations(annotationSearch.text)
+
+                        background: Rectangle {
+                            border.color: annotationSearch.activeFocus ? palette.highlight : palette.alternateBase
+                            color: annotationSearch.enabled ? "transparent" : palette.button
+                            radius: 50
                         }
+
+                        onTextEdited: function () {
+                            bookList.searchAnnotations(annotationSearch.text);
+                        }
+
                         Label {
-                            text: "\uE802"
-                            color: palette.buttonText
-                            font.family: "fontello"
                             anchors.left: parent.left
                             anchors.leftMargin: 5
                             anchors.verticalCenter: parent.verticalCenter
+                            color: palette.buttonText
+                            font.family: "fontello"
+                            text: "\uE802"
                         }
                     }
                 }
             }
         }
     }
+    palette: KaeDarkPalette {
+    }
+
+    ToastManager {
+        id: toast
+
+        height: childrenRect.height
+        width: 150
+
+        Connections {
+            function onToastReceived(message) {
+                toast.show(message, 1000);
+            }
+
+            target: kaeLib
+        }
+    }
     ColumnLayout {
         anchors.fill: parent
+
         RowLayout {
-            Layout.fillWidth: true 
-            Layout.preferredHeight:1
+            Layout.fillWidth: true
+            Layout.preferredHeight: 1
+
             Item {
-                // Spacer
-                Layout.fillWidth: true 
                 Layout.fillHeight: false
+                // Spacer
+                Layout.fillWidth: true
             }
             Button {
                 id: sortButton
+
                 Layout.fillHeight: false
                 Layout.fillWidth: false
                 flat: true
-                text: "\uF161"
                 font.family: "fontello"
+                text: "\uF161"
+
                 onClicked: sortMenu.open()
+
                 Menu {
                     id: sortMenu
-                    y: sortButton.height
+
                     rightMargin: sortButton.width / 2
+                    y: sortButton.height
 
                     MenuItem {
-                        text: "New..."
+                        text: "\uF161 Date (desc)"
+                        font.family: "fontello"
+                        onClicked: bookList.sortByDate(true)
                     }
                     MenuItem {
-                        text: "Open..."
+                        text: "\uF160 Date (asc)"
+                        font.family: "fontello"
+                        onClicked: bookList.sortByDate(false)
                     }
                     MenuItem {
                         text: "Save"
@@ -153,16 +182,20 @@ ApplicationWindow {
             }
             Button {
                 id: filterButton
+
                 Layout.fillHeight: false
                 Layout.fillWidth: false
                 flat: true
-                text: "\uF0B0"
                 font.family: "fontello"
+                text: "\uF0B0"
+
                 onClicked: filterMenu.open()
+
                 Menu {
                     id: filterMenu
-                    y: filterButton.height
+
                     rightMargin: filterButton.width / 2
+                    y: filterButton.height
 
                     MenuItem {
                         text: "New..."
@@ -178,37 +211,65 @@ ApplicationWindow {
         }
         //Content Row
         RowLayout {
-            Layout.fillWidth: true 
+            Layout.fillWidth: true
             Layout.preferredHeight: 9
+
             BookListView {
                 id: bookList
-                Layout.fillWidth: true
+
                 Layout.fillHeight: true
+                Layout.fillWidth: true
                 Layout.leftMargin: 5
                 Layout.rightMargin: 5
+
                 Connections {
-                    target: kaeLib 
                     function onAppReady(filename) {
-                        bookListLoad.running = true
+                        bookListLoad.running = true;
                         bookList.openApplicationDB(filename);
-                        bookListLoad.running = false
+                        bookListLoad.running = false;
                     }
+
+                    target: kaeLib
                 }
                 BusyIndicator {
                     id: bookListLoad
+
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                 }
             }
         }
     }
-
     MessageDialog {
         id: detectionDialog
-        text: qsTr("Device detected")
-        informativeText: qsTr("A Kobo device has been detected, extract annotations?")
-        property string detectedPath;
+
+        property string detectedPath
+
+        function acceptDevice() {
+            let detectedPath = detectionDialog.detectedPath;
+            bookListLoad.running = true;
+            let success = bookList.openKoboDB(detectedPath);
+            bookListLoad.running = false;
+            if (success) {
+                console.log("Successfully opened DB at ", detectedPath);
+                kaeLib.currentDevice = detectedPath;
+            } else {
+                console.log("Failed to open DB at ", detectedPath, ". blacklisting");
+                //TODO: Better way to handle failure
+                kaeLib.blacklistDevice(detectedPath);
+            }
+        }
+        function rejectDevice() {
+            // No is an explicit blacklist
+            console.log("Blacklisting device ", detectedPath);
+            kaeLib.blacklistDevice(detectedPath);
+        }
+
         buttons: MessageDialog.Yes | MessageDialog.No
+        informativeText: qsTr("A Kobo device has been detected, extract annotations?")
+        text: qsTr("Device detected")
+
+        onAccepted: acceptDevice()
         onButtonClicked: function (button, role) {
             if (button == MessageDialog.Yes) {
                 acceptDevice();
@@ -216,39 +277,17 @@ ApplicationWindow {
                 rejectDevice();
             }
         }
-        onAccepted: acceptDevice()
         onRejected: rejectDevice()
+
         Connections {
-            target: kaeLib 
             function onDeviceDetected(dbPath) {
                 if (!detectionDialog.visible) {
                     detectionDialog.detectedPath = dbPath;
                     detectionDialog.open();
                 }
             }
-        }
 
-        function acceptDevice() {
-            let detectedPath = detectionDialog.detectedPath
-            bookListLoad.running = true 
-            let success = bookList.openKoboDB(detectedPath);
-            bookListLoad.running = false
-            if (success) {
-                    console.log("Successfully opened DB at ", detectedPath);
-                    kaeLib.currentDevice = detectedPath;
-            } else {
-                console.log("Failed to open DB at ", detectedPath, ". blacklisting");
-                //TODO: Better way to handle failure
-                kaeLib.blacklistDevice(detectedPath);
-            }
+            target: kaeLib
         }
-
-        function rejectDevice() {
-            // No is an explicit blacklist
-            console.log("Blacklisting device ", detectedPath);
-            kaeLib.blacklistDevice(detectedPath);
-        }
-        
     }
 }
-    

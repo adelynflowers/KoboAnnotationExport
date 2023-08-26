@@ -167,7 +167,7 @@ Item {
         anchors.rightMargin: 3
         verticalAlignment: Text.AlignTop
         horizontalAlignment: Text.AlignRight
-        text: model.date
+        text: Qt.formatDate(model.date, "MMM dd, yyyy")
         font.italic: true 
         wrapMode: Text.WordWrap
     }

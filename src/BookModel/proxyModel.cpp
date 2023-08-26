@@ -36,8 +36,10 @@ bool BookProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) const
 }
 
 void BookProxyModel::customSort(bool useDate, bool useTitle, Qt::SortOrder order) {
+    layoutAboutToBeChanged();
     this->dateEnabled = useDate;
     this->titleEnabled = useTitle;
     this->sort(0, order);
+    layoutChanged();
 
 }

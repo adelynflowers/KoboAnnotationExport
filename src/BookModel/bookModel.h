@@ -29,10 +29,10 @@ public:
     int rowIndex;
     QString title; // book title
     QString text;  // annotation text
-    QString date;  // last modified date
+    QDate date;  // last modified date
     int color;
     QString notes;
-    QAnnotation(int &index, QString &title, QString &text, QString &date, int &color, QString &notes);
+    QAnnotation(int &index, QString &title, QString &text, QDate &date, int &color, QString &notes);
 };
 
 /**
@@ -187,6 +187,8 @@ public:
         changedAnnotations[modelIdx] = true;
         layoutChanged();
     }
+
+    Q_INVOKABLE void sortByDate(bool descending);
 
 private:
     /**

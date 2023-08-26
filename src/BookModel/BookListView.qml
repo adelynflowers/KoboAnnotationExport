@@ -95,4 +95,8 @@ ListView {
     function removeColor(index, color) {
         bookModel.removeAnnotationColor(index, color);
     }
+
+    function sortByDate(descending) {
+        bookModel.sortByDate(descending);
+    }
 }
