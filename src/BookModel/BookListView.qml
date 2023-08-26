@@ -15,7 +15,7 @@ ListView {
     model: bookModel.getProxyModel()
     delegate: BookModelDelegate {}
     highlightMoveVelocity: 5000
-    clip: true 
+    clip: true
     boundsBehavior: Flickable.StopAtBounds
     focus: true
     currentIndex: -1
@@ -29,11 +29,11 @@ ListView {
             height: ListView.view.sectionsEnabled ? implicitHeight + 20 : 0
             signal clicked()
             text: ListView.view.sectionsEnabled ? (
-                ListView.view.isExpanded(section) ? "\uE800 " : "\uE801 " 
+                ListView.view.isExpanded(section) ? "\uE800 " : "\uE801 "
              ) + section : ""
             font.pixelSize: 24
             font.family: "fontello"
-            horizontalAlignment: Text.AlignLeft 
+            horizontalAlignment: Text.AlignLeft
             verticalAlignment: Text.AlignBottom
             Behavior on height {
                 NumberAnimation{duration: 200}
@@ -41,7 +41,7 @@ ListView {
             //TODO: figure out bottom margin
             onClicked: ListView.view.toggleSection(section)
             MouseArea {
-                anchors.fill: parent 
+                anchors.fill: parent
                 onClicked: {
                     parent.clicked()
                 }
@@ -53,7 +53,7 @@ ListView {
 
     function openKoboDB(filename) {
         return bookModel.openKoboDB(filename);
-        
+
     }
 
     function openApplicationDB(filename) {
@@ -72,9 +72,9 @@ ListView {
     function expandSection(section) {
         delete collapsed[section]
         collapsedChanged()
-    } 
+    }
     function collapseSection(section) {
-        collapsed[section] = true 
+        collapsed[section] = true
         collapsedChanged()
     }
     function toggleSection(section) {
@@ -98,5 +98,9 @@ ListView {
 
     function sortByDate(descending) {
         bookModel.sortByDate(descending);
+    }
+
+    function getHighlightColors() {
+        return (["#50723C", "#773344", "#F1C40F"]);
     }
 }
