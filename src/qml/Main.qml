@@ -175,9 +175,6 @@ ApplicationWindow {
                         font.family: "fontello"
                         onClicked: bookList.sortByDate(false)
                     }
-                    MenuItem {
-                        text: "Save"
-                    }
                 }
             }
             Button {
