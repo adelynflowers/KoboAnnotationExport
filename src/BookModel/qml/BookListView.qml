@@ -133,4 +133,8 @@ ListView {
         delegate: BookSectionDelegate {
         }
     }
+
+    NotesPopup {
+        id: notesPopup
+    }
 }

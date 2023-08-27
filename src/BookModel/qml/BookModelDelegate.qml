@@ -74,8 +74,8 @@ Item {
 
             onClicked: {
                 console.log(index);
-                popup.setNoteString(model.notes);
-                popup.open();
+                notesPopup.setNoteString(model.notes);
+                notesPopup.open();
             }
         }
     }
@@ -161,13 +161,6 @@ Item {
         visible: !parent.ListView.view.sectionsEnabled
         wrapMode: Text.WordWrap
     }
-
-    // Popup for notes editing
-    NotesPopup {
-        id: popup
-
-    }
-
     // Background element
     Rectangle {
         anchors.fill: parent
@@ -183,15 +176,13 @@ Item {
     }
     Connections {
         function onClosed() {
-            let resultingNoteString = popup.getNoteString();
-            console.log("comparing", resultingNoteString, "to", model.notes);
+            let resultingNoteString = notesPopup.getNoteString();
             if (resultingNoteString !== model.notes) {
-                console.log("updating note string");
                 delegateRoot.ListView.view.updateNoteString(delegateRoot.delegateIndex, resultingNoteString);
             }
         }
 
-        target: popup
+        target: notesPopup
     }
 }
 

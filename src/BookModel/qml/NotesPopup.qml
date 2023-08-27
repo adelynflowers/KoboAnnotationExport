@@ -5,9 +5,12 @@ import QtQuick.Layouts
 /* NotesPopup
 Popup used to interact with notes created for annotations.
  */
-Popup {
+Drawer {
     id: popup
 
+    edge: Qt.RightEdge
+    width: parent.width * 0.33
+    height: parent.height
     // array of notes
     property var notes
 
@@ -25,17 +28,17 @@ Popup {
             popup.notes = [];
     }
 
-    anchors.centerIn: Overlay.overlay
+    //anchors.centerIn: Overlay.overlay
     focus: true
-    height: 600
-    padding: 10
-    width: 400
+    // height: 600
+    // padding: 10
+    // width: 400
 
     background: Rectangle {
         anchors.fill: parent
         border.color: palette.alternateBase
         color: palette.window
-        radius: 20
+        // radius: 20
     }
 
     ColumnLayout {
@@ -47,15 +50,16 @@ Popup {
             Layout.preferredHeight: 1
 
             TextField {
+                id: noteAdder
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 color: palette.buttonText
                 placeholderText: "Type a note and press enter"
 
                 background: Rectangle {
-                    border.color: annotationSearch.activeFocus ? palette.highlight : palette.alternateBase
-                    color: annotationSearch.enabled ? "transparent" : palette.button
-                    radius: 10
+                    border.color: "transparent"
+                    color: palette.button
+                    // radius: 20
                 }
 
                 onAccepted: {
@@ -104,10 +108,20 @@ Popup {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "\uF0C5"
 
-                        onClicked:
-                        // kaeLib.copyToClipboard(modelData);
-                        // kaeLib.showToast("Copied to clipboard");
-                        {
+                        onClicked: {
+                            kaeLib.copyToClipboard(modelData);
+                            kaeLib.showToast("Copied to clipboard");
+                        }
+                    }
+                    RoundHoverButton {
+                        anchors.left: parent.left 
+                        anchors.leftMargin: 3
+                        anchors.verticalCenter: parent.verticalCenter 
+                        text: "x"
+
+                        onClicked: {
+                            notes.splice(index,1);
+                            noteListView.model = notes;
                         }
                     }
                 }
