@@ -62,7 +62,7 @@ Popup {
             TextField {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                color: palette.buttonText
+                color: palette.text
                 placeholderText: "Type a note and press enter"
 
                 background: Rectangle {
