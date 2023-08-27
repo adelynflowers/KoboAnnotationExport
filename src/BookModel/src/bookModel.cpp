@@ -21,6 +21,7 @@ BookModel::BookModel(QObject *parent)
     rolenames[TextRole] = "text";
     rolenames[DateRole] = "date";
     rolenames[ColorRole] = "highlightColor";
+    rolenames[NotesRole] = "notes";
 
     // put model behind proxy model
     proxyModel.setSourceModel(this);
@@ -65,6 +66,8 @@ QVariant BookModel::data(const QModelIndex &index, int role) const {
             return model.at(row).date;
         case ColorRole:
             return model.at(row).color;
+        case NotesRole:
+            return model.at(row).notes;
         default:
             return QVariant();
     }
@@ -231,6 +234,15 @@ void BookModel::removeAnnotationColor(int row, short color) {
     layoutAboutToBeChanged();
     auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
     model[modelIdx].color /= color;
+    changedAnnotations[modelIdx] = true;
+    layoutChanged();
+}
+
+// Updates the note string on an annotation
+void BookModel::updateNoteString(int row, QString noteString) {
+    layoutAboutToBeChanged();
+    auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
+    model[modelIdx].notes = noteString;
     changedAnnotations[modelIdx] = true;
     layoutChanged();
 }

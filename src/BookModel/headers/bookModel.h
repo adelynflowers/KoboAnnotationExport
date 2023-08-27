@@ -2,13 +2,7 @@
 #define BOOKMODEL_H
 /**
  * @file bookModel.h
- * @author Adelyn Flowers (adelyn.flowers@gmail.com)
  * @brief QML ListView model of kobo highlights
- * @version 0.1
- * @date 2023-08-12
- *
- * @copyright Copyright (c) 2023 Adelyn Flowers
- *
  */
 
 #include <QtCore>
@@ -58,7 +52,8 @@ public:
         TitleRole = Qt::UserRole,
         TextRole,
         DateRole,
-        ColorRole
+        ColorRole,
+        NotesRole
     };
 
     /**
@@ -185,6 +180,12 @@ public:
      * @param weight color weight
      */
     Q_INVOKABLE void toggleFilterOnColor(int weight);
+    /**
+     * @brief Updates the note string at a given index
+     * @param row proxyModel row
+     * @param noteString new note string
+     */
+    Q_INVOKABLE void updateNoteString(int row, QString noteString);
 
 private:
     /**

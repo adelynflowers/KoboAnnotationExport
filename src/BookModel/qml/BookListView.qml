@@ -107,6 +107,9 @@ ListView {
     function toggleSectionsVisibility() {
         sectionsEnabled = !sectionsEnabled;
     }
+    function updateNoteString(row, string) {
+        bookModel.updateNoteString(row, string);
+    }
 
     boundsBehavior: Flickable.StopAtBounds
     clip: true

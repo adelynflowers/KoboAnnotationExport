@@ -30,6 +30,7 @@ qt_add_qml_module(BookListLib
         qml/BookModelDelegate.qml
         qml/BookSectionDelegate.qml
         qml/RoundHoverButton.qml
+        qml/NotesPopup.qml
 )
 
 target_link_libraries(

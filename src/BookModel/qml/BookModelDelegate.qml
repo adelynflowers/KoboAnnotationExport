@@ -74,7 +74,8 @@ Item {
 
             onClicked: {
                 console.log(index);
-                kaeLib.showToast(index);
+                popup.setNoteString(model.notes);
+                popup.open();
             }
         }
     }
@@ -161,28 +162,10 @@ Item {
         wrapMode: Text.WordWrap
     }
 
-    // WIP popup opened via the notes button, containing notes
-    // for the current annotation.
-    Popup {
+    // Popup for notes editing
+    NotesPopup {
         id: popup
 
-        anchors.centerIn: Overlay.overlay
-        focus: true
-        padding: 10
-
-        contentItem: Column {
-            spacing: 5
-
-            Repeater {
-                model: ["hello", "hello!", "hi"]
-
-                Label {
-                    horizontalAlignment: Text.AlignLeft
-                    text: modelData
-                    verticalAlignment: Text.AlignVCenter
-                }
-            }
-        }
     }
 
     // Background element
@@ -197,6 +180,18 @@ Item {
         opacity: 0.3
         radius: 2
         z: 1
+    }
+    Connections {
+        function onClosed() {
+            let resultingNoteString = popup.getNoteString();
+            console.log("comparing", resultingNoteString, "to", model.notes);
+            if (resultingNoteString !== model.notes) {
+                console.log("updating note string");
+                delegateRoot.ListView.view.updateNoteString(delegateRoot.delegateIndex, resultingNoteString);
+            }
+        }
+
+        target: popup
     }
 }
 
