@@ -116,9 +116,10 @@ ApplicationWindow {
                         color: palette.buttonText
                         leftPadding: 20
                         placeholderText: qsTr("Type to begin searching")
+                        placeholderTextColor: palette.buttonText
 
                         background: Rectangle {
-                            border.color: annotationSearch.activeFocus ? palette.highlight : palette.alternateBase
+                            border.color: annotationSearch.activeFocus ? palette.highlight : palette.buttonText
                             color: annotationSearch.enabled ? "transparent" : palette.button
                             radius: 50
                         }

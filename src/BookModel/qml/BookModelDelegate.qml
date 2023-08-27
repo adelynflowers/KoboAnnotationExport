@@ -184,9 +184,7 @@ Item {
     Connections {
         function onClosed() {
             let resultingNoteString = popup.getNoteString();
-            console.log("comparing", resultingNoteString, "to", model.notes);
             if (resultingNoteString !== model.notes) {
-                console.log("updating note string");
                 delegateRoot.ListView.view.updateNoteString(delegateRoot.delegateIndex, resultingNoteString);
             }
         }

@@ -6,7 +6,7 @@ Palette {
     base: alternateBase
     brightText: alternateBase
     button: "#55809B" // Used for toolbar by default
-    buttonText: "#E0E0E0"
+    buttonText: "#d4cfcf"
     dark: alternateBase
     highlight: "#B0C5D4"
     highlightedText: alternateBase
@@ -18,8 +18,8 @@ Palette {
     placeholderText: "black"
     shadow: alternateBase
     text: "black"
-    toolTipBase: "#E0E0E0"
-    toolTipText: "#E0E0E0"
-    window: "#E0E0E0"
+    toolTipBase: "#d4cfcf"
+    toolTipText: "#d4cfcf"
+    window: "#d4cfcf"
     windowText: "black"
 }
