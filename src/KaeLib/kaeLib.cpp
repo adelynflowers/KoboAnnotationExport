@@ -3,11 +3,11 @@
 // Start the timer
 KaeLib::KaeLib()
 {
-    timer.reset(new QTimer(this));
-    connect(&(*timer), &QTimer::timeout, this, &KaeLib::searchDevices);
-    timer->start(1000);
+    // timer.reset(new QTimer(this));
+    // connect(&(*timer), &QTimer::timeout, this, &KaeLib::searchDevices);
+    // timer->start(1000);
 
-    QTimer::singleShot(500, this, &KaeLib::initializeApplicationDB);
+    // QTimer::singleShot(500, this, &KaeLib::initializeApplicationDB);
 }
 
 KaeLib::~KaeLib()

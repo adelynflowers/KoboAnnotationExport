@@ -232,7 +232,7 @@ ApplicationWindow {
                 }
                 BusyIndicator {
                     id: bookListLoad
-
+                    running: false
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
                 }

@@ -19,12 +19,12 @@ BookModel::BookModel(QObject *parent)
     rolenames[ColorRole] = "highlightColor";
     rolenames[NotesRole] = "notes";
 
-    QString title = "Wuthering Heights";
+    QString title = "The Dispossessed";
     int row = 0;
-    QString text = "Heathcliff was a bastard";
+    QString text = "There are souls, he thought, whose umbilicus has never been cut. They never got weaned from the universe. They do not understand death as an enemy; they look forward to rotting and turning into humus.";
     QDate lastModified(2023, 7, 1);
     int color = 1;
-    QString notes = "Wow what a good book, jk it sucked";
+    QString notes = "This is a note about this annotation, Add and remove as many as you want!";
     model.emplaceBack(row, title, text, lastModified, color, notes);
     // put model behind proxy model
     proxyModel.setSourceModel(this);
@@ -91,23 +91,24 @@ QHash<int, QByteArray> BookModel::roleNames() const
 // to the model
 bool BookModel::openKoboDB(QString loc)
 {
-    // initialize model with kobo DB annotations
-    auto dbLoc = loc.toStdString();
-    try
-    {
+    // // initialize model with kobo DB annotations
+    // auto dbLoc = loc.toStdString();
+    // try
+    // {
 
-        auto kdb = KoboDB::openKoboDB(dbLoc);
-        auto annotations = kdb.extractAnnotations();
-        // TODO: prevent copy of vector
-        writeToApplicationDB(annotations);
-        selectAll();
-        return true;
-    }
-    catch (SQLite::Exception &ex)
-    {
-        std::cerr << "Failed to open DB " << dbLoc << ": " << ex.what() << std::endl;
-        return false;
-    }
+    //     auto kdb = KoboDB::openKoboDB(dbLoc);
+    //     auto annotations = kdb.extractAnnotations();
+    //     // TODO: prevent copy of vector
+    //     writeToApplicationDB(annotations);
+    //     selectAll();
+    //     return true;
+    // }
+    // catch (SQLite::Exception &ex)
+    // {
+    //     std::cerr << "Failed to open DB " << dbLoc << ": " << ex.what() << std::endl;
+    //     return false;
+    // }
+    return true;
 }
 
 // Select * from app DB and load into
@@ -171,6 +172,7 @@ bool BookModel::openApplicationDB(QString loc)
     //     qDebug() << "Failed to open application DB:" << ex.what();
     //     return false;
     // }
+    return true;
 }
 
 // Write a list of annotations to the app db
