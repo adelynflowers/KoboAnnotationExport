@@ -6,7 +6,12 @@ import QtQuick.Controls.Basic
 import BookListLib
 
 ApplicationWindow {
+    id: appWindow
+
+    property bool darkMode: true
+
     height: 720
+    palette: darkTheme
     visible: true
     width: 1280
 
@@ -35,6 +40,22 @@ ApplicationWindow {
                 Layout.fillHeight: true
                 Layout.preferredWidth: 6
 
+                Button {
+                    font.family: "fontello"
+                    text: "\uE803"
+
+                    onClicked: {
+                        if (appWindow.darkMode) {
+                            appWindow.palette = lightTheme;
+                            appWindow.darkMode = false;
+                            text = "\uF186";
+                        } else {
+                            appWindow.palette = darkTheme;
+                            appWindow.darkMode = true;
+                            text = "\uE803";
+                        }
+                    }
+                }
                 Switch {
                     id: control
 
@@ -119,9 +140,15 @@ ApplicationWindow {
             }
         }
     }
-    palette: KaeDarkPalette {
-    }
 
+    KaeDarkPalette {
+        id: darkTheme
+
+    }
+    KaePalette {
+        id: lightTheme
+
+    }
     ToastManager {
         id: toast
 
