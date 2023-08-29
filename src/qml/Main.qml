@@ -218,8 +218,8 @@ ApplicationWindow {
 
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                Layout.leftMargin: 5
-                Layout.rightMargin: 5
+                Layout.leftMargin: 150
+                Layout.rightMargin: 150
 
                 Connections {
                     function onAppReady(filename) {
