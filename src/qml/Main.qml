@@ -1,4 +1,5 @@
 import QtQuick
+import QtCore
 import QtQuick.Dialogs
 import QtQuick.Layouts
 //import QtQuick.Controls
@@ -34,6 +35,18 @@ ApplicationWindow {
             RowLayout {
                 Layout.fillHeight: true
                 Layout.preferredWidth: 6
+                Button {
+                    id: exportBtn
+                    text: qsTr("Export")
+                    onClicked: exportDialog.open()
+
+                    FolderDialog {
+                        id: exportDialog
+                        currentFolder:StandardPaths.writableLocation(StandardPaths.DownloadLocation)
+                        onAccepted: kaeLib.showToast(selectedFolder)
+                        acceptLabel: "Save"
+                    }
+                }
 
                 Switch {
                     id: control
