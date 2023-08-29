@@ -16,14 +16,14 @@ Drawer {
 
     // Returns the notes array as a comma seperated list
     function getNoteString() {
-        return notes.join(",");
+        return notes.join("|");
     }
 
     // Splits a string on commas and sets it as the popups
     // model data
     function setNoteString(noteString) {
         if (noteString)
-            popup.notes = noteString.split(",");
+            popup.notes = noteString.split("|");
         else
             popup.notes = [];
     }
