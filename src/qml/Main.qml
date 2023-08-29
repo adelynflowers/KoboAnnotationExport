@@ -43,7 +43,10 @@ ApplicationWindow {
                     FolderDialog {
                         id: exportDialog
                         currentFolder:StandardPaths.writableLocation(StandardPaths.DownloadLocation)
-                        onAccepted: kaeLib.showToast(selectedFolder)
+                        onAccepted: {
+                            bookList.exportAnnotations(selectedFolder)
+                            kaeLib.showToast("Wrote annotations to "+(selectedFolder+"/"+"koboAnnotations.csv"))
+                        }
                         acceptLabel: "Save"
                     }
                 }

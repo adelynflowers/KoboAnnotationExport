@@ -242,7 +242,32 @@ void BookModel::removeAnnotationColor(int row, short color) {
 void BookModel::updateNoteString(int row, QString noteString) {
     layoutAboutToBeChanged();
     auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
+    qDebug() << "changing notes at " << modelIdx << " to " << noteString;
     model[modelIdx].notes = noteString;
     changedAnnotations[modelIdx] = true;
     layoutChanged();
+}
+
+void BookModel::exportAnnotations(QString location) {
+    QDir dir(location);
+    qDebug() << "location: " << location;
+    QString exportFile = dir.filePath("koboAnnotations.csv");
+    QFile data(exportFile);
+    qDebug() << "attempting to write into " << exportFile;
+    if (data.open(QFile::WriteOnly | QFile::Truncate)) {
+        QTextStream out(&data);
+        qDebug() << "writing headers";
+        out << "title,annotation,lastModified,notes,color\n";
+        for (const auto &a: model) {
+            out << a.title << ",\""
+                << a.text << "\","
+                << a.date.toString() << ",\""
+                << a.notes << "\","
+                << a.color << "\n";
+        }
+        data.close();
+    }
+
+
+
 }

@@ -13,19 +13,32 @@ Drawer {
     height: parent.height
     // array of notes
     property var notes
+    // model idx that opened the popup
+    property var idx
 
     // Returns the notes array as a comma seperated list
     function getNoteString() {
-        return notes.join("|");
+        return notes.join(";");
+    }
+
+    function getOpeningIndex() {
+        return idx;
+    }
+
+    function setOpeningIndex(index) {
+        idx = index;
     }
 
     // Splits a string on commas and sets it as the popups
     // model data
     function setNoteString(noteString) {
-        if (noteString)
-            popup.notes = noteString.split("|");
+        if (noteString) {
+            popup.notes = noteString.split(";");
+        }
         else
             popup.notes = [];
+        noteListView.model = notes;
+
     }
 
     //anchors.centerIn: Overlay.overlay

@@ -192,6 +192,8 @@ public:
      */
     Q_INVOKABLE void updateRows();
 
+    Q_INVOKABLE void exportAnnotations(QString location);
+
 private:
     /**
      * @brief Writes a list of annotations from a Kobo DB to
