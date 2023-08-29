@@ -187,6 +187,11 @@ public:
      */
     Q_INVOKABLE void updateNoteString(int row, QString noteString);
 
+    /**
+     * @brief Pushes changes made in UI to appDB
+     */
+    Q_INVOKABLE void updateRows();
+
 private:
     /**
      * @brief Writes a list of annotations from a Kobo DB to
@@ -207,10 +212,7 @@ private:
      */
     void executeSelectQuery(std::string query);
 
-    /**
-     * @brief Pushes changes made in UI to appDB
-     */
-    void updateRows();
+
 
     // Annotation list
     QList<QAnnotation> model;
