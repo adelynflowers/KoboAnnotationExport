@@ -1,4 +1,5 @@
 import QtQuick
+import QtCore
 import QtQuick.Dialogs
 import QtQuick.Layouts
 //import QtQuick.Controls
@@ -34,6 +35,21 @@ ApplicationWindow {
             RowLayout {
                 Layout.fillHeight: true
                 Layout.preferredWidth: 6
+                Button {
+                    id: exportBtn
+                    text: qsTr("Export")
+                    onClicked: exportDialog.open()
+
+                    FolderDialog {
+                        id: exportDialog
+                        currentFolder:StandardPaths.writableLocation(StandardPaths.DownloadLocation)
+                        onAccepted: {
+                            bookList.exportAnnotations(selectedFolder)
+                            kaeLib.showToast("Wrote annotations to "+(selectedFolder+"/"+"koboAnnotations.csv"))
+                        }
+                        acceptLabel: "Save"
+                    }
+                }
 
                 Switch {
                     id: control
@@ -218,8 +234,8 @@ ApplicationWindow {
 
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                Layout.leftMargin: 5
-                Layout.rightMargin: 5
+                Layout.leftMargin: 150
+                Layout.rightMargin: 150
 
                 Connections {
                     function onAppReady(filename) {

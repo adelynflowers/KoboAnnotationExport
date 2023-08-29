@@ -73,8 +73,9 @@ Item {
             text: "\uF0F6"
 
             onClicked: {
-                console.log(index);
+                console.log("notes at index",index, "are",model.notes);
                 notesPopup.setNoteString(model.notes);
+                notesPopup.setOpeningIndex(delegateRoot.delegateIndex);
                 notesPopup.open();
             }
         }
@@ -174,15 +175,6 @@ Item {
         radius: 2
         z: 1
     }
-    Connections {
-        function onClosed() {
-            let resultingNoteString = notesPopup.getNoteString();
-            if (resultingNoteString !== model.notes) {
-                delegateRoot.ListView.view.updateNoteString(delegateRoot.delegateIndex, resultingNoteString);
-            }
-        }
 
-        target: notesPopup
-    }
 }
 

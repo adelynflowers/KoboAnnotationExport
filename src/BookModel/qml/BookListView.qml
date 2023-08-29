@@ -107,9 +107,17 @@ ListView {
     function toggleSectionsVisibility() {
         sectionsEnabled = !sectionsEnabled;
     }
+
+    // Pushes UI changes to the app DB
+    function exportAnnotations(location) {
+        bookModel.updateRows();
+        var urlObject = new URL(location);
+        bookModel.exportAnnotations(urlObject.pathname);
+    }
     function updateNoteString(row, string) {
         bookModel.updateNoteString(row, string);
     }
+
 
     boundsBehavior: Flickable.StopAtBounds
     clip: true
@@ -136,5 +144,17 @@ ListView {
 
     NotesPopup {
         id: notesPopup
+    }
+
+    Connections {
+        function onClosed() {
+            let resultingNoteString = notesPopup.getNoteString();
+            let openingIndex = notesPopup.getOpeningIndex();
+            if (resultingNoteString !== model.notes) {
+                updateNoteString(openingIndex, resultingNoteString);
+            }
+        }
+
+        target: notesPopup
     }
 }
