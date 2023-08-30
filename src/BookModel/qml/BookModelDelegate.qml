@@ -73,9 +73,10 @@ Item {
             text: "\uF0F6"
 
             onClicked: {
-                console.log(index);
-                popup.setNoteString(model.notes);
-                popup.open();
+                console.log("notes at index",index, "are",model.notes);
+                notesPopup.setNoteString(model.notes);
+                notesPopup.setOpeningIndex(delegateRoot.delegateIndex);
+                notesPopup.open();
             }
         }
     }
@@ -161,13 +162,6 @@ Item {
         visible: !parent.ListView.view.sectionsEnabled
         wrapMode: Text.WordWrap
     }
-
-    // Popup for notes editing
-    NotesPopup {
-        id: popup
-
-    }
-
     // Background element
     Rectangle {
         anchors.fill: parent
@@ -181,15 +175,6 @@ Item {
         radius: 2
         z: 1
     }
-    Connections {
-        function onClosed() {
-            let resultingNoteString = popup.getNoteString();
-            if (resultingNoteString !== model.notes) {
-                delegateRoot.ListView.view.updateNoteString(delegateRoot.delegateIndex, resultingNoteString);
-            }
-        }
 
-        target: popup
-    }
 }
 

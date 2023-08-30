@@ -6,31 +6,47 @@ import Qt5Compat.GraphicalEffects
 /* NotesPopup
 Popup used to interact with notes created for annotations.
  */
-Popup {
+Drawer {
     id: popup
 
+    edge: Qt.RightEdge
+    width: parent.width * 0.33
+    height: parent.height
     // array of notes
     property var notes
+    // model idx that opened the popup
+    property var idx
 
     // Returns the notes array as a comma seperated list
     function getNoteString() {
-        return notes.join(",");
+        return notes.join(";");
+    }
+
+    function getOpeningIndex() {
+        return idx;
+    }
+
+    function setOpeningIndex(index) {
+        idx = index;
     }
 
     // Splits a string on commas and sets it as the popups
     // model data
     function setNoteString(noteString) {
-        if (noteString)
-            popup.notes = noteString.split(",");
+        if (noteString) {
+            popup.notes = noteString.split(";");
+        }
         else
             popup.notes = [];
+        noteListView.model = notes;
+
     }
 
-    anchors.centerIn: Overlay.overlay
+    //anchors.centerIn: Overlay.overlay
     focus: true
-    height: 600
-    padding: 10
-    width: 400
+    // height: 600
+    // padding: 10
+    // width: 400
 
     background: Rectangle {
         id: popupBackground
@@ -38,7 +54,7 @@ Popup {
         anchors.fill: parent
         border.color: palette.alternateBase
         color: palette.window
-        radius: 20
+        // radius: 20
     }
 
     DropShadow {
@@ -60,15 +76,16 @@ Popup {
             Layout.preferredHeight: 1
 
             TextField {
+                id: noteAdder
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 color: palette.text
                 placeholderText: "Type a note and press enter"
 
                 background: Rectangle {
-                    border.color: annotationSearch.activeFocus ? palette.highlight : palette.alternateBase
-                    color: annotationSearch.enabled ? "transparent" : palette.button
-                    radius: 10
+                    border.color: "transparent"
+                    color: palette.button
+                    // radius: 20
                 }
 
                 onAccepted: {
@@ -117,10 +134,20 @@ Popup {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "\uF0C5"
 
-                        onClicked:
-                        // kaeLib.copyToClipboard(modelData);
-                        // kaeLib.showToast("Copied to clipboard");
-                        {
+                        onClicked: {
+                            kaeLib.copyToClipboard(modelData);
+                            kaeLib.showToast("Copied to clipboard");
+                        }
+                    }
+                    RoundHoverButton {
+                        anchors.left: parent.left 
+                        anchors.leftMargin: 3
+                        anchors.verticalCenter: parent.verticalCenter 
+                        text: "x"
+
+                        onClicked: {
+                            notes.splice(index,1);
+                            noteListView.model = notes;
                         }
                     }
                 }
