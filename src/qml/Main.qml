@@ -40,22 +40,26 @@ ApplicationWindow {
             RowLayout {
                 Layout.fillHeight: true
                 Layout.preferredWidth: 6
+
                 Button {
                     id: exportBtn
+
                     text: qsTr("Export")
+
                     onClicked: exportDialog.open()
 
                     FolderDialog {
                         id: exportDialog
-                        currentFolder:StandardPaths.writableLocation(StandardPaths.DownloadLocation)
-                        onAccepted: {
-                            bookList.exportAnnotations(selectedFolder)
-                            kaeLib.showToast("Wrote annotations to "+(selectedFolder+"/"+"koboAnnotations.csv"))
-                        }
+
                         acceptLabel: "Save"
+                        currentFolder: StandardPaths.writableLocation(StandardPaths.DownloadLocation)
+
+                        onAccepted: {
+                            bookList.exportAnnotations(selectedFolder);
+                            kaeLib.showToast("Wrote annotations to " + (selectedFolder + "/" + "koboAnnotations.csv"), 5000);
+                        }
                     }
                 }
-
                 Button {
                     font.family: "fontello"
                     text: "\uE803"
@@ -173,8 +177,8 @@ ApplicationWindow {
         width: 150
 
         Connections {
-            function onToastReceived(message) {
-                toast.show(message, 1000);
+            function onToastReceived(message, duration) {
+                toast.show(message, duration);
             }
 
             target: kaeLib

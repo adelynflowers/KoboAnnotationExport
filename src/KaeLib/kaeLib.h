@@ -26,9 +26,9 @@
  * functions for the entire application.
  *
  */
-class KaeLib : public QObject
-{
-    Q_OBJECT
+class KaeLib : public QObject {
+Q_OBJECT
+
     Q_PROPERTY(QString currentDevice READ getCurrentDevice WRITE setCurrentDevice)
 public:
     /**
@@ -75,15 +75,18 @@ public:
      */
     void setCurrentDevice(QString path);
 
-    Q_INVOKABLE void showToast(QString message);
+    Q_INVOKABLE void showToast(QString message, int duration = 1000);
 
 public slots:
+
     /**
      * @brief Emits deviceDetected if a suitable
      * Kobo device is found.
      */
     void searchDevices();
+
 signals:
+
     /**
      * @brief Emits root path to db of an attached
      * Kobo device.
@@ -100,7 +103,7 @@ signals:
      */
     void appReady(QString dbPath);
 
-    void toastReceived(QString message);
+    void toastReceived(QString message, int duration);
 
 private:
     /**
@@ -110,6 +113,7 @@ private:
      * @return QStorageInfo kobo device
      */
     QStorageInfo findKoboDevice();
+
     /**
      * @brief Get the database location of an
      * attached Kobo.
