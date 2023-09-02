@@ -10,19 +10,15 @@ KaeLib::KaeLib()
     // QTimer::singleShot(500, this, &KaeLib::initializeApplicationDB);
 }
 
-KaeLib::~KaeLib()
-{
+KaeLib::~KaeLib() {
 }
 
 // Emit signal if a kobo device is found
-void KaeLib::searchDevices()
-{
+void KaeLib::searchDevices() {
     auto device = findKoboDevice();
-    if (device.isValid())
-    {
+    if (device.isValid()) {
         auto url = getDeviceDBLoc(device);
-        if (isNewDevice(url) && !isBlacklisted(url))
-        {
+        if (isNewDevice(url) && !isBlacklisted(url)) {
             qDebug() << "emitting db path " << url;
             emit deviceDetected(url);
         }
@@ -30,8 +26,7 @@ void KaeLib::searchDevices()
 }
 
 // Get the database path from a kobo device
-QString KaeLib::getDeviceDBLoc(QStorageInfo device)
-{
+QString KaeLib::getDeviceDBLoc(QStorageInfo device) {
     auto dir = QDir(device.rootPath());
     dir.cd(".kobo");
     auto url = dir.absoluteFilePath("KoboReader.sqlite");
@@ -39,39 +34,32 @@ QString KaeLib::getDeviceDBLoc(QStorageInfo device)
 }
 
 // Return device == last opened device
-bool KaeLib::isNewDevice(QString path)
-{
+bool KaeLib::isNewDevice(QString path) {
     return path != currentDevicePath;
 }
 
 // Blacklist a device
-void KaeLib::blacklistDevice(QString path)
-{
+void KaeLib::blacklistDevice(QString path) {
     this->blacklistedDevices[path] = true;
 }
 
 // Return if device is blacklisted
-bool KaeLib::isBlacklisted(QString path)
-{
+bool KaeLib::isBlacklisted(QString path) {
     return this->blacklistedDevices[path];
 }
 
 // Copy text to clipboard
-void KaeLib::copyToClipboard(QString text)
-{
+void KaeLib::copyToClipboard(QString text) {
     QGuiApplication::clipboard()->setText(text);
 }
 
 // Find a kobo device and return it
-QStorageInfo KaeLib::findKoboDevice()
-{
+QStorageInfo KaeLib::findKoboDevice() {
     QStorageInfo device;
     auto devices = QStorageInfo::mountedVolumes();
     auto searchTerm = QString("kobo");
-    for (auto d : devices)
-    {
-        if (d.displayName().contains(searchTerm, Qt::CaseInsensitive))
-        {
+    for (auto d: devices) {
+        if (d.displayName().contains(searchTerm, Qt::CaseInsensitive)) {
             return d;
         }
     }
@@ -79,42 +67,36 @@ QStorageInfo KaeLib::findKoboDevice()
 }
 
 // Get current device
-QString KaeLib::getCurrentDevice()
-{
+QString KaeLib::getCurrentDevice() {
     return currentDevicePath;
 }
 
 // Set current device
-void KaeLib::setCurrentDevice(QString path)
-{
+void KaeLib::setCurrentDevice(QString path) {
     currentDevicePath = path;
 }
 
-QString KaeLib::getApplicationFolder()
-{
+QString KaeLib::getApplicationFolder() {
     return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 }
+
 // Returns the path to application DB
-QString KaeLib::getApplicationDB()
-{
+QString KaeLib::getApplicationDB() {
     auto parentFolder = QDir(getApplicationFolder());
     auto dbPath = parentFolder.absoluteFilePath(APP_DB_NAME);
     return dbPath;
 }
 
 // Initializes the DB if it doesn't exist
-void KaeLib::initializeApplicationDB()
-{
+void KaeLib::initializeApplicationDB() {
     QDir appDir(getApplicationFolder());
-    if (!appDir.exists())
-    {
+    if (!appDir.exists()) {
         qDebug() << "App data dir does not exist, creating";
         appDir.mkdir(getApplicationFolder());
     }
 
     auto dbLoc = getApplicationDB();
-    if (!appDir.exists(APP_DB_NAME))
-    {
+    if (!appDir.exists(APP_DB_NAME)) {
         qDebug() << "Creating app db for the first time at " << dbLoc;
         SQLite::Database db(dbLoc.toStdString(), SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
         const char *createAnnotationsTable = "CREATE TABLE annotations"
@@ -140,7 +122,6 @@ void KaeLib::initializeApplicationDB()
     qDebug() << "emitted";
 }
 
-void KaeLib::showToast(QString message)
-{
-    emit toastReceived(message);
+void KaeLib::showToast(QString message, int duration) {
+    emit toastReceived(message, duration);
 }

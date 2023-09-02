@@ -7,7 +7,12 @@ import QtQuick.Controls.Basic
 import BookListLib
 
 ApplicationWindow {
+    id: appWindow
+
+    property bool darkMode: true
+
     height: 720
+    palette: darkTheme
     visible: true
     width: 1280
 
@@ -35,22 +40,42 @@ ApplicationWindow {
             RowLayout {
                 Layout.fillHeight: true
                 Layout.preferredWidth: 6
+
                 Button {
                     id: exportBtn
+
                     text: qsTr("Export")
+
                     onClicked: exportDialog.open()
 
                     FolderDialog {
                         id: exportDialog
-                        currentFolder:StandardPaths.writableLocation(StandardPaths.DownloadLocation)
-                        onAccepted: {
-                            bookList.exportAnnotations(selectedFolder)
-                            kaeLib.showToast("Wrote annotations to "+(selectedFolder+"/"+"koboAnnotations.csv"))
-                        }
+
                         acceptLabel: "Save"
+                        currentFolder: StandardPaths.writableLocation(StandardPaths.DownloadLocation)
+
+                        onAccepted: {
+                            bookList.exportAnnotations(selectedFolder);
+                            kaeLib.showToast("Wrote annotations to " + (selectedFolder + "/" + "koboAnnotations.csv"), 5000);
+                        }
                     }
                 }
+                Button {
+                    font.family: "fontello"
+                    text: "\uE803"
 
+                    onClicked: {
+                        if (appWindow.darkMode) {
+                            appWindow.palette = lightTheme;
+                            appWindow.darkMode = false;
+                            text = "\uF186";
+                        } else {
+                            appWindow.palette = darkTheme;
+                            appWindow.darkMode = true;
+                            text = "\uE803";
+                        }
+                    }
+                }
                 Switch {
                     id: control
 
@@ -111,9 +136,10 @@ ApplicationWindow {
                         color: palette.buttonText
                         leftPadding: 20
                         placeholderText: qsTr("Type to begin searching")
+                        placeholderTextColor: palette.buttonText
 
                         background: Rectangle {
-                            border.color: annotationSearch.activeFocus ? palette.highlight : palette.alternateBase
+                            border.color: annotationSearch.activeFocus ? palette.highlight : palette.buttonText
                             color: annotationSearch.enabled ? "transparent" : palette.button
                             radius: 50
                         }
@@ -135,9 +161,15 @@ ApplicationWindow {
             }
         }
     }
-    palette: KaeDarkPalette {
-    }
 
+    KaeDarkPalette {
+        id: darkTheme
+
+    }
+    KaePalette {
+        id: lightTheme
+
+    }
     ToastManager {
         id: toast
 
@@ -145,8 +177,8 @@ ApplicationWindow {
         width: 150
 
         Connections {
-            function onToastReceived(message) {
-                toast.show(message, 1000);
+            function onToastReceived(message, duration) {
+                toast.show(message, duration);
             }
 
             target: kaeLib
