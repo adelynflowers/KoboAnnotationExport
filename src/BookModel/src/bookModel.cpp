@@ -1,9 +1,14 @@
 #include "headers/bookModel.h"
 #include <QRegularExpression>
 #include <QDate>
+#include <QRandomGenerator>
+
+QString sampleQuotes = "The Dispossessed, Ursula K. LeGuin| \"There are souls he thought whose umbilicus has never been cut. They never got weaned from the universe. They do not understand death as an enemy; they look forward to rotting and turning into humus.\"|\"This is a note;Add as many as you like!\"|1\n";
 
 // Member initialization constructor
-QAnnotation::QAnnotation(int &row, QString &title, QString &text, QDate &date, int &color, QString &notes) : rowIndex{row}, title{title}, text{text}, date{date}, color{color}, notes{notes}
+QAnnotation::QAnnotation(int &row, QString &title, QString &text, QDate &date, int &color, QString &notes) : rowIndex{
+                                                                                                                 row},
+                                                                                                             title{title}, text{text}, date{date}, color{color}, notes{notes}
 {
 }
 
@@ -19,13 +24,30 @@ BookModel::BookModel(QObject *parent)
     rolenames[ColorRole] = "highlightColor";
     rolenames[NotesRole] = "notes";
 
-    QString title = "The Dispossessed";
-    int row = 0;
-    QString text = "There are souls, he thought, whose umbilicus has never been cut. They never got weaned from the universe. They do not understand death as an enemy; they look forward to rotting and turning into humus.";
-    QDate lastModified(2023, 7, 1);
-    int color = 1;
-    QString notes = "This is a note about this annotation, Add and remove as many as you want!";
-    model.emplaceBack(row, title, text, lastModified, color, notes);
+    //    QString title = "The Dispossessed";
+    //    int row = 0;
+    //    QString text = "There are souls, he thought, whose umbilicus has never been cut. They never got weaned from the universe. They do not understand death as an enemy; they look forward to rotting and turning into humus.";
+    //    QDate lastModified(2023, 7, 1);
+    //    int color = 1;
+    //    QString notes = "This is a note about this annotation, Add and remove as many as you want!";
+    //    model.emplaceBack(row, title, text, lastModified, color, notes);
+    QStringList sampleRows = sampleQuotes.split('\n');
+    int i = 0;
+    auto today = QDate::currentDate();
+    qDebug() << sampleRows;
+    for (const auto &row : sampleRows)
+    {
+        QStringList splitRow = row.split('|');
+        qDebug() << splitRow;
+        QAnnotation a;
+        a.rowIndex = i;
+        a.title = splitRow[0];
+        a.text = splitRow[2];
+        a.date = today.addDays(-QRandomGenerator::global()->generate());
+        a.color = splitRow[4].toInt();
+        a.notes = splitRow[3];
+        model.push_back(a);
+    }
     // put model behind proxy model
     proxyModel.setSourceModel(this);
     // proxyModel.setFilterRole(TextRole);
@@ -281,17 +303,20 @@ void BookModel::updateNoteString(int row, QString noteString)
     layoutChanged();
 }
 
-void BookModel::exportAnnotations(QString location) {
+void BookModel::exportAnnotations(QString location)
+{
     QDir dir(location);
     qDebug() << "location: " << location;
     QString exportFile = dir.filePath("koboAnnotations.csv");
     QFile data(exportFile);
     qDebug() << "attempting to write into " << exportFile;
-    if (data.open(QFile::WriteOnly | QFile::Truncate)) {
+    if (data.open(QFile::WriteOnly | QFile::Truncate))
+    {
         QTextStream out(&data);
         qDebug() << "writing headers";
         out << "title,annotation,lastModified,notes,color\n";
-        for (const auto &a: model) {
+        for (const auto &a : model)
+        {
             out << a.title << ",\""
                 << a.text << "\","
                 << a.date.toString() << ",\""
@@ -300,7 +325,4 @@ void BookModel::exportAnnotations(QString location) {
         }
         data.close();
     }
-
-
-
 }

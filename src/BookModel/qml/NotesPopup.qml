@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
 
 /* NotesPopup
 Popup used to interact with notes created for annotations.
@@ -9,25 +8,16 @@ Popup used to interact with notes created for annotations.
 Drawer {
     id: popup
 
-    edge: Qt.RightEdge
-    width: parent.width * 0.33
-    height: parent.height
-    // array of notes
-    property var notes
     // model idx that opened the popup
     property var idx
+    // array of notes
+    property var notes
 
     // Returns the notes array as a comma seperated list
     function getNoteString() {
         return notes.join(";");
     }
-
     function getOpeningIndex() {
-        return idx;
-    }
-
-    function setOpeningIndex(index) {
-        idx = index;
     }
 
     // Splits a string on commas and sets it as the popups
@@ -35,15 +25,21 @@ Drawer {
     function setNoteString(noteString) {
         if (noteString) {
             popup.notes = noteString.split(";");
-        }
-        else
+        } else
             popup.notes = [];
         noteListView.model = notes;
-
     }
+    function setOpeningIndex(index) {
+        idx = index;
+    }
+
+    edge: Qt.RightEdge
 
     //anchors.centerIn: Overlay.overlay
     focus: true
+    height: parent.height
+    width: parent.width * 0.33
+
     // height: 600
     // padding: 10
     // width: 400
@@ -57,16 +53,6 @@ Drawer {
         // radius: 20
     }
 
-    DropShadow {
-        color: "#80000000"
-        height: popup.height
-        samples: 30
-        source: popupBackground
-        verticalOffset: 10
-        width: popup.width
-        x: -leftPadding
-        y: -topPadding
-    }
     ColumnLayout {
         anchors.fill: parent
         spacing: 5
@@ -77,6 +63,7 @@ Drawer {
 
             TextField {
                 id: noteAdder
+
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 color: palette.text
@@ -140,13 +127,13 @@ Drawer {
                         }
                     }
                     RoundHoverButton {
-                        anchors.left: parent.left 
+                        anchors.left: parent.left
                         anchors.leftMargin: 3
-                        anchors.verticalCenter: parent.verticalCenter 
+                        anchors.verticalCenter: parent.verticalCenter
                         text: "x"
 
                         onClicked: {
-                            notes.splice(index,1);
+                            notes.splice(index, 1);
                             noteListView.model = notes;
                         }
                     }

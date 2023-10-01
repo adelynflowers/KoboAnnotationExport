@@ -48,16 +48,10 @@ ApplicationWindow {
 
                     onClicked: exportDialog.open()
 
-                    FolderDialog {
+                    MessageDialog {
                         id: exportDialog
 
-                        acceptLabel: "Save"
-                        currentFolder: StandardPaths.writableLocation(StandardPaths.DownloadLocation)
-
-                        onAccepted: {
-                            bookList.exportAnnotations(selectedFolder);
-                            kaeLib.showToast("Wrote annotations to " + (selectedFolder + "/" + "koboAnnotations.csv"), 5000);
-                        }
+                        text: qsTr("In the desktop version, this button exports your annotations to a CSV file")
                     }
                 }
                 Button {
@@ -108,7 +102,7 @@ ApplicationWindow {
                             width: 26
                             x: control.checked ? parent.width - width : 0
 
-                            Behavior on x {
+                            Behavior on x  {
                                 NumberAnimation {
                                     duration: 100
                                 }
@@ -280,9 +274,10 @@ ApplicationWindow {
                 }
                 BusyIndicator {
                     id: bookListLoad
-                    running: false
+
                     anchors.horizontalCenter: parent.horizontalCenter
                     anchors.verticalCenter: parent.verticalCenter
+                    running: false
                 }
             }
         }

@@ -27,6 +27,8 @@ public:
     QString notes;
 
     QAnnotation(int &index, QString &title, QString &text, QDate &date, int &color, QString &notes);
+
+    QAnnotation() = default;
 };
 
 /**
@@ -213,7 +215,6 @@ private:
      * @param query query to run
      */
     void executeSelectQuery(std::string query);
-
 
 
     // Annotation list
