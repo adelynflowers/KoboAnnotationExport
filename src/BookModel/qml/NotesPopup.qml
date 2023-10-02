@@ -1,7 +1,7 @@
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
+//import Qt5Compat.GraphicalEffects
 
 /* NotesPopup
 Popup used to interact with notes created for annotations.
@@ -57,16 +57,16 @@ Drawer {
         // radius: 20
     }
 
-    DropShadow {
-        color: "#80000000"
-        height: popup.height
-        samples: 30
-        source: popupBackground
-        verticalOffset: 10
-        width: popup.width
-        x: -leftPadding
-        y: -topPadding
-    }
+    // DropShadow {
+    //     color: "#80000000"
+    //     height: popup.height
+    //     samples: 30
+    //     source: popupBackground
+    //     verticalOffset: 10
+    //     width: popup.width
+    //     x: -leftPadding
+    //     y: -topPadding
+    // }
     ColumnLayout {
         anchors.fill: parent
         spacing: 5
