@@ -1,5 +1,5 @@
 # Kae (Kobo Annotation Export)
-A simple app designed to streamline extracting highlights from a Kobo e-reader and syncing them with a calibre instance.
+A simple app designed to streamline extracting highlights from a Kobo e-reader and syncing them with a calibre instance. Future work may consider importing CSVs and building out syncing functionality.
 
 ## Progress
 - [x] Extract highlights from a Kobo DB file

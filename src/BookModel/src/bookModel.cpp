@@ -4,18 +4,16 @@
 
 // Member initialization constructor
 QAnnotation::QAnnotation(int &row, QString &title, QString &text, QDate &date, int &color, QString &notes) : rowIndex{
-        row},
-                                                                                                             title{title},
-                                                                                                             text{text},
-                                                                                                             date{date},
-                                                                                                             color{color},
-                                                                                                             notes{notes} {
+                                                                                                                 row},
+                                                                                                             title{title}, text{text}, date{date}, color{color}, notes{notes}
+{
 }
 
 // Initialize object with roles. Set off timer for
 // device searching.
 BookModel::BookModel(QObject *parent)
-        : QAbstractListModel(parent) {
+    : QAbstractListModel(parent)
+{
     // initialize custom roles that map to annotations
     rolenames[TitleRole] = "title";
     rolenames[TextRole] = "text";
@@ -30,60 +28,68 @@ BookModel::BookModel(QObject *parent)
 }
 
 // Push state changes to DB
-BookModel::~BookModel() {
+BookModel::~BookModel()
+{
     updateRows();
 }
 
 // Return the number of row in the model
-int BookModel::rowCount(const QModelIndex &parent) const {
+int BookModel::rowCount(const QModelIndex &parent) const
+{
     Q_UNUSED(parent);
     // return our model count
     return model.count();
 }
 
 // Get model data at an index
-QVariant BookModel::data(const QModelIndex &index, int role) const {
+QVariant BookModel::data(const QModelIndex &index, int role) const
+{
     // the index returns the requested row and column information.
     // we ignore the column and only use the row information
     int row = index.row();
 
     // boundary check for the row
-    if (row < 0 || row >= model.count()) {
+    if (row < 0 || row >= model.count())
+    {
         return QVariant();
     }
 
     // A model can return data for different roles.
     // The default role is the display role.
     // it can be accesses in QML with "model.display"
-    switch (role) {
-        case TitleRole:
-            // Return the color name for the particular row
-            // Qt automatically converts it to the QVariant type
-            return model.at(row).title;
-        case TextRole:
-            return model.at(row).text;
-        case DateRole:
-            return model.at(row).date;
-        case ColorRole:
-            return model.at(row).color;
-        case NotesRole:
-            return model.at(row).notes;
-        default:
-            return QVariant();
+    switch (role)
+    {
+    case TitleRole:
+        // Return the color name for the particular row
+        // Qt automatically converts it to the QVariant type
+        return model.at(row).title;
+    case TextRole:
+        return model.at(row).text;
+    case DateRole:
+        return model.at(row).date;
+    case ColorRole:
+        return model.at(row).color;
+    case NotesRole:
+        return model.at(row).notes;
+    default:
+        return QVariant();
     }
 }
 
 // Link between qml properties and role names
-QHash<int, QByteArray> BookModel::roleNames() const {
+QHash<int, QByteArray> BookModel::roleNames() const
+{
     return this->rolenames;
 }
 
 // Open a db with KoboDB and add its data
 // to the model
-bool BookModel::openKoboDB(QString loc) {
+bool BookModel::openKoboDB(QString loc)
+{
     // initialize model with kobo DB annotations
     auto dbLoc = loc.toStdString();
-    try {
+    try
+    {
 
         auto kdb = KoboDB::openKoboDB(dbLoc);
         auto annotations = kdb.extractAnnotations();
@@ -92,7 +98,8 @@ bool BookModel::openKoboDB(QString loc) {
         selectAll();
         return true;
     }
-    catch (SQLite::Exception &ex) {
+    catch (SQLite::Exception &ex)
+    {
         std::cerr << "Failed to open DB " << dbLoc << ": " << ex.what() << std::endl;
         return false;
     }
@@ -100,10 +107,12 @@ bool BookModel::openKoboDB(QString loc) {
 
 // Select * from app DB and load into
 // model
-void BookModel::executeSelectQuery(std::string query) {
+void BookModel::executeSelectQuery(std::string query)
+{
     // TODO: Do this on BG thread
     qDebug() << "Executing select query";
-    if (!appDB) {
+    if (!appDB)
+    {
         return;
     }
 
@@ -112,7 +121,8 @@ void BookModel::executeSelectQuery(std::string query) {
     model.clear();
     QString currentTitle = "";
     layoutAboutToBeChanged();
-    while (stmt.executeStep()) {
+    while (stmt.executeStep())
+    {
 
         // TODO: Figure out emplace back for QAnnotation
         auto title = QString::fromStdString(stmt.getColumn(0).getString());
@@ -130,43 +140,51 @@ void BookModel::executeSelectQuery(std::string query) {
 }
 
 // Selects all rows from app DB and pushes to model
-void BookModel::selectAll() {
+void BookModel::selectAll()
+{
     executeSelectQuery(
-            "SELECT title, bookmarkText, dateModified, kaeColor, annotationId, kaeNotes FROM annotations ORDER BY title, dateModified;");
+        "SELECT title, bookmarkText, dateModified, kaeColor, annotationId, kaeNotes FROM annotations ORDER BY title, dateModified;");
 }
 
 // Filters annotations on a query string
-void BookModel::searchAnnotations(QString query) {
+void BookModel::searchAnnotations(QString query)
+{
     proxyModel.setFilterRegularExpression(QRegularExpression(query, QRegularExpression::CaseInsensitiveOption));
 }
 
 // Open the application DB and assign it to appDB
-bool BookModel::openApplicationDB(QString loc) {
-    try {
+bool BookModel::openApplicationDB(QString loc)
+{
+    try
+    {
         qDebug() << "Opening application DB located at " << loc;
         appDB = std::make_unique<SQLite::Database>(loc.toStdString(), SQLite::OPEN_READWRITE);
         return true;
     }
-    catch (SQLite::Exception ex) {
+    catch (SQLite::Exception ex)
+    {
         qDebug() << "Failed to open application DB:" << ex.what();
         return false;
     }
 }
 
 // Write a list of annotations to the app db
-void BookModel::writeToApplicationDB(std::vector<KoboDB::Annotation> annotations) {
-    if (appDB) {
+void BookModel::writeToApplicationDB(std::vector<KoboDB::Annotation> annotations)
+{
+    if (appDB)
+    {
         qDebug() << "annotations reportedly exists: " << appDB->tableExists("annotations");
         SQLite::Transaction transaction(*appDB);
         SQLite::Statement query{
-                *appDB,
-                "INSERT OR IGNORE INTO annotations ("
-                "volumeId,bookmarkText,"
-                "bookmarkAnnotation,dateCreated,"
-                "dateModified,bookTitle,"
-                "title,attribution)"
-                " VALUES (?,?,?,?,?,?,?,?)"};
-        for (const auto &a: annotations) {
+            *appDB,
+            "INSERT OR IGNORE INTO annotations ("
+            "volumeId,bookmarkText,"
+            "bookmarkAnnotation,dateCreated,"
+            "dateModified,bookTitle,"
+            "title,attribution)"
+            " VALUES (?,?,?,?,?,?,?,?)"};
+        for (const auto &a : annotations)
+        {
             query.bind(1, a.volumeId);
             query.bind(2, a.text);
             query.bind(3, a.annotation);
@@ -180,17 +198,21 @@ void BookModel::writeToApplicationDB(std::vector<KoboDB::Annotation> annotations
         }
 
         transaction.commit();
-    } else {
+    }
+    else
+    {
         qDebug() << "Error: application DB has no annotations table";
     }
 }
 
 // Update changed rows in the app db
-void BookModel::updateRows() {
+void BookModel::updateRows()
+{
     SQLite::Transaction transaction(*appDB);
     SQLite::Statement query{*appDB,
                             "UPDATE annotations SET kaeColor = ?, kaeNotes = ? WHERE annotations.annotationId = ?"};
-    for (auto i = changedAnnotations.cbegin(), end = changedAnnotations.cend(); i != end; ++i) {
+    for (auto i = changedAnnotations.cbegin(), end = changedAnnotations.cend(); i != end; ++i)
+    {
         auto annotation = model[i.key()];
         qDebug() << "updating row " << annotation.rowIndex;
         query.bind(1, annotation.color);
@@ -203,7 +225,8 @@ void BookModel::updateRows() {
 }
 
 // Sort rows by date
-void BookModel::sortByDate(bool descending) {
+void BookModel::sortByDate(bool descending)
+{
     Qt::SortOrder order;
     if (!descending)
         order = Qt::SortOrder::AscendingOrder;
@@ -215,13 +238,14 @@ void BookModel::sortByDate(bool descending) {
 }
 
 // Toggle the filter on a color
-void BookModel::toggleFilterOnColor(int weight) {
+void BookModel::toggleFilterOnColor(int weight)
+{
     proxyModel.toggleColorFilter(weight);
 }
 
-
 // Add a color to an annotation
-void BookModel::addAnnotationColor(int row, short color) {
+void BookModel::addAnnotationColor(int row, short color)
+{
     layoutAboutToBeChanged();
     auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
     model[modelIdx].color *= color;
@@ -230,7 +254,8 @@ void BookModel::addAnnotationColor(int row, short color) {
 }
 
 // Remove a color from an annotation
-void BookModel::removeAnnotationColor(int row, short color) {
+void BookModel::removeAnnotationColor(int row, short color)
+{
     layoutAboutToBeChanged();
     auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
     model[modelIdx].color /= color;
@@ -239,7 +264,8 @@ void BookModel::removeAnnotationColor(int row, short color) {
 }
 
 // Updates the note string on an annotation
-void BookModel::updateNoteString(int row, QString noteString) {
+void BookModel::updateNoteString(int row, QString noteString)
+{
     layoutAboutToBeChanged();
     auto modelIdx = proxyModel.mapToSource(proxyModel.index(row, 0)).row();
     qDebug() << "changing notes at " << modelIdx << " to " << noteString;
@@ -248,18 +274,21 @@ void BookModel::updateNoteString(int row, QString noteString) {
     layoutChanged();
 }
 
-void BookModel::exportAnnotations(QString location) {
+void BookModel::exportAnnotations(QString location)
+{
     QDir dir(location);
     qDebug() << "location: " << location;
     QString exportFile = dir.filePath("koboAnnotations.csv");
     QFile data(exportFile);
     qDebug() << "attempting to write into " << exportFile;
-    if (data.open(QFile::WriteOnly | QFile::Truncate)) {
+    if (data.open(QFile::WriteOnly | QFile::Truncate))
+    {
         QTextStream out(&data);
         qDebug() << "writing headers";
         out << "title,annotation,lastModified,notes,color\n";
-        for (const auto &a: model) {
-            out << a.title << ",\""
+        for (const auto &a : model)
+        {
+            out << "\"" << a.title << "\",\""
                 << a.text << "\","
                 << a.date.toString() << ",\""
                 << a.notes << "\","
@@ -267,7 +296,4 @@ void BookModel::exportAnnotations(QString location) {
         }
         data.close();
     }
-
-
-
 }
