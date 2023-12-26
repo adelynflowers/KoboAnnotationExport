@@ -4,10 +4,8 @@ cmake_minimum_required(VERSION 3.24.2)
 
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
-  # list(APPEND CMAKE_PREFIX_PATH "~/Qt/6.5.2/gcc_64")
-  list(APPEND CMAKE_PREFIX_PATH "/home/adelynflowers/Qt/6.5.2/wasm_multithread")
 elseif(DEFINED CMAKE_TOOLCHAIN_FILE AND NOT CMAKE_TOOLCHAIN_FILE MATCHES ".+/vcpkg/scripts/buildsystems/vcpkg.cmake$")
-  message(STATUS "CMAKE_TOOLCHAIN_FILE is already set to '${CMAKE_TOOLCHAIN_FILE}', replace it with the vcpkg one and set VCPKG_CHAINLOAD_TOOLCHAIN_FILE to original CMAKE_TOOLCHAIN_FILE")
+  message(STATUS "CMAKE_TOOLCHAIN_FILE is already set to '${CMAKE_TOOLCHAIN_FILE}', replacing it with the vcpkg one and set VCPKG_CHAINLOAD_TOOLCHAIN_FILE to original CMAKE_TOOLCHAIN_FILE")
   set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_TOOLCHAIN_FILE})
   set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
 else()
@@ -21,12 +19,12 @@ project(KoboAnnotationExport VERSION 0.1 LANGUAGES CXX)
 # include(GoogleTest)
 
 # Packages
-find_package(Qt6 6.5 REQUIRED COMPONENTS Quick Core)
+find_package(Qt6 6.6 REQUIRED COMPONENTS Quick Core)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 find_package(SQLiteCpp CONFIG REQUIRED)
 
 # Qt setup
-qt_standard_project_setup(REQUIRES 6.5)
+qt_standard_project_setup(REQUIRES 6.6)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC on)

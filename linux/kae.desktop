@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=kae
+Exec=kae
+Comment=Tool to extract and manage Kobo e-reader highlights
+Icon=kae
+Categories=Utility
