@@ -67,7 +67,6 @@ sudo apt install -y \
     libxkbcommon-dev \
     libxkbcommon-x11-dev \
     file;
-sudo chmod -R 777 /home/user/project;
 wget https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20231206-1/linuxdeploy-x86_64.AppImage
 wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
 sed 's|AI\x02|\x00\x00\x00|g' -i linuxdeploy-x86_64.AppImage
@@ -76,6 +75,7 @@ chmod +x linuxdeploy-x86_64.AppImage
 chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
 export APPIMAGE_EXTRACT_AND_RUN=1
 cd /home/user/project;
+chmod +x ./vcpkg.sh;
 ./vcpkg.sh;
 qt-cmake . -G Ninja -B ./build-linux; cmake --build ./build-linux;
 export QML_SOURCES_PATHS=/home/user/project/build-linux
