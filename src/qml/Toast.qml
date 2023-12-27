@@ -58,11 +58,11 @@ Rectangle {
     radius: margin
 
     opacity: 0
-    color: palette.button
+    // color: palette.button
 
     Text {
         id: message
-        color: palette.buttonText
+        // color: palette.buttonText
         wrapMode: Text.Wrap
         horizontalAlignment: Text.AlignHCenter
         anchors {

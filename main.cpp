@@ -6,6 +6,7 @@
 #include <QFont>
 int main(int argc, char *argv[])
 {
+    QGuiApplication::setApplicationName("kae");
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;

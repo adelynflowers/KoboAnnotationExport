@@ -52,8 +52,8 @@ Drawer {
         id: popupBackground
 
         anchors.fill: parent
-        border.color: palette.alternateBase
-        color: palette.window
+        border.color: "#5C5C5C"
+        color: "#5C5C5C"
         // radius: 20
     }
 
@@ -79,12 +79,12 @@ Drawer {
                 id: noteAdder
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                color: palette.text
+                color: "white"
                 placeholderText: "Type a note and press enter"
 
                 background: Rectangle {
                     border.color: "transparent"
-                    color: palette.button
+                    color: "#5C5C5C"
                     // radius: 20
                 }
 
@@ -125,6 +125,7 @@ Drawer {
                         hoverEnabled: true
                         readOnly: true
                         text: modelData
+                        color: "white"
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.WordWrap
                     }
@@ -133,6 +134,14 @@ Drawer {
                         anchors.rightMargin: 1
                         anchors.verticalCenter: parent.verticalCenter
                         text: "\uF0C5"
+
+                        
+                        contentItem: Text {
+                            anchors.centerIn: parent
+                            color: "white"
+                            font: parent.font
+                            text: parent.text
+                        }
 
                         onClicked: {
                             kaeLib.copyToClipboard(modelData);
@@ -144,6 +153,12 @@ Drawer {
                         anchors.leftMargin: 3
                         anchors.verticalCenter: parent.verticalCenter 
                         text: "x"
+                        contentItem: Text {
+                            anchors.centerIn: parent
+                            color: "white"
+                            font: parent.font
+                            text: parent.text
+                        }
 
                         onClicked: {
                             notes.splice(index,1);

@@ -78,7 +78,9 @@ ListView {
 
     // Sort the model by date
     function sortByDate(descending) {
+        // TODO: Fix duplication
         bookModel.sortByDate(descending);
+        print(bookModel)
     }
 
     // Filter the model for annotations highlighted with filterColor

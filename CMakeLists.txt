@@ -1,6 +1,7 @@
 # Newest version to satisfy vcpkg's sqlite3
 #set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
 cmake_minimum_required(VERSION 3.24.2)
+#list(APPEND CMAKE_PREFIX_PATH "~/Qt/6.6.0/gcc_64")
 
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)

@@ -48,6 +48,7 @@ Item {
         hoverEnabled: true
         readOnly: true
         text: model.text
+        color: "white"
         verticalAlignment: Text.AlignVCenter
         wrapMode: Text.WordWrap
     }
@@ -62,7 +63,7 @@ Item {
         RoundHoverButton {
             opacity: (annotationElement.hovered || buttonHovered) ? 1 : 0
             text: "\uF0C5"
-
+            
             onClicked: {
                 kaeLib.copyToClipboard(model.text);
                 kaeLib.showToast("Copied to clipboard");
@@ -95,7 +96,7 @@ Item {
             Rectangle {
                 property bool colorChosen: (highlightColor % delegateRoot.highlightWeights[index]) == 0
 
-                border.color: subMouseArea.containsMouse ? palette.windowText : "transparent"
+                border.color: subMouseArea.containsMouse ? "white" : "transparent"
                 color: modelData
                 //TODO: Figure out opacity animation
                 height: 15
@@ -141,6 +142,7 @@ Item {
         readOnly: true
         selectByMouse: true
         text: Qt.formatDate(model.date, "MMM dd, yyyy")
+        color: "white"
         verticalAlignment: Text.AlignTop
         wrapMode: Text.WordWrap
     }

@@ -9,4 +9,5 @@ tasks:
     cmds:
       - echo "Building for Linux"
       - sudo rm -rf ./build-linux/deploy
+      - rm deploy/*.AppImage || true
       - docker run -it -v "${PWD}:/home/user/project" stateoftheartio/qt6:6.6-gcc-aqt sh -c "chmod +x ./project/linux/docker-build.sh; ./project/linux/docker-build.sh"

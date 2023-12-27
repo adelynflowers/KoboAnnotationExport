@@ -67,6 +67,16 @@ sudo apt install -y \
     libxkbcommon-dev \
     libxkbcommon-x11-dev \
     file;
+
+# Build gtk2 platform theme
+# git clone http://code.qt.io/qt/qtstyleplugins.git
+# cd qtstyleplugins
+# qmake
+# make -j$(nproc)
+# make install 
+# ls
+# cd -
+# ls
 wget https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20231206-1/linuxdeploy-x86_64.AppImage
 wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
 sed 's|AI\x02|\x00\x00\x00|g' -i linuxdeploy-x86_64.AppImage
@@ -82,6 +92,4 @@ export QML_SOURCES_PATHS=/home/user/project/build-linux
 mkdir deploy || true;
 ~/linuxdeploy-x86_64.AppImage --plugin qt -e ./build-linux/kae --appdir ./build-linux/deploy -d ./linux/kae.desktop -i ./linux/kae.png --output appimage;
 mv kae*.AppImage ./deploy;
-rm -rf ./build-linux;
-rm -rf ./vcpkg;
 

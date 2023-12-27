@@ -18,15 +18,15 @@ Button {
 
     background: Rectangle {
         anchors.fill: parent
-        border.color: palette.button
-        border.width: 2
+        border.color: "#55809B"
+        border.width: 1
         color: "transparent"
         opacity: subMouseArea.containsMouse ? 1 : 0
         radius: 500
 
         Rectangle {
             anchors.fill: parent
-            color: palette.button
+            color: "#55809B"
             opacity: baseBtn.pressed ? 1 : 0
             radius: parent.radius
         }
@@ -38,7 +38,7 @@ Button {
         }
     }
     contentItem: Text {
-        color: parent.pressed ? palette.buttonText : palette.windowText
+        color: "white"
         elide: Text.ElideRight
         font: parent.font
         horizontalAlignment: Text.AlignHCenter

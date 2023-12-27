@@ -3,16 +3,17 @@ import QtCore
 import QtQuick.Dialogs
 import QtQuick.Layouts
 //import QtQuick.Controls
-import QtQuick.Controls.Basic
+import QtQuick.Controls.Fusion
 import BookListLib
 
 ApplicationWindow {
     id: appWindow
 
     property bool darkMode: true
+    palette: darkTheme
 
     height: 720
-    palette: darkTheme
+    //Material.theme: Material.Dark
     visible: true
     width: 1280
 
@@ -31,7 +32,7 @@ ApplicationWindow {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
                     Layout.leftMargin: 10
-                    color: palette.buttonText
+                    color: "white"
                     font.pixelSize: 24
                     text: "Kae"
                     verticalAlignment: Qt.AlignVCenter
@@ -46,6 +47,14 @@ ApplicationWindow {
 
                     text: qsTr("Export")
 
+                    contentItem: Text {
+                        color: "white"
+                        font: parent.font
+                        opacity: enabled ? 1.0 : 0.3
+                        text: parent.text
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
                     onClicked: exportDialog.open()
 
                     FolderDialog {
@@ -60,22 +69,24 @@ ApplicationWindow {
                         }
                     }
                 }
-                Button {
-                    font.family: "fontello"
-                    text: "\uE803"
+                // Button {
+                //     font.family: "fontello"
+                //     text: "\uE803"
 
-                    onClicked: {
-                        if (appWindow.darkMode) {
-                            appWindow.palette = lightTheme;
-                            appWindow.darkMode = false;
-                            text = "\uF186";
-                        } else {
-                            appWindow.palette = darkTheme;
-                            appWindow.darkMode = true;
-                            text = "\uE803";
-                        }
-                    }
-                }
+                //     onClicked: {
+                //         if (appWindow.darkMode) {
+                //             //appWindow.palette = lightTheme;
+                //             appWindow.darkMode = false;
+                //             appWindow.Material.theme = Material.Light;
+                //             text = "\uF186";
+                //         } else {
+                //             //appWindow.palette = darkTheme;
+                //             appWindow.darkMode = true;
+                //             appWindow.Material.theme = Material.Dark;
+                //             text = "\uE803";
+                //         }
+                //     }
+                // }
                 Switch {
                     id: control
 
@@ -83,7 +94,7 @@ ApplicationWindow {
                     text: qsTr("Grouped")
 
                     contentItem: Text {
-                        color: palette.buttonText
+                        color: "white"
                         font: control.font
                         leftPadding: control.indicator.width + control.spacing
                         opacity: enabled ? 1.0 : 0.3
@@ -92,7 +103,7 @@ ApplicationWindow {
                     }
                     indicator: Rectangle {
                         border.color: color
-                        color: control.checked ? palette.highlight : palette.buttonText
+                        color: control.checked ? palette.highlight : "white"
                         implicitHeight: 13
                         implicitWidth: 48
                         radius: 13
@@ -132,14 +143,14 @@ ApplicationWindow {
                         Layout.fillWidth: true
                         Layout.leftMargin: 0
                         Layout.rightMargin: 20
-                        clip: true
-                        color: palette.buttonText
+                        //Material.containerStyle: Material.filled
+                        color: "white"
                         leftPadding: 20
                         placeholderText: qsTr("Type to begin searching")
-                        placeholderTextColor: palette.buttonText
+                        placeholderTextColor: "white"
 
                         background: Rectangle {
-                            border.color: annotationSearch.activeFocus ? palette.highlight : palette.buttonText
+                            border.color: annotationSearch.activeFocus ? palette.highlight : "white"
                             color: annotationSearch.enabled ? "transparent" : palette.button
                             radius: 50
                         }
@@ -152,7 +163,7 @@ ApplicationWindow {
                             anchors.left: parent.left
                             anchors.leftMargin: 5
                             anchors.verticalCenter: parent.verticalCenter
-                            color: palette.buttonText
+                            color: "white"
                             font.family: "fontello"
                             text: "\uE802"
                         }
@@ -204,7 +215,7 @@ ApplicationWindow {
                 Rectangle {
                     property bool selected: false
 
-                    border.color: (subMouseArea.containsMouse || selected) ? palette.windowText : "transparent"
+                    border.color: (subMouseArea.containsMouse || selected) ? "white" : "transparent"
                     color: modelData
                     height: 15
                     opacity: (subMouseArea.containsMouse || selected) ? 1 : 0.3
@@ -232,6 +243,14 @@ ApplicationWindow {
                 flat: true
                 font.family: "fontello"
                 text: "\uF161"
+                contentItem: Text {
+                    color: "white"
+                    font: parent.font
+                    opacity: enabled ? 1.0 : 0.3
+                    text: parent.text
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
+            }
 
                 onClicked: sortMenu.open()
 
@@ -244,12 +263,26 @@ ApplicationWindow {
                     MenuItem {
                         font.family: "fontello"
                         text: "\uF161 Date (desc)"
+                        contentItem: Text {
+                            font: parent.font
+                            opacity: enabled ? 1.0 : 0.3
+                            text: parent.text
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignHCenter
+                        }
 
                         onClicked: bookList.sortByDate(true)
                     }
                     MenuItem {
                         font.family: "fontello"
                         text: "\uF160 Date (asc)"
+                        contentItem: Text {
+                            font: parent.font
+                            opacity: enabled ? 1.0 : 0.3
+                            text: parent.text
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignHCenter
+                        }
 
                         onClicked: bookList.sortByDate(false)
                     }
