@@ -1,0 +1,10 @@
+version: '3'
+
+vars:
+  VCPKG_TARGET_TRIPLET: x64-mingw-dynamic
+  VCPKG_HOST_TRIPLET: x64-mingw-dynamic
+  QT_SUBDIR: mingw_64
+  CMAKE_CMD: qt-cmake.bat
+  QT_VERSION: "6.6.1"
+  QT_DIR: "qt"
+  QT_CMAKE_PREFIX: "powershell.exe "

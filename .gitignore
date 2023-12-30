@@ -5,9 +5,15 @@ build*
 CMakeCache.txt
 CMakeFiles
 deploy*
+
 # VCPKG
 vcpkg
 .vscode*
 
 # Testing DB
 dependencies/kobolib/data
+
+# AQT
+aqtinstall.log
+qt
+qt/*

@@ -28,7 +28,7 @@ cmake . `
 -G Ninja `
 -D VCPKG_TARGET_TRIPLET=x64-mingw-dynamic `
 -D VCPKG_HOST_TRIPLET=x64-mingw-dynamic `
--D CMAKE_TOOLCHAIN_FILE=$env:AQT_DIR\6.6.1\mingw_64\lib\cmake\Qt6\qt.toolchain.cmake `
+-D CMAKE_TOOLCHAIN_FILE=.\qt\6.6.1\mingw_64\lib\cmake\Qt6\qt.toolchain.cmake `
 -D CMAKE_BUILD_TYPE=Release `
 -D CMAKE_INSTALL_PREFIX=./deploy/windows `
 -D X_VCPKG_APPLOCAL_DEPS_INSTALL=ON

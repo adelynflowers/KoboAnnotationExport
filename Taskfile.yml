@@ -1,24 +1,77 @@
 version: "3"
+
+vars: 
+  QT_VERSION: "6.6.1"
+  QT_DIR: "qt"
+  CMAKE_CMD: qt-cmake
+  QT_CMAKE: "{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/bin/qt-cmake"
+
+includes:
+  build: ./{{OS}}/Taskfile.yml
+
 tasks:
   clean:
     cmds:
       - echo "Cleaning"
-      - rm -rf build-linux
-      - rm -rf vcpkg
-      - rm -rf vcpkg_installed
-      - rm -rf build-windows
-      - rm -rf build-macos
-  install-macos-deps:
+      - cmd: rm -rf build
+        platforms: [darwin, linux]
+      - cmd: powershell.exe rm -r -force build || true
+        platforms: [windows]
+      - cmd: rm deploy/*
+        platforms: [darwin, linux]
+      - cmd: powershell.exe rm -r -force deploy/* || true
+        platforms: [windows]
+      # - cmd: rm -rf vcpkg
+      #   platforms: [darwin, linux]
+      # - cmd: powershell.exe rm -r -force vcpkg || true
+      #   platforms: [windows]
+  vcpkg:
     cmds:
-      - brew install git cmake ninja python3
-      - python3 -m pip install aqtinstall
+      - echo "Installing vcpkg"
       - git clone https://github.com/microsoft/vcpkg.git
-      - ./vcpkg/bootstrap-vcpkg.sh
-  install-qt-macos:
+      - cmd: ./vcpkg/bootstrap-vcpkg.sh
+        platforms: [darwin, linux]
+      - cmd: powershell.exe ./vcpkg/bootstrap-vcpkg.bat
+        platforms: [windows]
+  install-deps:
+      cmds:
+        - echo "Installing dependencies"
+        - cmd: brew install git cmake ninja python3
+          platforms: [darwin]
+        - cmd: choco install -y git cmake ninja python3 
+          platforms: [windows]
+        - cmd: sudo apt-get update && sudo apt-get install -y build-essential cmake ninja-build python3-pip
+          platforms: [linux]
+        - cmd: python3 -m pip install aqtinstall
+          platforms: [darwin, linux]
+        - cmd: py -m pip install aqtinstall
+          platforms: [windows]
+  install-qt:
     cmds:
       - echo "Installing Qt"
-      - mkdir qt
-      - aqt install 6.6.1 mac desktop clang_64 -O qt
+      - cmd: aqt instal-qt mac desktop $QT_VERSION clang_64 -O $QT_DIR
+        platforms: [darwin]
+      - cmd: aqt install-qt windows desktop $QT_VERSION win64_mingw -O $QT_DIR
+        platforms: [windows]
+      - cmd: aqt install-qt linux desktop $QT_VERSION gcc_64 -O $QT_DIR
+        platforms: [linux]
+  configure:
+    cmds:
+      - echo "Configuring"
+      - "{{.QT_CMAKE_PREFIX}}{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/bin/{{.CMAKE_CMD}} -B build -G Ninja -D CMAKE_INSTALL_PREFIX=build/deploy -D VCPKG_TARGET_TRIPLET={{.VCPKG_TARGET_TRIPLET}} -D VCPKG_HOST_TRIPLET={{.VCPKG_HOST_TRIPLET}} -D X_VCPKG_APPLOCAL_DEPS_INSTALL=ON"
+  debug:
+    cmds:
+      - echo "Debugging"
+      - "{{.QT_CMAKE_PREFIX}}{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/bin/{{.CMAKE_CMD}} -B build -G Ninja -D CMAKE_INSTALL_PREFIX=build/deploy -D VCPKG_TARGET_TRIPLET={{.VCPKG_TARGET_TRIPLET}} -D VCPKG_HOST_TRIPLET={{.VCPKG_HOST_TRIPLET}} -D X_VCPKG_APPLOCAL_DEPS_INSTALL=ON -D WIN_DEBUG=1"
+      - "cmake --build build --target install"
+  install:
+    cmds:
+      - echo "Installing"
+      - cmake --build build --config Release --target install
+  package:
+    cmds:
+      - echo "Packaging"
+      - cmake --build build --config Release --target package
   build-linux:
     cmds:
       - echo "Building for Linux"
@@ -36,3 +89,12 @@ tasks:
       - task: install-macos-deps
       - task: install-qt-macos
       - task: build-macos
+  hello:
+    cmds:
+      - echo {{.CMAKE_CMD}}
+  tester:
+    cmds:
+      - cmd: echo 'Running command on Windows (amd64) and macOS'
+        platforms: [windows/amd64, darwin]
+      - cmd: echo 'Running on just win platforms'
+        platforms: [windows]
