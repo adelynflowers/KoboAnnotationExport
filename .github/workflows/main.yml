@@ -1,0 +1,33 @@
+name: Build App
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build:
+        runs-on: ${{ matrix.os }}
+
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest, windows-latest]
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+            
+            - name: Install Task
+              uses: arduino/setup-task@v1
+              with:
+                version: 3.x
+                repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Build and deploy
+              run: taskfile build-and-deploy
+
+            - name: Archive artifacts
+              uses: actions/upload-artifact@v2
+              with:
+                name: ${{ matrix.os }} - deploy
+                path: deploy/
