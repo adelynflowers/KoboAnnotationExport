@@ -59,7 +59,7 @@ tasks:
           platforms: [darwin]
         - cmd: choco install -y git cmake ninja python3 
           platforms: [windows]
-        - cmd: sudo apt-get update && sudo apt-get install -y build-essential cmake ninja-build python3-pip
+        - cmd: sudo apt-get update && sudo apt-get install -y build-essential cmake ninja-build python3-pip libgl1-mesa-dev
           platforms: [linux]
         - cmd: python3 -m pip install aqtinstall
           platforms: [darwin, linux]
