@@ -59,7 +59,7 @@ tasks:
           platforms: [darwin]
         - cmd: choco install -y git cmake ninja python3 
           platforms: [windows]
-        - cmd: sudo apt-get update && sudo apt-get install -y build-essential cmake ninja-build python3-pip libgl1-mesa-dev
+        - cmd: sudo apt-get update && sudo apt-get install -y build-essential cmake ninja-build python3-pip libgl1-mesa-dev fuse
           platforms: [linux]
         - cmd: python3 -m pip install aqtinstall
           platforms: [darwin, linux]
@@ -101,6 +101,7 @@ tasks:
       - export QML_SOURCES_PATHS=$(pwd)/build 
       - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/lib
       - export QMAKE=$(pwd)/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/bin/qmake
+      - export APPIMAGE_EXTRACT_AND_RUN=1
       - ./linuxdeploy-x86_64.AppImage --plugin qt -e ./build/kae --appdir ./build -d ./linux/kae.desktop -i ./linux/kae.png --output appimage
       - mkdir -p ./deploy
       - mv kae*.AppImage ./deploy
