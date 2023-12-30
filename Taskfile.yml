@@ -101,6 +101,7 @@ tasks:
       - export QML_SOURCES_PATHS=$(pwd)/build 
       - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/lib
       - export QMAKE=$(pwd)/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/bin/qmake
+      - export PATH=$PATH:$(pwd)/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/bin
       - export APPIMAGE_EXTRACT_AND_RUN=1
       - ./linuxdeploy-x86_64.AppImage --plugin qt -e ./build/kae --appdir ./build -d ./linux/kae.desktop -i ./linux/kae.png --output appimage
       - mkdir -p ./deploy
