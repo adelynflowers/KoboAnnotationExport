@@ -24,7 +24,7 @@ jobs:
                 repo-token: ${{ secrets.GITHUB_TOKEN }}
 
             - name: Build and deploy
-              run: taskfile build-and-deploy
+              run: task build-and-deploy
 
             - name: Archive artifacts
               uses: actions/upload-artifact@v2
