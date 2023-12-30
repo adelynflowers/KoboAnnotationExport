@@ -274,14 +274,14 @@ void BookModel::updateNoteString(int row, QString noteString)
     layoutChanged();
 }
 
-void BookModel::exportAnnotations(QString location)
+void BookModel::exportAnnotations(QUrl location)
 {
-    QDir dir(location);
-    qDebug() << "location: " << location;
+    QDir dir(QDir::toNativeSeparators(location.toLocalFile()));
+    qDebug() << "location: " << dir;
     QString exportFile = dir.filePath("koboAnnotations.csv");
     QFile data(exportFile);
     qDebug() << "attempting to write into " << exportFile;
-    if (data.open(QFile::WriteOnly | QFile::Truncate))
+    data.open(QFile::WriteOnly | QFile::Truncate);
     {
         QTextStream out(&data);
         qDebug() << "writing headers";

@@ -65,7 +65,7 @@ ApplicationWindow {
 
                         onAccepted: {
                             bookList.exportAnnotations(selectedFolder);
-                            kaeLib.showToast("Wrote annotations to " + (selectedFolder + "/" + "koboAnnotations.csv"), 5000);
+                            kaeLib.showToast("Wrote annotations to " + selectedFolder + "/koboAnnotations.csv", 5000);
                         }
                     }
                 }

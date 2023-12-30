@@ -113,8 +113,7 @@ ListView {
     // Pushes UI changes to the app DB
     function exportAnnotations(location) {
         bookModel.updateRows();
-        var urlObject = new URL(location);
-        bookModel.exportAnnotations(urlObject.pathname);
+        bookModel.exportAnnotations(location);
     }
     function updateNoteString(row, string) {
         bookModel.updateNoteString(row, string);

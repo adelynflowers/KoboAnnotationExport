@@ -192,7 +192,7 @@ public:
      */
     Q_INVOKABLE void updateRows();
 
-    Q_INVOKABLE void exportAnnotations(QString location);
+    Q_INVOKABLE void exportAnnotations(QUrl location);
 
 private:
     /**
