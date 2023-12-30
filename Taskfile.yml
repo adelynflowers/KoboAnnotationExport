@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 tasks:
   clean:
     cmds:
@@ -7,9 +7,32 @@ tasks:
       - rm -rf vcpkg
       - rm -rf vcpkg_installed
       - rm -rf build-windows
+      - rm -rf build-macos
+  install-macos-deps:
+    cmds:
+      - brew install git cmake ninja python3
+      - python3 -m pip install aqtinstall
+      - git clone https://github.com/microsoft/vcpkg.git
+      - ./vcpkg/bootstrap-vcpkg.sh
+  install-qt-macos:
+    cmds:
+      - echo "Installing Qt"
+      - mkdir qt
+      - aqt install 6.6.1 mac desktop clang_64 -O qt
   build-linux:
     cmds:
       - echo "Building for Linux"
       - sudo rm -rf ./build-linux/deploy
       - rm deploy/*.AppImage || true
       - docker run -it -v "${PWD}:/home/user/project" stateoftheartio/qt6:6.6-gcc-aqt sh -c "chmod +x ./project/linux/docker-build.sh; ./project/linux/docker-build.sh"
+  build-macos:
+    cmds:
+      - echo "Building for macOS"
+      - ./qt/6.6.1/macos/bin/qt-cmake . -B build-macos -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=build-macos/deploy
+      - cmake --build build-macos --config Release --target install
+  mac:
+    cmds:
+      - task: clean
+      - task: install-macos-deps
+      - task: install-qt-macos
+      - task: build-macos
