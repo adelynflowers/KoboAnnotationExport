@@ -72,7 +72,7 @@ tasks:
   install-qt:
     cmds:
       - echo "Installing Qt"
-      - cmd: python3 -m aqt instal-qt mac desktop {{.QT_VERSION}} clang_64 -O {{.QT_DIR}}
+      - cmd: python3 -m aqt install-qt mac desktop {{.QT_VERSION}} clang_64 -O {{.QT_DIR}}
         platforms: [darwin]
       - cmd: py -m aqt install-qt windows desktop {{.QT_VERSION}} win64_mingw -O {{.QT_DIR}}
         platforms: [windows]
