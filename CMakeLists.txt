@@ -1,7 +1,6 @@
-# Newest version to satisfy vcpkg's sqlite3
-#set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
 cmake_minimum_required(VERSION 3.24.2)
-#list(APPEND CMAKE_PREFIX_PATH "~/Qt/6.6.0/gcc_64")
+#list(APPEND VCPKG_INSTALL_OPTIONS "--debug")
+#list(APPEND VCPKG_INSTALL_OPTIONS "--debug-env")
 
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
@@ -15,12 +14,12 @@ else()
 endif()
 
 project(KoboAnnotationExport VERSION 0.1 LANGUAGES CXX)
-# Testing with GTest
-# enable_testing()
-# include(GoogleTest)
+
+
+
 
 # Packages
-find_package(Qt6 6.6 REQUIRED COMPONENTS Quick Core)
+find_package(Qt6 6.6 REQUIRED COMPONENTS Quick Core Qml)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 find_package(SQLiteCpp CONFIG REQUIRED)
 
@@ -32,12 +31,17 @@ set(CMAKE_AUTOMOC on)
 set(AUTOMOC_PATH_PREFIX on)
 
 
-
-# Qt executable setup
-qt_add_executable(kae
+if (WIN32)
+  # Qt executable setup
+  qt_add_executable(kae
     main.cpp
-)
-
+    ${CMAKE_CURRENT_LIST_DIR}/windows/kae.rc
+  )
+else()
+  qt_add_executable(kae
+    main.cpp
+  )
+endif()
 qt_add_qml_module(kae 
     VERSION 1.0
     URI MainView 
@@ -63,7 +67,7 @@ add_subdirectory(src/KaeLib)
 
 # Link libraries
 target_link_libraries(kae
-    PRIVATE 
+    PUBLIC 
     Qt6::Quick 
     Qt6::Qml
     KoboLib
@@ -76,11 +80,9 @@ qt_add_resources(kae "font_files"
     FILES
         fonts/fontello.ttf
 )
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
+
 set_target_properties(kae PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appKoboAnnotationExport
+    MACOSX_BUNDLE_GUI_IDENTIFIER io.github.adelynflowers.Kae
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
@@ -88,12 +90,35 @@ set_target_properties(kae PROPERTIES
 )
 
 
-
-
-include(GNUInstallDirs)
-install(TARGETS kae
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+install(
+  TARGETS kae
+  RUNTIME DESTINATION bin
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
 )
 
+if (WIN32)
+  install(FILES ${PROJECT_BINARY_DIR}/libkae.dll.a DESTINATION bin)
+  set(CPACK_GENERATOR WIX)
+  set(CPACK_WIX_PROGRAM_MENU_FOLDER .)
+  set(CPACK_PACKAGE_EXECUTABLES "kae" "kae")
+  set(CPACK_PACKAGE_ICON ${CMAKE_CURRENT_LIST_DIR}/windows/kae.ico)
+  set(CPACK_WIX_UPGRADE_GUID "ad2a08f1-5dea-4162-aefc-38bb91c4f5e9")
+endif()
+
+qt_generate_deploy_qml_app_script(
+    TARGET kae
+    FILENAME_VARIABLE deploy_script
+    #NO_UNSUPPORTED_PLATFORM_ERROR
+)
+install(SCRIPT ${deploy_script})
+
+set(CPACK_PACKAGE_NAME "kae")
+set(CPACK_PACKAGE_VENDOR "Adelyn Flowers (adelynflowers.github.io)")
+set(CPACK_PACKAGE_DESCRIPTION "A utility for extracting and managing Kobo highlights")
+set(CPACK_PACKAGE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/deploy)
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://www.github.com/adelynflowers/KoboAnnotationExportTool")
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_LIST_DIR}/LICENSE.txt)
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "kae")
+include(CPack)
+# Set the CPACK and WIX variables here.

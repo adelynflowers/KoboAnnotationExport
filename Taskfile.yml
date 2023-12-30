@@ -3,8 +3,10 @@ tasks:
   clean:
     cmds:
       - echo "Cleaning"
-      - sudo rm -rf build-linux
-      - sudo rm -rf vcpkg
+      - rm -rf build-linux
+      - rm -rf vcpkg
+      - rm -rf vcpkg_installed
+      - rm -rf build-windows
   build-linux:
     cmds:
       - echo "Building for Linux"
