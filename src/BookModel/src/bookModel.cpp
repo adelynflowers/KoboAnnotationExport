@@ -297,3 +297,16 @@ void BookModel::exportAnnotations(QUrl location)
         data.close();
     }
 }
+
+// Sort rows by title
+void BookModel::sortByTitle(bool descending)
+{
+    Qt::SortOrder order;
+    if (!descending)
+        order = Qt::SortOrder::AscendingOrder;
+    else
+        order = Qt::SortOrder::DescendingOrder;
+    layoutAboutToBeChanged();
+    proxyModel.customSort(false, true, order);
+    layoutChanged();
+}

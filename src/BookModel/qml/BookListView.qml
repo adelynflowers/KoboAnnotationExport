@@ -79,6 +79,7 @@ ListView {
     // Sort the model by date
     function sortByDate(descending) {
         // TODO: Fix duplication
+        sectionsEnabled = false;
         bookModel.sortByDate(descending);
         print(bookModel)
     }
@@ -107,7 +108,12 @@ ListView {
 
     // Toggles a sections visibility
     function toggleSectionsVisibility() {
-        sectionsEnabled = !sectionsEnabled;
+        if (sectionsEnabled) {
+            sectionsEnabled = false;
+        } else {
+            bookModel.sortByTitle(true);
+            sectionsEnabled = true;
+        }
     }
 
     // Pushes UI changes to the app DB

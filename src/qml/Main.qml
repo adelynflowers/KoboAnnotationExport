@@ -263,10 +263,14 @@ ApplicationWindow {
                     MenuItem {
                         font.family: "fontello"
                         text: "\uF161 Date (desc)"
+                        background: Rectangle {
+                            color: "#5C5C5C"
+                        }
                         contentItem: Text {
                             font: parent.font
                             opacity: enabled ? 1.0 : 0.3
                             text: parent.text
+                            color: "white"
                             verticalAlignment: Text.AlignVCenter
                             horizontalAlignment: Text.AlignHCenter
                         }
@@ -276,10 +280,14 @@ ApplicationWindow {
                     MenuItem {
                         font.family: "fontello"
                         text: "\uF160 Date (asc)"
+                         background: Rectangle {
+                            color: "#5C5C5C"
+                        }
                         contentItem: Text {
                             font: parent.font
                             opacity: enabled ? 1.0 : 0.3
                             text: parent.text
+                            color: "white"
                             verticalAlignment: Text.AlignVCenter
                             horizontalAlignment: Text.AlignHCenter
                         }

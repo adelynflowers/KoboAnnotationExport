@@ -13,18 +13,18 @@ tasks:
   clean:
     cmds:
       - echo "Cleaning"
-      - cmd: rm -rf build
+      - cmd: rm -rf build || true
         platforms: [darwin, linux]
       - cmd: powershell.exe rm -r -force build || true
         platforms: [windows]
-      - cmd: rm deploy/*
+      - cmd: rm deploy/* || true
         platforms: [darwin, linux]
       - cmd: powershell.exe rm -r -force deploy/* || true
         platforms: [windows]
-      # - cmd: rm -rf vcpkg
-      #   platforms: [darwin, linux]
-      # - cmd: powershell.exe rm -r -force vcpkg || true
-      #   platforms: [windows]
+      - cmd: rm -rf vcpkg
+        platforms: [darwin, linux]
+      - cmd: powershell.exe rm -r -force vcpkg || true
+        platforms: [windows]
   vcpkg:
     cmds:
       - echo "Installing vcpkg"
@@ -33,6 +33,25 @@ tasks:
         platforms: [darwin, linux]
       - cmd: powershell.exe ./vcpkg/bootstrap-vcpkg.bat
         platforms: [windows]
+  install-cmake-ubuntu:
+    platforms: [linux]
+    cmds:
+      - echo "Installing cmake"
+      - sudo apt-get update
+      - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+      - sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ jammy main' -y
+      - sudo apt-get update
+      - sudo apt-get install -y cmake
+  install-linuxdeploy:
+    platforms: [linux]
+    cmds:
+      - echo "Installing linuxdeploy"
+      - wget https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20231206-1/linuxdeploy-x86_64.AppImage
+      - wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+      - sed 's|AI\x02|\x00\x00\x00|g' -i linuxdeploy-x86_64.AppImage
+      - sed 's|AI\x02|\x00\x00\x00|g' -i linuxdeploy-plugin-qt-x86_64.AppImage
+      - chmod +x linuxdeploy-x86_64.AppImage
+      - chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
   install-deps:
       cmds:
         - echo "Installing dependencies"
@@ -46,14 +65,18 @@ tasks:
           platforms: [darwin, linux]
         - cmd: py -m pip install aqtinstall
           platforms: [windows]
+        - task: install-cmake-ubuntu
+          platforms: [linux]
+        - task: install-linuxdeploy
+          platforms: [linux]
   install-qt:
     cmds:
       - echo "Installing Qt"
-      - cmd: aqt instal-qt mac desktop $QT_VERSION clang_64 -O $QT_DIR
+      - cmd: python3 -m aqt instal-qt mac desktop {{.QT_VERSION}} clang_64 -O {{.QT_DIR}}
         platforms: [darwin]
-      - cmd: aqt install-qt windows desktop $QT_VERSION win64_mingw -O $QT_DIR
+      - cmd: py -m aqt install-qt windows desktop {{.QT_VERSION}} win64_mingw -O {{.QT_DIR}}
         platforms: [windows]
-      - cmd: aqt install-qt linux desktop $QT_VERSION gcc_64 -O $QT_DIR
+      - cmd: python3 -m aqt install-qt linux desktop {{.QT_VERSION}} gcc_64 -O {{.QT_DIR}}
         platforms: [linux]
   configure:
     cmds:
@@ -67,34 +90,34 @@ tasks:
   install:
     cmds:
       - echo "Installing"
-      - cmake --build build --config Release --target install
+      - cmd: cmake --build build --config Release --target install
+        platforms: [windows, darwin]
+      - cmd: cmake --build build
+        platforms: [linux]
+  deploy-appimage:
+    platforms: [linux]
+    cmds:
+      - echo "Deploying AppImage"
+      - export QML_SOURCES_PATHS=$(pwd)/build 
+      - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/lib
+      - export QMAKE=$(pwd)/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/bin/qmake
+      - ./linuxdeploy-x86_64.AppImage --plugin qt -e ./build/kae --appdir ./build -d ./linux/kae.desktop -i ./linux/kae.png --output appimage
+      - mkdir -p ./deploy
+      - mv kae*.AppImage ./deploy
   package:
     cmds:
       - echo "Packaging"
-      - cmake --build build --config Release --target package
-  build-linux:
+      - cmd: cmake --build build --config Release --target package
+        platforms: [windows, darwin]
+      - task: deploy-appimage
+        platforms: [linux]
+  build-and-deploy:
     cmds:
-      - echo "Building for Linux"
-      - sudo rm -rf ./build-linux/deploy
-      - rm deploy/*.AppImage || true
-      - docker run -it -v "${PWD}:/home/user/project" stateoftheartio/qt6:6.6-gcc-aqt sh -c "chmod +x ./project/linux/docker-build.sh; ./project/linux/docker-build.sh"
-  build-macos:
-    cmds:
-      - echo "Building for macOS"
-      - ./qt/6.6.1/macos/bin/qt-cmake . -B build-macos -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=build-macos/deploy
-      - cmake --build build-macos --config Release --target install
-  mac:
-    cmds:
+      - echo "Building and deploying"
       - task: clean
-      - task: install-macos-deps
-      - task: install-qt-macos
-      - task: build-macos
-  hello:
-    cmds:
-      - echo {{.CMAKE_CMD}}
-  tester:
-    cmds:
-      - cmd: echo 'Running command on Windows (amd64) and macOS'
-        platforms: [windows/amd64, darwin]
-      - cmd: echo 'Running on just win platforms'
-        platforms: [windows]
+      - task: vcpkg
+      - task: install-deps
+      - task: install-qt
+      - task: configure
+      - task: install
+      - task: package

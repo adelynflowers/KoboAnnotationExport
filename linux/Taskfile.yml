@@ -1,0 +1,9 @@
+version: '3'
+
+vars:
+  VCPKG_TARGET_TRIPLET: x64-linux
+  VCPKG_HOST_TRIPLET: x64-linux
+  QT_SUBDIR: gcc_64
+  CMAKE_CMD: qt-cmake
+  QT_VERSION: "6.6.1"
+  QT_DIR: "qt"

@@ -17,12 +17,13 @@
  * An object representing one annotation, which has a book
  * title and annotated text.
  */
-struct QAnnotation {
+struct QAnnotation
+{
 public:
     int rowIndex;
     QString title; // book title
     QString text;  // annotation text
-    QDate date;  // last modified date
+    QDate date;    // last modified date
     int color;
     QString notes;
 
@@ -39,16 +40,17 @@ public:
  * adds its content to the view rather than replacing it.
  *
  */
-class BookModel : public QAbstractListModel {
-Q_OBJECT
+class BookModel : public QAbstractListModel
+{
+    Q_OBJECT
 
     QML_ELEMENT
 public:
-
     /**
      * Role names for QML access
      */
-    enum RoleNames {
+    enum RoleNames
+    {
         TitleRole = Qt::UserRole,
         TextRole,
         DateRole,
@@ -151,7 +153,8 @@ public:
      * the class.
      * @return the proxy model
      */
-    Q_INVOKABLE QSortFilterProxyModel *getProxyModel() {
+    Q_INVOKABLE QSortFilterProxyModel *getProxyModel()
+    {
         return &proxyModel;
     }
 
@@ -174,6 +177,12 @@ public:
      * @param descending true if descending order
      */
     Q_INVOKABLE void sortByDate(bool descending);
+
+    /**
+     * Sorts the model strictly by title
+     * @param descending true if descending order
+     */
+    Q_INVOKABLE void sortByTitle(bool descending);
 
     /**
      * @brief Toggles the filter on a highlight color
@@ -213,8 +222,6 @@ private:
      * @param query query to run
      */
     void executeSelectQuery(std::string query);
-
-
 
     // Annotation list
     QList<QAnnotation> model;

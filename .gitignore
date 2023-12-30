@@ -17,3 +17,6 @@ dependencies/kobolib/data
 aqtinstall.log
 qt
 qt/*
+
+# Linux deploy
+linuxdeploy*

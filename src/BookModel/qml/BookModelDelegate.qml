@@ -163,6 +163,7 @@ Item {
         verticalAlignment: Text.AlignTop
         visible: !parent.ListView.view.sectionsEnabled
         wrapMode: Text.WordWrap
+        color: "white"
     }
     // Background element
     Rectangle {
