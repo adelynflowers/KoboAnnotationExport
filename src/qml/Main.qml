@@ -34,7 +34,7 @@ ApplicationWindow {
                     Layout.leftMargin: 10
                     color: "white"
                     font.pixelSize: 24
-                    text: "Kae"
+                    text: "Kaet"
                     verticalAlignment: Qt.AlignVCenter
                 }
             }
