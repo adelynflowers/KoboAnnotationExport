@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.24.2)
 
 set(WIN_DEBUG 0)
 
-#list(APPEND VCPKG_INSTALL_OPTIONS "--debug")
-#list(APPEND VCPKG_INSTALL_OPTIONS "--debug-env")
+# list(APPEND VCPKG_INSTALL_OPTIONS "--debug")
+# list(APPEND VCPKG_INSTALL_OPTIONS "--debug-env")
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake)
 elseif(DEFINED CMAKE_TOOLCHAIN_FILE AND NOT CMAKE_TOOLCHAIN_FILE MATCHES ".+/vcpkg/scripts/buildsystems/vcpkg.cmake$")
@@ -118,12 +118,12 @@ if(WIN32)
   install(FILES ${PROJECT_BINARY_DIR}/libkae.dll.a DESTINATION bin)
   set(CPACK_GENERATOR WIX)
   set(CPACK_WIX_PROGRAM_MENU_FOLDER .)
-  set(CPACK_PACKAGE_EXECUTABLES "kae" "kae")
+  set(CPACK_PACKAGE_EXECUTABLES "kaet" "kaet")
   set(CPACK_PACKAGE_ICON ${CMAKE_CURRENT_LIST_DIR}/windows/kae.ico)
   set(CPACK_WIX_UPGRADE_GUID "ad2a08f1-5dea-4162-aefc-38bb91c4f5e9")
 elseif(APPLE)
   set(CPACK_GENERATOR DragNDrop)
-  set(CPACK_DMG_VOLUME_NAME "Kae")
+  set(CPACK_DMG_VOLUME_NAME "Kaet")
 endif()
 
 qt_generate_deploy_qml_app_script(
@@ -134,13 +134,13 @@ qt_generate_deploy_qml_app_script(
 )
 install(SCRIPT ${deploy_script})
 
-set(CPACK_PACKAGE_NAME "kae")
+set(CPACK_PACKAGE_NAME "kaet")
 set(CPACK_PACKAGE_VENDOR "Adelyn Flowers (adelynflowers.github.io)")
 set(CPACK_PACKAGE_DESCRIPTION "A utility for extracting and managing Kobo highlights")
 set(CPACK_PACKAGE_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/deploy)
 set(CPACK_PACKAGE_HOMEPAGE_URL "https://www.github.com/adelynflowers/KoboAnnotationExportTool")
 set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_LIST_DIR}/LICENSE.txt)
-set(CPACK_PACKAGE_INSTALL_DIRECTORY "kae")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "kaet")
 include(CPack)
 
 # Set the CPACK and WIX variables here.

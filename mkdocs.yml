@@ -1,0 +1,36 @@
+site_name: kaet
+site_description: export and manage your kobo highlights
+
+theme:
+  name: "material"
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+repo_name: adelynflowers/KoboAnnotationExportTool
+repo_url: https://github.com/adelynflowers/KoboAnnotationExportTool
+# extra:
+#   analytics:
+#     provider: 'google'
+#     property: 'UA-90243909-2'
+
+nav:
+  - Home: "index.md"
+  - Getting Started: "getting-started.md"
+
+markdown_extensions:
+  - admonition #  note blocks, warning blocks -- https://github.com/mkdocs/mkdocs/issues/1659
+
+plugins:
+  - search:
+      lang: en
+      enabled: true
