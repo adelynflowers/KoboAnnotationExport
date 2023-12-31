@@ -113,7 +113,7 @@ tasks:
   package:
     cmds:
       - echo "Packaging"
-      - cmd: cmake --build build --config Debug --target package
+      - cmd: cmake --build build --config Release --target package
         platforms: [windows, darwin]
       - task: deploy-appimage
         platforms: [linux]
