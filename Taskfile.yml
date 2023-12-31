@@ -25,6 +25,8 @@ tasks:
         platforms: [darwin, linux]
       - cmd: powershell.exe rm -r -force vcpkg || true
         platforms: [windows]
+      - cmd: rm *.AppImage* || true
+        platforms: [linux]
   vcpkg:
     cmds:
       - echo "Installing vcpkg"
@@ -59,7 +61,7 @@ tasks:
           platforms: [darwin]
         - cmd: choco install -y git cmake ninja python3 
           platforms: [windows]
-        - cmd: sudo apt-get update && sudo apt-get install -y build-essential cmake ninja-build python3-pip libgl1-mesa-dev fuse
+        - cmd: sudo apt-get update && sudo apt-get install -y $(cat linux/apt-deps.txt)
           platforms: [linux]
         - cmd: python3 -m pip install aqtinstall
           platforms: [darwin, linux]
@@ -95,14 +97,16 @@ tasks:
       - cmd: cmake --build build
         platforms: [linux]
   deploy-appimage:
+    env:
+      QML_SOURCES_PATHS: "{{.PWD}}/build"
+     # LD_LIBRARY_PATH: "{{.LD_LIBRARY_PATH}}:{{.PWD}/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/lib"
+      QMAKE: "{{.PWD}}/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/bin/qmake"
+      #PATH=$PATH:$(pwd)/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/bin
+      APPIMAGE_EXTRACT_AND_RUN: 1
     platforms: [linux]
     cmds:
       - echo "Deploying AppImage"
-      - export QML_SOURCES_PATHS=$(pwd)/build 
-      - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/lib
-      - export QMAKE=$(pwd)/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/bin/qmake
-      - export PATH=$PATH:$(pwd)/{{.QT_DIR}}/{{.QT_VERSION}}/{{.QT_SUBDIR}}/bin
-      - export APPIMAGE_EXTRACT_AND_RUN=1
+      - echo $QML_SOURCES_PATHS $LD_LIBRARY_PATH $QMAKE
       - ./linuxdeploy-x86_64.AppImage --plugin qt -e ./build/kae --appdir ./build -d ./linux/kae.desktop -i ./linux/kae.png --output appimage
       - mkdir -p ./deploy
       - mv kae*.AppImage ./deploy

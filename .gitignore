@@ -20,3 +20,4 @@ qt/*
 
 # Linux deploy
 linuxdeploy*
+bin
