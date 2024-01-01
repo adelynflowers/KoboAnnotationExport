@@ -8,8 +8,8 @@ The latest downloads for kae can be found in the table below based on your opera
 
 | Operating System  | Link                                     |
 | ----------------- | ---------------------------------------- |
-| windows (64 bit)  | http://github.com/adelynflowers/download |
-| macos (universal) | http://github.com/adelynflowers/download |
-| linux (AppImage)  | http://github.com/adelynflowers/download |
+| windows (64 bit)  | https://github.com/adelynflowers/KoboAnnotationExportTool/releases/download/latest/kaet-0.1-win64.msi |
+| macos (universal) | https://github.com/adelynflowers/KoboAnnotationExportTool/releases/download/latest/kaet-0.1-Darwin.dmg |
+| linux (AppImage)  | https://github.com/adelynflowers/KoboAnnotationExportTool/releases/download/latest/kaet-x86_64.AppImage |
 
 For more information on how to use the app, visit the [getting started page](getting-started.md).
