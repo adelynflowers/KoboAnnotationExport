@@ -18,10 +18,10 @@ theme:
 
 repo_name: adelynflowers/KoboAnnotationExportTool
 repo_url: https://github.com/adelynflowers/KoboAnnotationExportTool
-# extra:
-#   analytics:
-#     provider: 'google'
-#     property: 'UA-90243909-2'
+extra:
+  analytics:
+    provider: 'google'
+    property: 'G-9RC13J8SVD'
 
 nav:
   - Home: "index.md"
