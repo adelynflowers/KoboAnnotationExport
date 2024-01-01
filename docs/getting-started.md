@@ -32,6 +32,10 @@ In the top right of each annotation, you can tag it with up to three colors. By 
 
 In ungrouped mode, you can use the date sorter in the top right corner to sort your annotations by date, descending or ascending.
 
+## Adding notes to your highlights
+
+On the left hand side of each annotation there will be two icons that appear when hovered over. The one on the top will copy your note to the clipboard, and the one on the bottom will open up a drawer which will allow you to add your own notes to the annotation. Simply type in your desired message and hit enter and the note will be recorded and preserved upon export.
+
 ## Exporting your highlights
 
 To export your highlights for use in kaet on another machine, or for storage elsewhere, you can click the export button at the top of the app. It will prompt you to choose a location, and then save your annotations as a CSV file in that folder.

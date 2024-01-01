@@ -31,7 +31,7 @@ set(AUTOMOC_PATH_PREFIX on)
 
 if(WIN32)
   # Qt executable setup
-  qt_add_executable(kae
+  qt_add_executable(kaet
     main.cpp
     ${CMAKE_CURRENT_LIST_DIR}/windows/kae.rc
   )
@@ -41,17 +41,17 @@ elseif(APPLE)
   set_source_files_properties(${kae_ICON} PROPERTIES
     MACOSX_PACKAGE_LOCATION "Resources")
 
-  qt_add_executable(kae
+  qt_add_executable(kaet
     main.cpp
     ${kae_ICON}
   )
 else()
-  qt_add_executable(kae
+  qt_add_executable(kaet
     main.cpp
   )
 endif()
 
-qt_add_qml_module(kae
+qt_add_qml_module(kaet
   VERSION 1.0
   URI MainView
   QML_FILES
@@ -74,7 +74,7 @@ add_subdirectory(src/BookModel)
 add_subdirectory(src/KaeLib)
 
 # Link libraries
-target_link_libraries(kae
+target_link_libraries(kaet
   PUBLIC
   Qt6::Quick
   Qt6::Qml
@@ -83,13 +83,13 @@ target_link_libraries(kae
   KaeLib
 )
 
-qt_add_resources(kae "font_files"
+qt_add_resources(kaet "font_files"
   PREFIX "/"
   FILES
   fonts/fontello.ttf
 )
 
-set_target_properties(kae PROPERTIES
+set_target_properties(kaet PROPERTIES
   MACOSX_BUNDLE_GUI_IDENTIFIER io.github.adelynflowers.Kae
   MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
   MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -99,14 +99,14 @@ set_target_properties(kae PROPERTIES
 
 if(WIN32)
   install(
-    TARGETS kae
+    TARGETS kaet
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
   )
 elseif(APPLE)
   install(
-    TARGETS kae
+    TARGETS kaet
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib
@@ -119,7 +119,7 @@ if(WIN32)
   set(CPACK_GENERATOR WIX)
   set(CPACK_WIX_PROGRAM_MENU_FOLDER .)
   set(CPACK_PACKAGE_EXECUTABLES "kaet" "kaet")
-  set(CPACK_PACKAGE_ICON ${CMAKE_CURRENT_LIST_DIR}/windows/kae.ico)
+  set(CPACK_PACKAGE_ICON ${CMAKE_CURRENT_LIST_DIR}/windows/kaet.ico)
   set(CPACK_WIX_UPGRADE_GUID "ad2a08f1-5dea-4162-aefc-38bb91c4f5e9")
 elseif(APPLE)
   set(CPACK_GENERATOR DragNDrop)
@@ -127,7 +127,7 @@ elseif(APPLE)
 endif()
 
 qt_generate_deploy_qml_app_script(
-  TARGET kae
+  TARGET kaet
   FILENAME_VARIABLE deploy_script
 
   # NO_UNSUPPORTED_PLATFORM_ERROR

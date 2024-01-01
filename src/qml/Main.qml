@@ -13,13 +13,11 @@ ApplicationWindow {
     palette: darkTheme
 
     height: 720
-    //Material.theme: Material.Dark
     visible: true
     width: 1280
 
     header: ToolBar {
         height: parent.height * 0.1
-
         RowLayout {
             anchors.fill: parent
             spacing: 6

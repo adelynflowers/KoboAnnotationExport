@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-Name=kae
-Exec=kae
+Name=kaet
+Exec=kaet
 Comment=Tool to extract and manage Kobo e-reader highlights
-Icon=kae
+Icon=kaet
 Categories=Utility
