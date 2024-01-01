@@ -115,7 +115,7 @@ elseif(APPLE)
 endif()
 
 if(WIN32)
-  install(FILES ${PROJECT_BINARY_DIR}/libkae.dll.a DESTINATION bin)
+  install(FILES ${PROJECT_BINARY_DIR}/libkaet.dll.a DESTINATION bin)
   set(CPACK_GENERATOR WIX)
   set(CPACK_WIX_PROGRAM_MENU_FOLDER .)
   set(CPACK_PACKAGE_EXECUTABLES "kaet" "kaet")
